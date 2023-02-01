@@ -1,0 +1,116 @@
+.nav{
+    width: 200px;
+    height: 100%;
+    background-color: #38393d;
+    overflow-x: auto;
+}
+.nav__header{
+    width: 100%;
+    height: 32px;
+    background-color: #38393d;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    padding-bottom: 18px;
+}
+.toggle{
+    height: 24px;
+    width: 24px;
+    margin-right: 12px;
+    margin-top: 24px;
+    margin-left: 16px;
+    cursor: pointer;
+    background: transparent url("../../assets/images/Sprites.64af8f61.svg") no-repeat -428px -92px;
+}
+.logo_image{
+    width: 44px;
+	height: 45px;
+    margin-top: 30px;
+    cursor: pointer;
+}
+.nav__body{
+    width: 100%;
+    box-sizing: border-box;
+}
+.nav::-webkit-scrollbar-track {
+    margin-top: 50px;
+}
+.nav::-webkit-scrollbar {
+    width: 5px;
+    height: 10px;
+}
+.boder-category{
+    background-color: #a7c4ff53;
+}
+.catergory{
+    height: 44px;
+    width: calc(100% - 24px);
+    display: flex;
+    align-items: center;
+    margin-left: 12px;
+    margin-right: 12px;
+    cursor: pointer;
+}
+.catergory:hover{
+    border-radius: 4px;
+    background-color: #2b3e6353;
+}
+.mg-left{
+    margin-left: 12px;
+}
+.catergory-name{
+    flex: 1;
+    height: 35px;
+    line-height: 35px;
+    margin-left: 12px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+.icon-1{
+    background: transparent url("../../assets/images/Sprites.64af8f61.svg") no-repeat -28px -1630px;
+}
+.icon-2{
+    background: transparent url("../../assets/images/Sprites.64af8f61.svg") no-repeat -73px -1630px;
+}
+.icon-3{
+    background: transparent url("../../assets/images/Sprites.64af8f61.svg") no-repeat -117px -1632px;
+}
+.icon-4{
+    background: transparent url("../../assets/images/Sprites.64af8f61.svg") no-repeat -161px -1631px;
+}
+.icon-5{
+    background: transparent url("../../assets/images/Sprites.64af8f61.svg") no-repeat -204px -1631px;
+}
+.icon-6{
+    background: transparent url("../../assets/images/Sprites.64af8f61.svg") no-repeat -249px -1630px;
+}
+.icon-7{
+    background: transparent url("../../assets/images/Sprites.64af8f61.svg") no-repeat -290px -1630px;
+}
+.icon-8{
+    background: transparent url("../../assets/images/Sprites.64af8f61.svg") no-repeat -336px -1630px;
+}
+.icon-9{
+    background: transparent url("../../assets/images/Sprites.64af8f61.svg") no-repeat -378px -1631px;
+}
+.icon-10{
+    background: transparent url("../../assets/images/Sprites.64af8f61.svg") no-repeat -423px -1632px;
+}
+.icon-11{
+    background: transparent url("../../assets/images/Sprites.64af8f61.svg") no-repeat -467px -1631px;
+}
+.icon-12{
+    background: transparent url("../../assets/images/Sprites.64af8f61.svg") no-repeat -510px -1630px;
+}
+.icon-13{
+    background: transparent url("../../assets/images/Sprites.64af8f61.svg") no-repeat -378px -1661px;
+}
+.icon-14{
+    background: transparent url("../../assets/images/Sprites.64af8f61.svg") no-repeat -547px -1632px;
+}
+.icon-15{
+    background: transparent url("../../assets/images/Sprites.64af8f61.svg") no-repeat -202px -1664px;
+}

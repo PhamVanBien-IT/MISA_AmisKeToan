@@ -303,7 +303,7 @@ export default {
     // Lấy dữ liệu theo id
     this.getEmployeeByID();
 
-    this.$parent.clickCallback(1);
+    // this.$parent.clickCallback(1);
 
     // console.log(this.employee);
     // Chọn giới tính theo phần tử chọn
@@ -602,7 +602,9 @@ export default {
             })
             .then((res) => console.log("Posting data", res))
             .catch((err) => console.log(err));
-          this.$parent.clickCallback(1);
+          this.$parent.clickCallback(this.$parent.indexPage);
+
+          console.log(this.$parent.indexPage);
           this.setEmployeeCode();
           this.employee = {};
           this.$parent.employeeIDUpdate = null;

@@ -288,15 +288,16 @@ export default {
     //  * CreatedBy: Bien (10/1/2023)
     //  */
     searchEmployee: _.debounce(function() {
-      this.search(this.textSearch,1)
+      this.search(this.textSearch)
     }, 500),
 
     /**
      * Hàm tìm kiếm trong data
      * CreatedBy: Bien (18/1/2023)
      */
-    async search(value,pageNumber) {
-      let me = this;
+    async search(value) {
+      try {
+        let me = this;
        // Gọi hàm hiển thị loading
       //  this.diy.showLoading();
       if(!value){
@@ -304,16 +305,17 @@ export default {
       }else{
         await axios
         .get(
-          `https://localhost:7185/api/Employees/filter?filter=${value}&pageSize=${me.pageSize}&pageNumber=${pageNumber}`
+          `https://localhost:7185/api/Employees/filter?filter=${value}&pageSize=${me.pageSize}&pageNumber=1`
         )
         .then((res) => {
           this.employee = res.data.data.data;
-          this.indexPage = pageNumber;
-          // this.totalRecord = res.data.length;
-          // this.totalPage = res.data.TotalPage;
         })
         .catch((err) => console.log(err));
       }
+      } catch (error) {
+          console.log("Lỗi tìm kiếm"+ error);
+      }
+    
          // Hàm ẩn loading
       // this.diy.clearLoading();
     },
@@ -395,7 +397,7 @@ export default {
         .then(() => console.log("Xoa thanh cong"))
         .catch((err) => console.log(err))
 
-      this.clickCallback(1);
+      this.clickCallback(this.indexPage);
 
       //Hàm ẩn loading
       this.diy.clearLoading();

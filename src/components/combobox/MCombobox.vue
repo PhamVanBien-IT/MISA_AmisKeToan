@@ -234,7 +234,7 @@ export default {
       unUpIndexItemSelect: true,
 
       // Khai báo biến index trong comboxbox__data
-      indexItemSelect: 0,
+      indexItemSelect: null,
 
       // Khai báo item được chọn
       itemSelected: null,

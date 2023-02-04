@@ -132,10 +132,10 @@
                   {{ item.genderName || "" }}
                 </td>
                 <td class="td-center" style="width: 200px">
-                  {{ formatDate(item.dateOfBirth) || "" }}
+                  {{ this.$MISACommon.formatDate(item.dateOfBirth) || "" }}
                 </td>
                 <td class="td-left" style="width: 250px">{{ item.identityNumber ||"" }}</td>
-                <td class="td-center" style="width: 250px">{{formatDate(item.identityDate) || "" }}</td>
+                <td class="td-center" style="width: 250px">{{ this.$MISACommon.formatDate(item.identityDate) || "" }}</td>
                 <td class="td-left" style="width: 200px">{{item.identityPlace ||"" }}</td>
                 <td class="td-left" style="width: 230px">
                   {{ item.bankAccount || "" }}
@@ -438,33 +438,7 @@ export default {
       // Gọi hàm tìm kiếm
       this.clickCallback(this.indexPage);
     },
-    /**
-     * Hàm đinh dạng ngày giờ
-     * CreatedBy: Bien (23/12/2023)
-     */
-    formatDate(datatime) {
-      try {
-        // Kiểm tra dữ liệu đầu vào khác null
-        if (datatime != null && datatime != undefined) {
-          // Chuyển thành dữ liệu dd/mm/yy
-          datatime = new Date(datatime);
-
-          let date = datatime.getDate();
-          date = date < 10 ? `0${date}` : date;
-
-          let month = datatime.getMonth() + 1;
-          month = month < 10 ? `0${month}` : month;
-
-          let year = datatime.getFullYear();
-
-          return `${date}/${month}/${year}`;
-        } else {
-          return "";
-        }
-      } catch (error) {
-        console.log("Lỗi định dạng thời gian" + error);
-      }
-    },
+   
   },
   computed: {
     // Hàm set vị trị hiển thị

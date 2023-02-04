@@ -2,6 +2,7 @@ import { createApp, provide } from 'vue'
 import App from './App.vue'
 import diy from './diy';
 import MISAEnum from './js/enum';
+import MISACommon from './js/common';
 import MButton from './components/button/MButton.vue';
 import MCombobox from './components/combobox/MCombobox.vue';
 import MDropdown from "./components/combobox/MDropdown.vue";
@@ -26,3 +27,4 @@ app.provide("diy",diy);
 app.mount('#app')
 
 app.config.globalProperties.$MISAEnum = MISAEnum;
+app.config.globalProperties.$MISACommon = MISACommon;

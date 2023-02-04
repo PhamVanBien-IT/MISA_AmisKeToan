@@ -327,6 +327,8 @@ export default {
           .get(`https://localhost:7185/api/Employees/${this.id}`)
           .then((res) => {
             this.employee = res.data.data;
+            this.employee.dateOfBirth = this.$MISACommon.formatDateReverse(this.employee.dateOfBirth);
+            this.employee.identityDate = this.$MISACommon.formatDateReverse(this.employee.identityDate);
           })
           .catch((err) => {
             console.log(err);

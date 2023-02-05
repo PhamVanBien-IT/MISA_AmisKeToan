@@ -293,6 +293,7 @@
 <script>
 import axios from "axios";
 
+
 export default {
   inject: ["diy"],
   name: "EmployeeDatail",
@@ -343,7 +344,8 @@ export default {
       await axios
         .get(`https://localhost:7185/api/Employees/NewEmployeeCode`)
         .then((res) => {
-          this.employee.employeeCode = res.data.data;
+          this.employee.employeeCode = res.data.data.EmployeeCode;
+          this.employee.employeeIndex = res.data.data.EmployeeIndex;
         })
         .catch((err) => console.log(err));
     },
@@ -554,6 +556,8 @@ export default {
         this.diy.showLoading();
 
         this.editEmployee(this.id);
+        console.log(this.$parent.employee);
+
 
         this.diy.clearEPLDetail();
 
@@ -605,14 +609,13 @@ export default {
             .then((res) => console.log("Posting data", res))
             .catch((err) => console.log(err));
           this.$parent.clickCallback(this.$parent.indexPage);
-
-          console.log(this.$parent.indexPage);
           this.setEmployeeCode();
           this.employee = {};
           this.$parent.employeeIDUpdate = null;
         } else {
           await axios
             .post("https://localhost:7185/api/Employees", {
+              // employeeID: this.employeeId,
               employeeCode: this.employee.employeeCode,
               fullName: this.employee.fullName,
               departmentId: this.employee.departmentId,
@@ -629,10 +632,12 @@ export default {
               bankName: this.employee.bankName,
               bankBranch: this.employee.bankBranch,
               genderName: this.employee.genderName,
+              employeeIndex: this.employee.employeeIndex
             })
             .then((res) => console.log("Posting data", res))
             .catch((err) => console.log(err));
           // this.getEmployee();
+          this.$parent.textSearch = null;
           this.$parent.clickCallback(1);
           this.setEmployeeCode();
           this.employee = {};

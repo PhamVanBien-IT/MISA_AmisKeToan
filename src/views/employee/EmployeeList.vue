@@ -309,8 +309,11 @@ export default {
         )
         .then((res) => {
           this.employee = res.data.data.data;
+          this.totalPage = res.data.data.totalPage;
+          this.totalRecord = res.data.data.totalRecord;
         })
         .catch((err) => console.log(err));
+        
       }
       } catch (error) {
           console.log("Lỗi tìm kiếm"+ error);
@@ -331,17 +334,34 @@ export default {
       this.select_all = false;
       this.selected = [];
       let me = this;
-      await axios
+      if(this.textSearch){
+        await axios
         .get(
-          `https://localhost:7185/api/Employees/filter?pageSize=${me.pageSize}&pageNumber=${pageNumber}`
+          `https://localhost:7185/api/Employees/filter?filter=${this.textSearch}&pageSize=${me.pageSize}&pageNumber=${pageNumber}`
+        )
+        .then((res) => {
+          this.employee = res.data.data.data;
+          this.totalPage = res.data.data.totalPage;
+          this.totalRecord = res.data.data.totalRecord;
+        })
+        .catch((err) => console.log(err));
+        
+      }else{
+        await axios
+        .get(
+          `https://localhost:7185/api/Employees/filter?&pageSize=${me.pageSize}&pageNumber=${pageNumber}`
         )
         .then((res) => {
           this.employee = res.data.data.data;
           this.totalPage = res.data.data.totalPage;
           this.totalRecord = res.data.data.totalRecord;
           this.indexPage = pageNumber;
+
+          console.log(pageNumber);
         })
         .catch((err) => console.log(err));
+      }
+     
 
       // Hàm ẩn loading
       this.diy.clearLoading();
@@ -394,10 +414,11 @@ export default {
         .delete(
           `https://localhost:7185/api/Employees/${this.EmployeeIdDelete}`
         )
-        .then(() => console.log("Xoa thanh cong"))
+        .then((res) => console.log(res.data))
         .catch((err) => console.log(err))
 
       this.clickCallback(this.indexPage);
+      console.log(this.indexPage);
 
       //Hàm ẩn loading
       this.diy.clearLoading();

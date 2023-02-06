@@ -327,7 +327,7 @@ export default {
         await axios
           .get(`https://localhost:7185/api/Employees/${this.id}`)
           .then((res) => {
-            this.employee = res.data.data;
+            this.employee = res.data;
             this.employee.dateOfBirth = this.$MISACommon.formatDateReverse(this.employee.dateOfBirth);
             this.employee.identityDate = this.$MISACommon.formatDateReverse(this.employee.identityDate);
           })
@@ -344,8 +344,8 @@ export default {
       await axios
         .get(`https://localhost:7185/api/Employees/NewEmployeeCode`)
         .then((res) => {
-          this.employee.employeeCode = res.data.data.EmployeeCode;
-          this.employee.employeeIndex = res.data.data.EmployeeIndex;
+          this.employee.employeeCode = res.data.EmployeeCode;
+          this.employee.employeeIndex = res.data.EmployeeIndex;
         })
         .catch((err) => console.log(err));
     },

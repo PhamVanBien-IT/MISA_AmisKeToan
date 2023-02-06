@@ -308,9 +308,9 @@ export default {
           `https://localhost:7185/api/Employees/filter?filter=${value}&pageSize=${me.pageSize}&pageNumber=1`
         )
         .then((res) => {
-          this.employee = res.data.data.data;
-          this.totalPage = res.data.data.totalPage;
-          this.totalRecord = res.data.data.totalRecord;
+          this.employee = res.data.data;
+          this.totalPage = res.data.totalPage;
+          this.totalRecord = res.data.totalRecord;
         })
         .catch((err) => console.log(err));
         
@@ -340,9 +340,9 @@ export default {
           `https://localhost:7185/api/Employees/filter?filter=${this.textSearch}&pageSize=${me.pageSize}&pageNumber=${pageNumber}`
         )
         .then((res) => {
-          this.employee = res.data.data.data;
-          this.totalPage = res.data.data.totalPage;
-          this.totalRecord = res.data.data.totalRecord;
+          this.employee = res.data.data;
+          this.totalPage = res.data.totalPage;
+          this.totalRecord = res.data.totalRecord;
         })
         .catch((err) => console.log(err));
         
@@ -352,9 +352,9 @@ export default {
           `https://localhost:7185/api/Employees/filter?&pageSize=${me.pageSize}&pageNumber=${pageNumber}`
         )
         .then((res) => {
-          this.employee = res.data.data.data;
-          this.totalPage = res.data.data.totalPage;
-          this.totalRecord = res.data.data.totalRecord;
+          this.employee = res.data.data;
+          this.totalPage = res.data.totalPage;
+          this.totalRecord = res.data.totalRecord;
           this.indexPage = pageNumber;
 
           console.log(pageNumber);

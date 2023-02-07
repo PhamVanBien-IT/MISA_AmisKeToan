@@ -55,10 +55,10 @@ export default {
     if (this.api) {
       axios
         .get(this.api)
-        .then((data) => {
-          this.entities = data.data.data;
+        .then((res) => {
+          this.entities = res.data.data;
           this.setItemSelected();
-          this.entitySearch = data.data.data;
+          this.entitySearch = res.data.data;
         })
         .catch((res) => {
           console.log(res);

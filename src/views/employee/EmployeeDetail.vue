@@ -60,7 +60,7 @@
                 propName="departmentName"
                 propValue="departmentId"
                 v-model="employee.departmentId"
-                api="https://localhost:7185/api/Departments"
+                api="https://localhost:7185/api/Department/filter?pageSize=20&pageNumber=1"
                 tabindex="3"
                 :class="[isActiveDepartment ? borderInput : '']"
               ></MComboboxVue>
@@ -556,8 +556,6 @@ export default {
         this.diy.showLoading();
 
         this.editEmployee(this.id);
-        console.log(this.$parent.employee);
-
 
         this.diy.clearEPLDetail();
 
@@ -615,7 +613,6 @@ export default {
         } else {
           await axios
             .post("https://localhost:7185/api/Employees", {
-              // employeeID: this.employeeId,
               employeeCode: this.employee.employeeCode,
               fullName: this.employee.fullName,
               departmentId: this.employee.departmentId,

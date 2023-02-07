@@ -357,7 +357,6 @@ export default {
           this.totalRecord = res.data.totalRecord;
           this.indexPage = pageNumber;
 
-          console.log(pageNumber);
         })
         .catch((err) => console.log(err));
       }

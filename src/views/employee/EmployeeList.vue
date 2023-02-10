@@ -134,14 +134,20 @@
                 <td class="td-center" style="width: 200px">
                   {{ this.$MISACommon.formatDate(item.dateOfBirth) || "" }}
                 </td>
-                <td class="td-left" style="width: 250px">{{ item.identityNumber ||"" }}</td>
-                <td class="td-center" style="width: 250px">{{ this.$MISACommon.formatDate(item.identityDate) || "" }}</td>
-                <td class="td-left" style="width: 200px">{{item.identityPlace ||"" }}</td>
+                <td class="td-left" style="width: 250px">
+                  {{ item.identityNumber || "" }}
+                </td>
+                <td class="td-center" style="width: 250px">
+                  {{ this.$MISACommon.formatDate(item.identityDate) || "" }}
+                </td>
+                <td class="td-left" style="width: 200px">
+                  {{ item.identityPlace || "" }}
+                </td>
                 <td class="td-left" style="width: 230px">
                   {{ item.bankAccount || "" }}
                 </td>
                 <td class="td-left" style="width: 500px">
-                  {{ item.bankBranch || ""}}
+                  {{ item.bankBranch || "" }}
                 </td>
                 <td class="td-func td-center" style="width: 120px">
                   <div class="edit-data" @click="rowOnDblClick(item)">Sửa</div>
@@ -229,12 +235,12 @@
   <MNotifyVue v-if="diy.state.showNotify"></MNotifyVue>
 </template>
 <script>
-import axios from "axios";
-import _ from 'lodash';
+import _ from "lodash";
 import Paginate from "vuejs-paginate/src/components/Paginate.vue";
 import MLoadingVue from "@/components/loading/MLoading.vue";
 import EmployeeDetailVue from "./EmployeeDetail.vue";
 import MNotifyVue from "@/components/notify/MNotify.vue";
+import employeeApi from "@/api/employeeApi";
 
 export default {
   inject: ["diy"],
@@ -247,7 +253,7 @@ export default {
   },
   created() {
     // Gọi hàm clickCallback
-    this.clickCallback(1);
+    this.getEmployeePaging(1, this.pageSize, this.textSearch);
   },
   methods: {
     /**
@@ -262,6 +268,7 @@ export default {
         }
       }
     },
+
     /**
      * Hàm ẩn funcList
      * CreatedBy: Bien (12/1/2023)
@@ -269,6 +276,7 @@ export default {
     clearFuncList() {
       this.showFuncList = false;
     },
+
     /**
      * Hàm gắn giá trị cho pageNumber
      * CreatedBy: Bien (11/1/2023)
@@ -281,86 +289,79 @@ export default {
       this.select_all = false;
 
       // Gọi hàm set pagation
-      this.clickCallback(1);
+      this.getEmployeePaging(1, this.pageSize, this.textSearch);
     },
+
     // /**
     //  * Hàm tìm kiếm employee
     //  * CreatedBy: Bien (10/1/2023)
     //  */
-    searchEmployee: _.debounce(function() {
-      this.search(this.textSearch)
+    searchEmployee: _.debounce(function () {
+      this.search(this.textSearch);
     }, 500),
 
     /**
-     * Hàm tìm kiếm trong data
-     * CreatedBy: Bien (18/1/2023)
+     * Hàm tìm kiếm nhân viên
+     * @param {Nội dung muốn tìm kiếm} value
+     * CreatedBy: Bien (19/1/2023)
      */
     async search(value) {
       try {
         let me = this;
-       // Gọi hàm hiển thị loading
-      //  this.diy.showLoading();
-      if(!value){
-        this.clickCallback(1);
-      }else{
-        await axios
-        .get(
-          `https://localhost:7185/api/Employees/filter?filter=${value}&pageSize=${me.pageSize}&pageNumber=1`
-        )
-        .then((res) => {
-          this.employee = res.data.data;
-          this.totalPage = res.data.totalPage;
-          this.totalRecord = res.data.totalRecord;
-        })
-        .catch((err) => console.log(err));
-        
-      }
+        // Nhận dữ liệu khi tìm kiếm
+        const response = this.getEmployeePaging(1, me.pageSize, value);
+
+        // Gắn dữ liệu
+        this.employee = response.data;
+        this.totalPage = response.totalPage;
+        this.totalRecord = response.totalRecord;
       } catch (error) {
-          console.log("Lỗi tìm kiếm"+ error);
+        console.log("Lỗi tìm kiếm" + error);
       }
-    
-         // Hàm ẩn loading
-      // this.diy.clearLoading();
     },
-  
+
+    /**
+     * Hàm chuyển trang
+     * CreaetedBy: Bien (10/1/2023)
+     */
+    async clickCallback(pageNumber) {
+      // Nhận dữ liệu khi tìm kiếm
+      const response = await employeeApi.getEmpPaging(
+        pageNumber,
+        this.pageSize,
+        this.textSearch
+      );
+
+      // Gắn dữ liệu
+      this.employee = response.data;
+      this.totalPage = response.totalPage;
+      this.totalRecord = response.totalRecord;
+      this.indexPage = pageNumber;
+    },
+
     /**
      * Hàm phân trang
      * CreatedBy: Bien (10/1/2023)
      */
-    async clickCallback(pageNumber) {
+    async getEmployeePaging(pageNumber, pageSize, filter) {
       // Gọi hàm hiển thị loading
       this.diy.showLoading();
       // Gọi hàm loại bỏ checkall
       this.select_all = false;
       this.selected = [];
-      let me = this;
-      if(this.textSearch){
-        await axios
-        .get(
-          `https://localhost:7185/api/Employees/filter?filter=${this.textSearch}&pageSize=${me.pageSize}&pageNumber=${pageNumber}`
-        )
-        .then((res) => {
-          this.employee = res.data.data;
-          this.totalPage = res.data.totalPage;
-          this.totalRecord = res.data.totalRecord;
-        })
-        .catch((err) => console.log(err));
-        
-      }else{
-        await axios
-        .get(
-          `https://localhost:7185/api/Employees/filter?&pageSize=${me.pageSize}&pageNumber=${pageNumber}`
-        )
-        .then((res) => {
-          this.employee = res.data.data;
-          this.totalPage = res.data.totalPage;
-          this.totalRecord = res.data.totalRecord;
-          this.indexPage = pageNumber;
 
-        })
-        .catch((err) => console.log(err));
-      }
-     
+      // Nhận dữ liệu gọi dữ liệu
+      const response = await employeeApi.getEmpPaging(
+        pageNumber,
+        pageSize,
+        filter
+      );
+
+      // Gắn giá trị
+      this.employee = response.data;
+      this.totalPage = response.totalPage;
+      this.totalRecord = response.totalRecord;
+      this.indexPage = pageNumber;
 
       // Hàm ẩn loading
       this.diy.clearLoading();
@@ -391,6 +392,7 @@ export default {
       this.EmployeeIdDelete = item.employeeId;
       this.showBackgroudItem = true;
     },
+
     /**
      * Hàm hỏi trước khi xóa
      * CreatedBy: Bien (10/1/2023)
@@ -409,15 +411,10 @@ export default {
       // Hàm hiển thị loading
       this.diy.showLoading();
 
-      await axios
-        .delete(
-          `https://localhost:7185/api/Employees/${this.EmployeeIdDelete}`
-        )
-        .then((res) => console.log(res.data))
-        .catch((err) => console.log(err))
-
-      this.clickCallback(this.indexPage);
-      console.log(this.indexPage);
+      // Hàm nhận dữ liệu sau khi xóa
+      const response = await employeeApi.deleteEmp(this.EmployeeIdDelete);
+      console.log(response);
+      this.clickCallback(this.textSearch, this.pageSize, this.indexPage);
 
       //Hàm ẩn loading
       this.diy.clearLoading();
@@ -456,9 +453,8 @@ export default {
      */
     btnRefreshOnClick() {
       // Gọi hàm tìm kiếm
-      this.clickCallback(this.indexPage);
+      this.clickCallback(this.textSearch, this.pageSize, this.indexPage);
     },
-   
   },
   computed: {
     // Hàm set vị trị hiển thị
@@ -498,7 +494,7 @@ export default {
      * CreatedBy: Bien (18/1/2023)
      */
     textSearch: async function () {
-     await this.searchEmployee(this.textSearch);
+      await this.searchEmployee(this.textSearch);
     },
 
     /**
@@ -518,7 +514,7 @@ export default {
     return {
       // Khai báo biến hiển thị background khi chọn cột
       showBackgroudItem: false,
-      
+
       // Khai báo biến isDropdown
       isDropdown: true,
 
@@ -565,7 +561,7 @@ export default {
       totalPage: 1,
 
       // Khai báo biến nhận value inputSearch
-      textSearch: null,
+      textSearch: "",
 
       // Khai báo biến nhận pageSize
       pageSize: 20,

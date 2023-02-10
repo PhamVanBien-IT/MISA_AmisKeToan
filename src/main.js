@@ -2,6 +2,7 @@ import { createApp, provide } from 'vue'
 import App from './App.vue'
 import diy from './diy';
 import MISAEnum from './js/enum';
+import MISAResource from './js/resource';
 import MISACommon from './js/common';
 import MButton from './components/button/MButton.vue';
 import MCombobox from './components/combobox/MCombobox.vue';
@@ -11,6 +12,7 @@ import MInputText from "./components/input/MInputText.vue";
 import MInputMoney from "./components/input/MInputMoney.vue";
 import MCheckbox from "./components/input/MCheckbox.vue";
 import MDatepicker from "./components/datepicker/MDatepicker.vue";
+
 
 
 const app = createApp(App);
@@ -28,3 +30,6 @@ app.mount('#app')
 
 app.config.globalProperties.$MISAEnum = MISAEnum;
 app.config.globalProperties.$MISACommon = MISACommon;
+app.config.globalProperties.$MISAResource = MISAResource;
+
+

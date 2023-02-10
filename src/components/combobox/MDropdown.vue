@@ -20,7 +20,6 @@
    </div>
 </template>
 <script>
-// import axios from 'axios'
 export default {
     inject:['diy'],
     name:"MDropdown",
@@ -39,6 +38,10 @@ export default {
             this.isShowData = !this.isShowData;
         },
 
+        /**
+         * Hàm gắn giá trị khi chọn kích thước
+         * CreatedBy: Bien (9/1/2023)
+         */
         itemOnSelect(item,index){
             this.textSelectTed = item.value;
             this.isShowData = false;

@@ -36,7 +36,7 @@
   </div>
 </template>
 <script>
-import axios from "axios";
+import departmentApi from "@/api/departmentApi";
 export default {
   inject: ["diy"],
   name: "MCombobox",
@@ -51,24 +51,24 @@ export default {
     "tabindex",
   ],
   created() {
-    // Kiểm tra sự tồn tại của biến api
-    if (this.api) {
-      axios
-        .get(this.api)
-        .then((res) => {
-          this.entities = res.data.data;
-          this.setItemSelected();
-          this.entitySearch = res.data.data;
-        })
-        .catch((res) => {
-          console.log(res);
-        });
-    }
+    // Lấy dữ liệu của bảng department
+    this.getDepartments();
+
   },
   updated() {
     this.classInputCBox = this.class;
   },
   methods: {
+    async getDepartments(){
+
+      // Gắn giá trị kết quả lấy dữ liệu bảng department
+      const response = await departmentApi.getDeparmentPaging();
+
+      // Gắn dữ liệu
+      this.entities = response.data;  
+      this.setItemSelected();
+      this.entitySearch = response.data;
+    },
     /**
      * Hàm hiển thị Comboboxdata
      * CreatedBy: Bien (9/1/2023)
@@ -169,6 +169,11 @@ export default {
           break;
       }
     },
+
+    /**
+     * Hàm bắt sự kiện keydown của button hiển thị
+     * CreatedBy: Bien ( 11/1/2023)
+     */
     keyDownSelectItemBtn(event) {
       const keyCode = event.keyCode;
       switch (keyCode) {
@@ -205,6 +210,10 @@ export default {
     },
   },
   computed: {
+    /**
+     * Tìm kiếm giá trị được chọn
+     * CreatedBy: Bien (9/2/2023)
+     */
     findIndexSelected: function () {
       var me = this;
       // Tính index của item đã được chọn
@@ -218,8 +227,6 @@ export default {
     return {
       // Khai báo biện nhân class
       classInputCBox: null,
-      // Khai báo biến showData
-      // isShowData: false,
 
       // Khai báo biến nhận giá trị
       entities: [],

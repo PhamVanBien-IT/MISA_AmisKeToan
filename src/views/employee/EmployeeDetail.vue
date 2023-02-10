@@ -60,7 +60,6 @@
                 propName="departmentName"
                 propValue="departmentId"
                 v-model="employee.departmentId"
-                api="https://localhost:7185/api/Department/filter?pageSize=20&pageNumber=1"
                 tabindex="3"
                 :class="[isActiveDepartment ? borderInput : '']"
               ></MComboboxVue>
@@ -291,8 +290,7 @@
   </div>
 </template>
 <script>
-import axios from "axios";
-
+import employeeApi from '@/api/employeeApi';
 
 export default {
   inject: ["diy"],
@@ -300,13 +298,9 @@ export default {
   props: ["id", "funcCallBack", "reFreshEmplpoyee"],
   components: {},
   created() {
-    // console.log(this.reFreshEmplpoyee);
     // Lấy dữ liệu theo id
     this.getEmployeeByID();
 
-    // this.$parent.clickCallback(1);
-
-    // console.log(this.employee);
     // Chọn giới tính theo phần tử chọn
     this.getGender();
     if (this.id) {
@@ -324,30 +318,29 @@ export default {
      */
     async getEmployeeByID() {
       if (this.id) {
-        await axios
-          .get(`https://localhost:7185/api/Employees/${this.id}`)
-          .then((res) => {
-            this.employee = res.data;
-            this.employee.dateOfBirth = this.$MISACommon.formatDateReverse(this.employee.dateOfBirth);
-            this.employee.identityDate = this.$MISACommon.formatDateReverse(this.employee.identityDate);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+          // Nhận dữ liệu sau khi lấy nhân viên theo id
+        const response = await employeeApi.getEmpById(this.id);
+
+        console.log(response);
+
+        this.employee = response.data;
+        this.employee.dateOfBirth = this.$MISACommon.formatDateReverse(this.employee.dateOfBirth);
+        this.employee.identityDate = this.$MISACommon.formatDateReverse(this.employee.identityDate);
+        
       }
     },
+
     /**
      * Hàm set giá trị mặc định cho employeeCode
      * CreateBy: Bien (11/1/2023)
      */
     async setEmployeeCode() {
-      await axios
-        .get(`https://localhost:7185/api/Employees/NewEmployeeCode`)
-        .then((res) => {
-          this.employee.employeeCode = res.data.EmployeeCode;
-          this.employee.employeeIndex = res.data.EmployeeIndex;
-        })
-        .catch((err) => console.log(err));
+      const response = await employeeApi.getEmpNewCode();
+
+      console.log(response);
+
+      this.employee.employeeCode = response.EmployeeCode;
+      this.employee.employeeIndex = response.EmployeeIndex;
     },
 
     /**
@@ -376,12 +369,10 @@ export default {
      * Hàm lấy giá trị giới tính khi dbclick
      * CreatedBy: Bien (10/1/2023)
      */
-    getGender() {
-      if (this.id) {
-        axios
-          .get(`https://localhost:7185/api/Employees/${this.id}`)
-          .then((res) => {
-            this.employees = res.data.data;
+   async getGender(){
+          // Nhận dữ liệu sau khi lấy nhân viên theo id
+      const response = await employeeApi.getEmpById(this.id)
+      this.employees = response.data;
             if (this.employee.gender == this.$MISAEnum.GENDER.MALE) {
               document.getElementById("male").checked = true;
             } else if (this.employee.gender == this.$MISAEnum.GENDER.FEMALE) {
@@ -389,9 +380,6 @@ export default {
             } else if (this.employee.gender == this.$MISAEnum.GENDER.ORTHER) {
               document.getElementById("orther").checked = true;
             }
-          })
-          .catch((err) => console.log(err));
-      }
     },
     /**
      * Sự kiện đóng form EmployeeDetail
@@ -423,7 +411,7 @@ export default {
         this.isActiveCode = true;
 
         // Gắn giá trị cho label dialog
-        this.lableValidateDepartment = "Mã không được để trống";
+        this.lableValidateDepartment = this.$MISAResource.ERRORMESSAGE.ErrorEmployeeCode;
 
         // Ẩn nút trong dialog khi tên để trống
         this.diy.ClearBtnDialog();
@@ -438,7 +426,7 @@ export default {
         this.isActive = true;
 
         // Gắn giá trị cho label dialog
-        this.lableValidateDepartment = "Tên không được để trống";
+        this.lableValidateDepartment = this.$MISAResource.ERRORMESSAGE.ErrorFullName;
         
         // Gắn giá trị cho biến kiểm tra tên trống
         this.isValidateName = true;
@@ -457,10 +445,10 @@ export default {
 
         if (this.isValidateName) {
           // Gắn giá trị cho label dialog
-          this.lableValidateDepartment = "Tên không được để trống";
+          this.lableValidateDepartment = this.$MISAResource.ERRORMESSAGE.ErrorFullName;
         } else {
           // Gắn giá trị cho label dialog
-          this.lableValidateDepartment = "Đơn vị không được để trống";
+          this.lableValidateDepartment = this.$MISAResource.ERRORMESSAGE.ErrorDepartment;
         }
 
         // Ẩn nút trong dialog khi tên để trống
@@ -498,7 +486,7 @@ export default {
         this.isActiveCode = true;
 
         // Gắn giá trị cho label dialog
-        this.lableValidateDepartment = "Mã không được để trống";
+        this.lableValidateDepartment = this.$MISAResource.ERRORMESSAGE.ErrorEmployeeCode;
 
         // Ẩn nút trong dialog khi tên để trống
         this.diy.ClearBtnDialog();
@@ -512,7 +500,7 @@ export default {
         this.isActive = true;
 
         // Gắn giá trị cho label dialog
-        this.lableValidateDepartment = "Tên không được để trống";
+        this.lableValidateDepartment = this.$MISAResource.ERRORMESSAGE.ErrorFullName;
 
         console.log(this.isActive );
 
@@ -534,10 +522,10 @@ export default {
 
         if (this.isValidateName) {
           // Gắn giá trị cho label dialog
-          this.lableValidateDepartment = "Tên không được để trống";
+          this.lableValidateDepartment = this.$MISAResource.ERRORMESSAGE.ErrorFullName;
         } else {
           // Gắn giá trị cho label dialog
-          this.lableValidateDepartment = "Đơn vị không được để trống";
+          this.lableValidateDepartment = this.$MISAResource.ERRORMESSAGE.ErrorDepartment;
         }
         // Ẩn nút trong dialog khi tên để trống
         this.diy.ClearBtnDialog();
@@ -584,56 +572,21 @@ export default {
             break;
         }
         if (idE != null) {
-          await axios
-            .put(`https://localhost:7185/api/Employees/${idE}`, {
-              employeeCode: this.employee.employeeCode,
-              fullName: this.employee.fullName,
-              departmentId: this.employee.departmentId,
-              dateOfBirth: this.employee.dateOfBirth,
-              gender: this.employee.gender,
-              landlineNumber: this.employee.landlineNumber,
-              phoneNumber: this.employee.phoneNumber,
-              email: this.employee.email,
-              address: this.employee.address,
-              identityNumber: this.employee.identityNumber,
-              identityDate: this.employee.identityDate,
-              identityPlace: this.employee.identityPlace,
-              bankAccount: this.employee.bankAccount,
-              bankName: this.employee.bankName,
-              bankBranch: this.employee.bankBranch,
-              genderName: this.employee.genderName,
-              createdDate: this.employee.createdDate,
-            })
-            .then((res) => console.log("Posting data", res))
-            .catch((err) => console.log(err));
+          // Nhận dữ liệu sau khi sửa nhân viên
+          const response = await employeeApi.updateEmp(idE,this.employee)
+
+          console.log("Posting data", response);
+          
           this.$parent.clickCallback(this.$parent.indexPage);
           this.setEmployeeCode();
           this.employee = {};
           this.$parent.employeeIDUpdate = null;
         } else {
-          await axios
-            .post("https://localhost:7185/api/Employees", {
-              employeeCode: this.employee.employeeCode,
-              fullName: this.employee.fullName,
-              departmentId: this.employee.departmentId,
-              dateOfBirth: this.employee.dateOfBirth,
-              gender: this.employee.gender,
-              landlineNumber: this.employee.landlineNumber,
-              phoneNumber: this.employee.phoneNumber,
-              email: this.employee.email,
-              address: this.employee.address,
-              identityNumber: this.employee.identityNumber,
-              identityDate: this.employee.identityDate,
-              identityPlace: this.employee.identityPlace,
-              bankAccount: this.employee.bankAccount,
-              bankName: this.employee.bankName,
-              bankBranch: this.employee.bankBranch,
-              genderName: this.employee.genderName,
-              employeeIndex: this.employee.employeeIndex
-            })
-            .then((res) => console.log("Posting data", res))
-            .catch((err) => console.log(err));
-          // this.getEmployee();
+          // Nhận dữ liệu sau khi thêm nhân viên
+          const response = await employeeApi.createEmp(this.employee)
+
+          console.log("Posting data", response);
+          
           this.$parent.textSearch = null;
           this.$parent.clickCallback(1);
           this.setEmployeeCode();
@@ -651,21 +604,18 @@ export default {
      */
     clearValidate() {
       if (this.employee.fullName != null) {
-        // this.erEPLFullName = "";
         this.isActive = false;
       }
       if (this.employee.employeeCode != null) {
-        // this.erEPLCode = "";
         this.isActiveCode = false;
       }
-
       if (this.employee.departmentId != null) {
         this.isActiveDepartment = false;
       }
     },
   },
   watch: {
-    salary: function (newValue) {
+      salary:function (newValue) {
       // var me = this;
       // me.salary = newValue;
       console.log("Tiền đã thay đổi:", newValue);

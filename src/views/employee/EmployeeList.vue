@@ -403,6 +403,7 @@ export default {
 
       this.diy.ClearCloseDialog();
     },
+    
     /**
      * Hàm xóa employee
      * CreatedBy: Bien (10/1/2023)
@@ -414,7 +415,7 @@ export default {
       // Hàm nhận dữ liệu sau khi xóa
       const response = await employeeApi.deleteEmp(this.EmployeeIdDelete);
       console.log(response);
-      this.clickCallback(this.textSearch, this.pageSize, this.indexPage);
+      this.clickCallback(this.indexPage);
 
       //Hàm ẩn loading
       this.diy.clearLoading();

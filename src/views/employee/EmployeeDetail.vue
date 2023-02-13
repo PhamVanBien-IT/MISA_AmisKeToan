@@ -326,7 +326,6 @@ export default {
         this.employee = response.data;
         this.employee.dateOfBirth = this.$MISACommon.formatDateReverse(this.employee.dateOfBirth);
         this.employee.identityDate = this.$MISACommon.formatDateReverse(this.employee.identityDate);
-        
       }
     },
 
@@ -335,6 +334,7 @@ export default {
      * CreateBy: Bien (11/1/2023)
      */
     async setEmployeeCode() {
+          // Nhận dữ liệu sau khi tao ma
       const response = await employeeApi.getEmpNewCode();
 
       console.log(response);
@@ -401,6 +401,7 @@ export default {
       this.diy.ClearCloseDialog();
       // this.diy.clearEPLDetail();
     },
+    
     // /**
     //  * Sự kiện thêm
     //  * CreatedBy: Bien (4/1/2023)

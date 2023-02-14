@@ -54,10 +54,6 @@
             <thead>
               <tr>
                 <td class="tb-head td-center td-cb" style="width: 60px">
-                  <!-- <MCheckboxVue
-                    v-model="select_all"
-                    @click="selectAll"
-                  ></MCheckboxVue> -->
                   <label>
                     <input
                       type="checkbox"
@@ -67,7 +63,6 @@
                     />
                     <span class="check-box-effect"></span>
                   </label>
-                  <!-- <input type="checkbox" v-model="select_all" @click="selectAll"> -->
                 </td>
                 <td class="tb-head td-left" style="width: 250px">
                   MÃ NHÂN VIÊN
@@ -199,7 +194,6 @@
       </div>
     </div>
   </div>
-
   <!-- DIALOG -->
   <MDialogVue
     v-if="diy.state.showDialog"
@@ -252,7 +246,7 @@ export default {
     Paginate,
   },
   created() {
-    // Gọi hàm clickCallback
+    // Gọi hàm load dữ liệu danh sách nhân viên
     this.getEmployeePaging(1, this.pageSize, this.textSearch);
   },
   methods: {
@@ -366,12 +360,19 @@ export default {
       // Hàm ẩn loading
       this.diy.clearLoading();
     },
-    //
+
+    /**
+     * Hàm hiển thị danh sách chức năng
+     * @param {* Sự kiện hiện tại} event
+     * @param {* Nhân viên được chọn} item
+     * CreatedBy: Bien (13/1/2023)
+     */
     btnShowFuncList(event, item) {
       // Gắn giá trị cho tọa độ xuất hiện của funcList
       this.positionX = event.clientX;
       this.positionY = event.clientY;
       this.EmployeeIdDelete = item.employeeId;
+      this.EmployeeCode = item.EmployeeCode;
       this.showFuncList = !this.showFuncList;
 
       this.isSelect = true;
@@ -403,7 +404,7 @@ export default {
 
       this.diy.ClearCloseDialog();
     },
-    
+
     /**
      * Hàm xóa employee
      * CreatedBy: Bien (10/1/2023)
@@ -414,6 +415,7 @@ export default {
 
       // Hàm nhận dữ liệu sau khi xóa
       const response = await employeeApi.deleteEmp(this.EmployeeIdDelete);
+
       console.log(response);
       this.clickCallback(this.indexPage);
 
@@ -554,6 +556,9 @@ export default {
 
       // Khai báo biến EmployeeIdDelete
       EmployeeIdDelete: null,
+
+      // Khai baso biến mã nhân viên khi xóa
+      EmployeeCode: null,
 
       // Khai báo biến tổng số bản ghi
       totalRecord: null,

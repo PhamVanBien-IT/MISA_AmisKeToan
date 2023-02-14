@@ -32,7 +32,7 @@
 import EmployeeListVue from "./employee/EmployeeList.vue";
 
 export default {
-    inject:["diy"],
+  inject: ["diy"],
   name: "TheContent",
   components: {
     EmployeeListVue,
@@ -44,7 +44,7 @@ export default {
      * CreatedBy: Bien (14/1/2023)
      */
     toggleNav() {
-     var arrayIcon = document.querySelectorAll("#icon");
+      var arrayIcon = document.querySelectorAll("#icon");
       this.diy.showNavToggle();
       if (!this.diy.state.showNav) {
         document.getElementById("nav").style.width = "50px";
@@ -52,26 +52,23 @@ export default {
         document.getElementById("cartegory").style.background = "none";
         document.getElementById("nav__header").style.display = "none";
         document.getElementById("nav").style.paddingTop = "56px";
-        document.getElementById("content__header__left").style.position ="absolute";
+        document.getElementById("content__header__left").style.position =
+          "absolute";
         document.getElementById("content__header__left").style.left = "0px";
         document.getElementById("city__name").style.marginLeft = "10px";
-        arrayIcon.forEach(element => {
+        arrayIcon.forEach((element) => {
           element.style.marginLeft = "0px";
         });
-      }else{
+      } else {
         document.getElementById("nav").style.width = "200px";
         document.getElementById("cartegory").style.background = "#a7c4ff53";
         document.getElementById("nav__header").style.display = "flex";
         document.getElementById("nav").style.paddingTop = "0px";
-        document.getElementById("content__header__left").style.position = "static";
+        document.getElementById("content__header__left").style.position =
+          "static";
         document.getElementById("city__name").style.marginLeft = "0px";
-
       }
     },
-  },
-  data() {
-    return {
-    };
   },
 };
 </script>

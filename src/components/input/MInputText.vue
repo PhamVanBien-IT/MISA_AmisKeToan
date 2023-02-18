@@ -1,13 +1,13 @@
 <template>
        <div>
-        <input :tabindex="tabindexInput" :type="TypeInput" v-model="value" :id="idInput" :class="classInput" :placeholder="placeholderText"/>
+        <input :tabindex="tabindexInput" :type="TypeInput" v-model="value" :id="idInput" :class="classInput" :placeholder="placeholderText" :max="maxDateInput"/>
        </div>
 </template>
 <script>
 export default {
     name:"MInputText",
     emits:["update:modelValue"],
-    props: ["class","type","tabindex", "modelValue","placeholder","id"],
+    props: ["class","type","tabindex", "modelValue","placeholder","id","maxDate"],
     created(){
         // Nhận giá trị modelValue
         this.classInput = this.class;
@@ -24,6 +24,7 @@ export default {
         // Nhận giá trị id truyền vào
         this.idInput = this.id;
 
+        this.maxDateInput = this.maxDate;
     },
     updated(){
     // Nhận giá trị modelValue
@@ -34,6 +35,10 @@ export default {
 
     },
     watch:{
+    /**
+     * Theo dõi sự thay đổi của modelVualue
+     * CreatedBy: Bien (16/1/2023)
+     */
         value: function(newValue){
             this.$emit("update:modelValue", newValue)
         }
@@ -57,6 +62,9 @@ export default {
 
             // Khai báo biến nhận id
             idInput:null,
+
+            // Khai báo biến nhận giá trị ngày lớn nhất
+            maxDateInput:null
         }
     },
 }

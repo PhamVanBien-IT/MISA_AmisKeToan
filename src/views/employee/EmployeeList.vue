@@ -197,7 +197,7 @@
   <!-- DIALOG -->
   <MDialogVue
     v-if="diy.state.showDialog"
-    label="Bạn có chắc chắn muốn xóa"
+    :label= "lableDeleteEmployee"
     classIcon="warning"
     @EditEPL="deleteEPL"
   ></MDialogVue>
@@ -227,6 +227,7 @@
   ></EmployeeDetailVue>
   <!-- NOTIFY -->
   <MNotifyVue v-if="diy.state.showNotify"></MNotifyVue>
+<MNotifyError v-if="diy.state.showNotifyError" :label="labelEmployeeCodeDuplicate"></MNotifyError>
 </template>
 <script>
 import _ from "lodash";
@@ -234,6 +235,7 @@ import Paginate from "vuejs-paginate/src/components/Paginate.vue";
 import MLoadingVue from "@/components/loading/MLoading.vue";
 import EmployeeDetailVue from "./EmployeeDetail.vue";
 import MNotifyVue from "@/components/notify/MNotify.vue";
+import MNotifyError from "@/components/notify/MNotifyError.vue";
 import employeeApi from "@/api/employeeApi";
 
 export default {
@@ -243,6 +245,7 @@ export default {
     MLoadingVue,
     EmployeeDetailVue,
     MNotifyVue,
+    MNotifyError,
     Paginate,
   },
   created() {
@@ -372,8 +375,9 @@ export default {
       this.positionX = event.clientX;
       this.positionY = event.clientY;
       this.EmployeeIdDelete = item.employeeId;
-      this.EmployeeCode = item.EmployeeCode;
+      this.EmployeeCode = item.employeeCode;
       this.showFuncList = !this.showFuncList;
+      this.lableDeleteEmployee = `Bạn có chắc chắn muốn xóa ${item.employeeCode}`;
 
       this.isSelect = true;
       if (this.positionY > 556) {
@@ -382,6 +386,7 @@ export default {
         this.isDropdown = true;
       }
     },
+    
     /**
      * Hàm gọi vị trí set background
      * CreatedBy: Bien (13/1/2023)
@@ -403,6 +408,7 @@ export default {
       this.showFuncList = false;
 
       this.diy.ClearCloseDialog();
+      this.diy.ShowBtnDialog();
     },
 
     /**
@@ -422,6 +428,7 @@ export default {
       //Hàm ẩn loading
       this.diy.clearLoading();
     },
+    
     /**
      * Sự kiện mở form EmployeeDetail
      * CreatedBy: Bien (4/1/2023)
@@ -435,6 +442,7 @@ export default {
         console.log("Lỗi hiển thị EmployeeDetail" + error);
       }
     },
+
     /**
      * Hàm đọc dữ liệu vào EmployeeDetai
      * CreatedBy: Bien (4/1/2023)
@@ -515,6 +523,12 @@ export default {
   },
   data() {
     return {
+      // Nội dung thông báo mã nhân viên đã tồn tại
+      labelEmployeeCodeDuplicate:null,
+
+      // Nội dung thông báo hỏi trước khi xóa
+      lableDeleteEmployee: null,
+
       // Khai báo biến hiển thị background khi chọn cột
       showBackgroudItem: false,
 

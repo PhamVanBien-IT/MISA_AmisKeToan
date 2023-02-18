@@ -6,7 +6,11 @@ const MISAEnum = {
     KEY_CODE:{
         ENTER:13, // Enter
         ROW_UP:38,// Nút lên
-        ROW_DOWN:40// Nút xuống
+        ROW_DOWN:40,// Nút xuống
+        CTRL:17,// Nút Ctrl
+        S:83,// Nút S,
+        ESC:27, //Nút ESC
+        SHIFT:16,// Nút Shift
     }
     ,
     GENDER:{

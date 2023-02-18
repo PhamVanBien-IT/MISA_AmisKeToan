@@ -15,6 +15,7 @@ const state = reactive({
   showDialogValidate: false,
   ShowDataDeparerment:false,
   showCloseDialog:true,
+  showNotifyError:false,
 });
 /**
  * Hàm hiển thị nút đóng cho dialog
@@ -132,13 +133,18 @@ const showNotify = function () {
     state.showNotify = false;
   }, 2000);
 };
+
 /**
- * Hàm hiển thị EPLList
+ * Hàm hiển thị thông báo
  * CreatedBy: Bien (4/1/2023)
  */
-// const showEPLList = function(){
-//     state.showEPLList = true;
-// }
+const showNotifyError = function () {
+  state.showNotifyError = true;
+  setTimeout(() => {
+    state.showNotifyError = false;
+  }, 2000);
+};
+
 /**
  * Hàm hiển thị nav
  * CreatedBy: Bien (14/1/2023)
@@ -180,5 +186,6 @@ export default {
   ToggleDataDeparerment,
   ClearDataDeparerment,
   ShowCloseDialog,
-  ClearCloseDialog
+  ClearCloseDialog,
+  showNotifyError
 };

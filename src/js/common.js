@@ -29,7 +29,8 @@ const MISACommon = {
     } catch (error) {
       console.log("Lỗi định dạng thời gian" + error);
     }
-  },/**
+  },
+  /**
   * Hàm đinh dạng ngày giờ YYYY-mm-dd
   * CreatedBy: Bien (23/12/2023)
   */

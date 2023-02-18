@@ -1,7 +1,7 @@
 .notify-main{
-    width: 450px;
+    width: 300px;
     position: absolute;
-    left: 35%;
+    left: 45%;
     font-size: 14px;
     box-shadow: 0 0 4px rgba(0,0,0,0.078);
     border-radius: 4px;
@@ -35,6 +35,11 @@
     height: 25px;
     width: 25px;
     background: transparent url("../../assets/images/Sprites.64af8f61.svg") no-repeat -1600px -256px;
+}
+.notify-error-icon{
+    height: 25px;
+    width: 25px;
+    background: transparent url("../../assets/images/Sprites.64af8f61.svg") no-repeat -536px -144px;
 }
 .notify-close{
     height: 16px;

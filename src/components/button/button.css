@@ -14,21 +14,22 @@
     background-color: #5be041;
 }
 
-/* .btn-dialog {
-    border: unset;
-    width: 80px;
+.btn-cancel{
+    position: absolute;
     height: 36px;
-    background-color: #2ca01c;
-    color: #fff;
-    border-radius: 4px;
+    width: 76px;
+    border:1px solid #E0E0E0;
+    border-radius: 3px;
+    background-color: #fff;
     cursor: pointer;
+    font-weight: 500;
+    outline: none;
+    color: #111111;
+    margin-right: 8px;
+    left: 24px;
 }
 
-.btn-dialog:hover {
-    background-color: #5ee143;
-} */
-
-.btn-cancel {
+.btn-save{
     position: absolute;
     height: 36px;
     width: 76px;

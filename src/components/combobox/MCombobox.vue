@@ -59,8 +59,11 @@ export default {
     this.classInputCBox = this.class;
   },
   methods: {
+    /**
+     * Hàm lấy dữ liệu cho combobox đơn vị
+     * CreatedBy: Bien (9/1/2023)
+     */
     async getDepartments(){
-
       // Gắn giá trị kết quả lấy dữ liệu bảng department
       const response = await departmentApi.getDeparmentPaging();
 
@@ -69,6 +72,7 @@ export default {
       this.setItemSelected();
       this.entitySearch = response.data;
     },
+
     /**
      * Hàm hiển thị Comboboxdata
      * CreatedBy: Bien (9/1/2023)
@@ -76,6 +80,7 @@ export default {
     onShowHideData() {
       this.diy.ToggleDataDeparerment();
     },
+
     /**
      * Hàm gắn giá trị cho input khi chọn combobox-item
      * CreatedBy: Bien (9/1/2023)
@@ -94,6 +99,7 @@ export default {
         this.diy.ClearDataDeparerment();
       }
     },
+
     /**
      * Hàm gắn giá tìm item tương ứng với modelVue
      * CreatedBy: Bien (9/1/2023)
@@ -109,6 +115,7 @@ export default {
         this.textSelected = entitySelected[this.propName];
       }
     },
+
     /**
      * Hàm gắn giá trị theo ô input
      * CreatedBy: Bien (9/1/2023)
@@ -122,6 +129,7 @@ export default {
       );
       this.isShowData = true;
     },
+    
     /**
      * Hàm bắt sự kiện keydown của input combobox
      * CreatedBy: Bien ( 11/1/2023)

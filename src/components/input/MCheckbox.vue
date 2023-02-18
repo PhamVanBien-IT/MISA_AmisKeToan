@@ -15,6 +15,10 @@ export default {
         this.select = this.modelValue;
     }, 
     watch:{
+        /**
+     * Theo dõi sự thay đổi của modelVualue
+     * CreatedBy: Bien (16/1/2023)
+     */
         value: function(newValue){
             this.$emit("update:modelValue", newValue)
         }

@@ -18,34 +18,52 @@
       <!-- PAGE-MAIN-HEADER -->
       <div class="page__main__header">
         <!-- SEARCH-INPUT -->
-        <div class="search__text">
-          <div class="text-field">
-            <MInputTextVue
-              placeholder="Tìm theo mã, tên nhân viên"
-              class="input-search"
-              v-model="textSearch"
-              @input="searchEmployee"
-            ></MInputTextVue>
-          </div>
-          <div class="search-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#D9D9D9"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="feather feather-search"
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
+        <div class="page_main_header_right" @click="toggleFunctionAll">
+          <input
+            type="text"
+            disabled
+            value="Thực hiện hàng loạt"
+            class="function-all"
+            v-bind:class="{ 'active-function-all': isFunctionAll }"
+          />
+          <div class="icon-dropdown-func"></div>
+          <div class="function-all-list" v-if="diy.state.showFunctionAll">
+            <div class="function-all-item" @click="deleteEmployeeListSelect">
+              Xóa
+            </div>
           </div>
         </div>
-        <div class="refresh icon" @click="btnRefreshOnClick"></div>
+        <div class="page_main_header_left">
+          <div class="search__text">
+            <div class="text-field">
+              <MInputTextVue
+                placeholder="Tìm theo mã, tên nhân viên"
+                class="input-search"
+                v-model="textSearch"
+                @input="searchEmployee"
+              ></MInputTextVue>
+            </div>
+            <div class="search-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#D9D9D9"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-search"
+              >
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </div>
+          </div>
+          <div class="refresh icon" @click="btnRefreshOnClick"></div>
+          <div class="excel icon" @click="btnExportEmployees"></div>
+        </div>
       </div>
       <!-- PAGE-MAIN-TABLE -->
       <div class="page_body">
@@ -58,7 +76,7 @@
                     <input
                       type="checkbox"
                       id="chkProdTomove"
-                      v-model="select_all"
+                      v-model="selected"
                       @click="selectAll"
                     />
                     <span class="check-box-effect"></span>
@@ -106,13 +124,12 @@
                 @click="btnSelectItem($event, item)"
               >
                 <td class="td-center td-cb" style="width: 60px">
-                  <!-- <MCheckboxVue :value="item.EmployeeId" v-model="selected"></MCheckboxVue> -->
                   <label>
                     <input
                       type="checkbox"
                       id="chkProdTomove"
                       :value="item.employeeId"
-                      v-model="selected"
+                      v-model="selectedList"
                     />
                     <span class="check-box-effect"></span>
                   </label>
@@ -197,9 +214,15 @@
   <!-- DIALOG -->
   <MDialogVue
     v-if="diy.state.showDialog"
-    :label= "lableDeleteEmployee"
+    :label="lableDeleteEmployee"
     classIcon="warning"
     @EditEPL="deleteEPL"
+  ></MDialogVue>
+  <MDialogVue
+    v-if="diy.state.showDialogDeleteEmployees"
+    :label="lableDeleteEmployee"
+    classIcon="warning"
+    @EditEPL="deleteEPLs"
   ></MDialogVue>
   <teleport to="body">
     <div
@@ -208,7 +231,9 @@
       :style="[isDropdown ? dropdownPosition : dropdownPositionReverse]"
       v-if="showFuncList"
     >
-      <div class="funclist-item">Nhân bản</div>
+      <div class="funclist-item" @click="btnDuplicateEmployee(item)">
+        Nhân bản
+      </div>
       <div class="funclist-item" @click="btnDeleteEmployee(item)">Xóa</div>
       <div class="funclist-item">Ngưng sử dụng</div>
     </div>
@@ -225,9 +250,18 @@
     :id="employeeIDUpdate"
     v-if="diy.state.showEPLDetail"
   ></EmployeeDetailVue>
+  <EmployeeDetailVue
+    :id="employeeIDUpdate"
+    v-if="diy.state.showDuplicateEPLDetail"
+    :duplicateEmployeeCode="duplicateEmployeeCode"
+    :duplicateEmployeeIndex="duplicateEmployeeIndex"
+  ></EmployeeDetailVue>
   <!-- NOTIFY -->
   <MNotifyVue v-if="diy.state.showNotify"></MNotifyVue>
-<MNotifyError v-if="diy.state.showNotifyError" :label="labelEmployeeCodeDuplicate"></MNotifyError>
+  <MNotifyError
+    v-if="diy.state.showNotifyError"
+    :label="labelEmployeeCodeDuplicate"
+  ></MNotifyError>
 </template>
 <script>
 import _ from "lodash";
@@ -237,7 +271,6 @@ import EmployeeDetailVue from "./EmployeeDetail.vue";
 import MNotifyVue from "@/components/notify/MNotify.vue";
 import MNotifyError from "@/components/notify/MNotifyError.vue";
 import employeeApi from "@/api/employeeApi";
-
 export default {
   inject: ["diy"],
   name: "EmployeeList",
@@ -254,20 +287,112 @@ export default {
   },
   methods: {
     /**
-     * Hàm checkall employee
-     * CreatedBy: Bien (13/1/2023)
+     * Hàm nhân bản nhân viên
+     * CreatedBy: Bien (20/1/2023)
      */
-    selectAll() {
-      this.selected = [];
-      if (!this.select_all) {
-        for (let i in this.employee) {
-          this.selected.push(this.employee[i].employeeId);
-        }
-      }
+    async btnDuplicateEmployee() {
+      // Lấy id nhân viên của hàng được chọn
+      this.employeeIDUpdate = this.employeeDuplidate.employeeId;
+
+      var response = await employeeApi.getEmpNewCode();
+
+      this.duplicateEmployeeCode = response.EmployeeCode;
+      this.duplicateEmployeeIndex = response.EmployeeIndex;
+      // Gọi hàm hiển thị EmployeeDetail
+      this.diy.showDuplicateEPLDetail();
+
+      // Gọi hàm ẩn danh sách chức năng trong bảng nhân viên
+      this.clearFuncList();
+    },
+    /**
+     * Hàm xuất khẩu dữ liệu sang Excel
+     * CreatedBy: Bien (19/02/2023)
+     */
+    async btnExportEmployees() {
+      await employeeApi.exportEmployees();
     },
 
     /**
-     * Hàm ẩn funcList
+     * Hàm ẩn và hiện danh sách chức năng của thao tác thực hiện hàng loạt
+     * CreatedBy: Bien (20/02/2023)
+     */
+    toggleFunctionAll() {
+      if (this.selectedList.length > 1) {
+        this.diy.toggleFunctionAll();
+        this.isFunctionAll = true;
+      } else {
+        this.isFunctionAll = false;
+      }
+
+      console.log(this.isFunctionAll + " lengt: " + this.selectedList.length);
+    },
+    /**
+     * Hàm thực hiện xóa hàng loạt nhân viên được chọn
+     * CreatedBy: Bien (18/02/2023)
+     */
+    async deleteEmployeeListSelect() {
+      this.diy.clearFunctionAll();
+
+      this.lableDeleteEmployee = this.$MISAResource.CONTENTDIALOG.DELETES;
+
+      await this.diy.showDialogDeleteEmployees();
+
+      this.clearDialogDelete();
+      
+      this.diy.clearFunctionAll();
+    },
+    /**
+     * Hàm thực hiện gọi API xóa danh sách nhân viên
+     * CreatedBy: Bien (21/02/2023)
+     */
+    async deleteEPLs() {
+      this.diy.showLoading();
+
+      // Hàm thực hiện xóa khi xóa
+      await employeeApi.deleteEmployees(this.selectedList);
+
+      this.clickCallback(this.indexPage);
+
+      this.diy.clearLoading();
+    },
+
+    /**
+     * Hàm checkall nhân viên và bỏ checkall nhân viên
+     * CreatedBy: Bien (13/1/2023)
+     */
+    selectAll() {
+      // Lấy danh sách các id nhân viên trong trang
+      this.selectedEmployeeId = this.employee.map((item) => item.employeeId);
+      if (!this.selected) {
+        // Lọc qua những nhân viên đã chọn và bổ sung những vẫn viên chưa chọn
+        this.employee.forEach((item) => {
+          if (!this.selectedList.includes(item.employeeId)) {
+            this.selectedList.push(item.employeeId);
+          }
+        });
+        this.selected = true;
+      } else {
+        // Lọc những nhân viên đã được checkall
+        this.selectedList = this.selectedList.reduce((result, cur) => {
+          if (!this.selectedEmployeeId.includes(cur)) {
+            result.push(cur);
+          }
+          return result;
+        }, []);
+        this.selected = false;
+        console.log(this.selectedList);
+      }
+      // Kiểm tra để hiển thị được thao tác chức năng hàng loạt
+      if (this.selectedList.length > 1) {
+        this.isFunctionAll = true;
+      } else {
+        this.isFunctionAll = false;
+      }
+      console.log(this.selected + " select: " + this.selectedList.length);
+    },
+
+    /**
+     * Hàm ẩn danh sách chức năng trong bảng
      * CreatedBy: Bien (12/1/2023)
      */
     clearFuncList() {
@@ -282,15 +407,12 @@ export default {
       // Gắn giá trị cho biến pageSize
       this.pageSize = n;
 
-      // Uncheckbox all
-      this.select_all = false;
-
       // Gọi hàm set pagation
       this.getEmployeePaging(1, this.pageSize, this.textSearch);
     },
 
     // /**
-    //  * Hàm tìm kiếm employee
+    //  * Gọi hàm tìm kiếm nhân viên theo sau 0.5s
     //  * CreatedBy: Bien (10/1/2023)
     //  */
     searchEmployee: _.debounce(function () {
@@ -309,14 +431,22 @@ export default {
         const response = this.getEmployeePaging(1, me.pageSize, value);
 
         // Gắn dữ liệu
-        this.employee = response.data;
-        this.totalPage = response.totalPage;
-        this.totalRecord = response.totalRecord;
+        this.setDataPaging(response)
+
       } catch (error) {
         console.log("Lỗi tìm kiếm" + error);
       }
     },
-
+    /**
+     * Hàm gắn giá trị danh sách nhân viên, số trang, số bảng ghi
+     * CreatedBy: Bien (21/02/2023)
+     */
+    setDataPaging(res) {
+      // Gắn dữ liệu
+      this.employee = res.data;
+      this.totalPage = res.totalPage;
+      this.totalRecord = res.totalRecord;
+    },
     /**
      * Hàm chuyển trang
      * CreaetedBy: Bien (10/1/2023)
@@ -328,25 +458,35 @@ export default {
         this.pageSize,
         this.textSearch
       );
-
-      // Gắn dữ liệu
-      this.employee = response.data;
-      this.totalPage = response.totalPage;
-      this.totalRecord = response.totalRecord;
+      this.setDataPaging(response)
       this.indexPage = pageNumber;
+      this.autoCheckAllEmployee();
     },
-
+    /**
+     * Hàm tự động hiển thị chức năng hàng loạt khi chọn 2 bản ghi trở lên
+     * CreatedBy: Bien (20/02/2023)
+     */
+    autoCheckAllEmployee() {
+      let count = 0;
+      // Uncheckbox all khi chuyển trang nếu bản ghi không được chọn hết và ngược lại
+      this.employee.forEach((emp) => {
+        if (this.selectedList.includes(emp.employeeId)) {
+          count++;
+        }
+      });
+      if (count == this.pageSize) {
+        this.selected = true;
+      } else {
+        this.selected = false;
+      }
+    },
     /**
      * Hàm phân trang
      * CreatedBy: Bien (10/1/2023)
      */
     async getEmployeePaging(pageNumber, pageSize, filter) {
-      // Gọi hàm hiển thị loading
       this.diy.showLoading();
-      // Gọi hàm loại bỏ checkall
-      this.select_all = false;
-      this.selected = [];
-
+ 
       // Nhận dữ liệu gọi dữ liệu
       const response = await employeeApi.getEmpPaging(
         pageNumber,
@@ -354,13 +494,10 @@ export default {
         filter
       );
 
-      // Gắn giá trị
-      this.employee = response.data;
-      this.totalPage = response.totalPage;
-      this.totalRecord = response.totalRecord;
+      // Gắn giá trị cho danh sách nhân viên
+      this.setDataPaging(response);
       this.indexPage = pageNumber;
 
-      // Hàm ẩn loading
       this.diy.clearLoading();
     },
 
@@ -374,10 +511,13 @@ export default {
       // Gắn giá trị cho tọa độ xuất hiện của funcList
       this.positionX = event.clientX;
       this.positionY = event.clientY;
-      this.EmployeeIdDelete = item.employeeId;
-      this.EmployeeCode = item.employeeCode;
+      this.employeeIdDelete = item.employeeId;
+      this.employeeCode = item.employeeCode;
       this.showFuncList = !this.showFuncList;
-      this.lableDeleteEmployee = `Bạn có chắc chắn muốn xóa ${item.employeeCode}`;
+      this.lableDeleteEmployee = this.$MISAResource.CONTENTDIALOG.DELETE(
+        item.employeeCode
+      );
+      this.employeeDuplidate = item;
 
       this.isSelect = true;
       if (this.positionY > 556) {
@@ -386,25 +526,36 @@ export default {
         this.isDropdown = true;
       }
     },
-    
+
     /**
      * Hàm gọi vị trí set background
+     * @param {* Sự kiện hiện tại} event
+     * @param {* Nhân viên được chọn} item
      * CreatedBy: Bien (13/1/2023)
      */
     btnSelectItem(event, item) {
       this.positionX = event.clientX;
       this.positionY = event.clientY;
 
-      this.EmployeeIdDelete = item.employeeId;
+      this.employeeIdDelete = item.employeeId;
       this.showBackgroudItem = true;
     },
 
     /**
-     * Hàm hỏi trước khi xóa
+     * Hàm hỏi trước khi xóa nhân viên
      * CreatedBy: Bien (10/1/2023)
      */
-    btnDeleteEmployee() {
-      this.diy.showDialog();
+    async btnDeleteEmployee() {
+      await this.diy.showDialog();
+      this.diy.clearDialogDeleteEmployees();
+      this.clearDialogDelete();
+    },
+
+    /**
+     * Hàm đóng thông báo sau khi xóa nhân viên
+     * CreatedBy: Bien (10/01/2023)
+     */
+    clearDialogDelete() {
       this.showFuncList = false;
 
       this.diy.ClearCloseDialog();
@@ -412,7 +563,7 @@ export default {
     },
 
     /**
-     * Hàm xóa employee
+     * Hàm xóa nhân viên
      * CreatedBy: Bien (10/1/2023)
      */
     async deleteEPL() {
@@ -420,22 +571,23 @@ export default {
       this.diy.showLoading();
 
       // Hàm nhận dữ liệu sau khi xóa
-      const response = await employeeApi.deleteEmp(this.EmployeeIdDelete);
+      const response = await employeeApi.deleteEmp(this.employeeIdDelete);
 
       console.log(response);
+
       this.clickCallback(this.indexPage);
 
       //Hàm ẩn loading
       this.diy.clearLoading();
     },
-    
+
     /**
      * Sự kiện mở form EmployeeDetail
      * CreatedBy: Bien (4/1/2023)
      */
     btnAddOnClick() {
       try {
-        this.diy.setEPLDetail();
+        this.diy.showEPLDetail();
         this.employeeIDUpdate = null;
         this.showFuncList = false;
       } catch (error) {
@@ -444,17 +596,17 @@ export default {
     },
 
     /**
-     * Hàm đọc dữ liệu vào EmployeeDetai
+     * Hàm đọc dữ liệu vào form EmployeeDetail
      * CreatedBy: Bien (4/1/2023)
      */
     rowOnDblClick(item) {
       // Lấy id của hàng được chọn
       this.employeeIDUpdate = item.employeeId;
 
-      // Gọi hàm hiển thị EmployeeDetail
-      this.diy.setEPLDetail();
+      // Gọi hàm hiển thị form EmployeeDetail
+      this.diy.showEPLDetail();
 
-      // Gọi hàm ẩn func-list
+      // Gọi hàm ẩn danh sách chức năng trong bảng nhân viên
       this.clearFuncList();
     },
 
@@ -463,35 +615,45 @@ export default {
      * CreatedBy: Bien (4/1/2023)
      */
     btnRefreshOnClick() {
-      // Gọi hàm tìm kiếm
+      // Gọi hàm load lại trang
       this.clickCallback(this.textSearch, this.pageSize, this.indexPage);
     },
   },
   computed: {
-    // Hàm set vị trị hiển thị
+    /**   
+     * Hàm set vị trị hiển thị danh sách chức năng trong bảng
+     * CreatedBy: Bien (20/01/2023) 
+     * */ 
     dropdownPosition() {
       return {
         top: `calc(${this.positionY}px + 10px)`,
         left: `calc(${this.positionX}px -55px)`,
       };
     },
-
-    // Hàm set vị trí hiển thị phía cuối
+    /**   
+     * Hàm set vị trí hiển thị phía cuối
+     * CreatedBy: Bien (20/01/2023) 
+     * */ 
     dropdownPositionReverse() {
       return {
         top: `calc(${this.positionY}px - 103px)`,
         left: `calc(${this.positionX}px -55px)`,
       };
     },
-
-    // Hàm set vị trí itemActive
+    /**   
+     * Hàm set border nhân viên được chọn danh sách chứ năng trong bảng
+     * CreatedBy: Bien (20/01/2023) 
+     * */ 
     activePosition() {
       return {
         top: `calc(${this.positionY}px - 10px)`,
         left: `calc(${this.positionX}px - 15px)`,
       };
     },
-    // Hàm set vị trí background
+    /**
+     * Hàm set vị trí background khi được chọn
+     * CreatedBy: Bien (20/01/2023) 
+     * */ 
     activeBackground() {
       return {
         top: `calc(${this.positionY}px - 9px)`,
@@ -512,19 +674,32 @@ export default {
      * Hàm lắng nghe sự thay đổi checkall
      * CreatedBy: Bien (18/1/2023)
      */
-    selected: function () {
-      if (this.selected.length == this.pageSize) {
-        this.select_all = true;
+    selectedList: function () {
+      this.autoCheckAllEmployee();
+      if (this.selectedList.length > 1) {
+        this.isFunctionAll = true;
       } else {
-        this.select_all = false;
+        this.isFunctionAll = false;
+        this.diy.clearFunctionAll();
       }
     },
-    deep: true,
   },
   data() {
     return {
+      // Khai báo biến nhận giá trị tự tăng mã
+      duplicateEmployeeIndex: null,
+
+      // Khai báo biến nhận mã nhân viên mới khi nhân bản
+      duplicateEmployeeCode: null,
+
+      // Khai báo biến nhận giá trị khi nhân bản
+      employeeDuplidate: {},
+
+      // Khai báo biến thay đổi css khi cho phép thực hiện hàng loạt
+      isFunctionAll: false,
+
       // Nội dung thông báo mã nhân viên đã tồn tại
-      labelEmployeeCodeDuplicate:null,
+      labelEmployeeCodeDuplicate: null,
 
       // Nội dung thông báo hỏi trước khi xóa
       lableDeleteEmployee: null,
@@ -535,11 +710,11 @@ export default {
       // Khai báo biến isDropdown
       isDropdown: true,
 
-      // Khai báo biến selected
-      selected: [],
+      // Khai báo biến nhận kết quả trạng thái nút checkAll
+      selected: false,
 
-      // Khai báo biến checkall
-      select_all: false,
+      // Khai báo biến chứa danh sách chọn
+      selectedList: [],
 
       // Khai báo biến indexPage
       indexPage: null,
@@ -556,23 +731,17 @@ export default {
       // Khai báo biến hiển thị tọa độ theo Oy
       positionY: 0,
 
-      // Khai báo biến loadingEPLList
-      loadingEPLList: true,
-
-      // Khai báo biến employees
+      // Khai báo biến danh sách nhân viên
       employee: {},
 
-      // Khai báo biến showEPLDetail
-      showEPLDetail: false,
-
-      // Khai báo biến
+      // Khai báo biến nhận id nhân viên muốn sửa
       employeeIDUpdate: null,
 
-      // Khai báo biến EmployeeIdDelete
-      EmployeeIdDelete: null,
+      // Khai báo biến id nhân viên muốn xóa
+      employeeIdDelete: null,
 
-      // Khai baso biến mã nhân viên khi xóa
-      EmployeeCode: null,
+      // Khai báo biến mã nhân viên khi xóa
+      employeeCode: null,
 
       // Khai báo biến tổng số bản ghi
       totalRecord: null,
@@ -586,10 +755,10 @@ export default {
       // Khai báo biến nhận pageSize
       pageSize: 20,
 
-      // Biến showFuncList
+      // Biến trạng thái hiển thị danh sách chức năng
       showFuncList: false,
 
-      // Khai báo mảng page
+      // Khai báo mảng số lượng bản ghi trên 1 trang
       pagination: [
         {
           key: 10,
@@ -613,7 +782,7 @@ export default {
         },
       ],
 
-      // Khai báo mảng func
+      // Khai báo mảng chức năng
       funcList: [
         {
           key: 0,

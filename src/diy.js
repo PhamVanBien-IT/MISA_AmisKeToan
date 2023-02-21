@@ -16,7 +16,33 @@ const state = reactive({
   ShowDataDeparerment:false,
   showCloseDialog:true,
   showNotifyError:false,
+  showFunctionAll:false,
+  showDuplicateEPLDetail: false,
+  showDialogDeleteEmployees:false,
 });
+/**
+ * Hàm hiển thị thao tác thực hiên hàng loạt
+ * CreatedBy: Bien (18/2/2023)
+ */
+const toggleFunctionAll = function(){
+  state.showFunctionAll = !state.showFunctionAll;
+}
+/**
+ * Hàm hiển thị thao tác thực hiên hàng loạt
+ * CreatedBy: Bien (18/2/2023)
+ */
+const showFunctionAll = function(){
+  state.showFunctionAll = true;
+}
+
+/**
+ * Hàm ẩn thị thao tác thực hiên hàng loạt
+ * CreatedBy: Bien (18/2/2023)
+ */
+const clearFunctionAll = function(){
+  state.showFunctionAll = false;
+}
+
 /**
  * Hàm hiển thị nút đóng cho dialog
  * CreatedBy: Bien (20/1/2023)
@@ -56,28 +82,28 @@ const ClearDataDeparerment= function(){
   state.ShowDataDeparerment = false;
 };
 /**
- * Hàm show dialog khi trùng mã
+ * Hàm show dialog khi sai validate dữ liệu
  * CreatedBy: Bien (20/1/2023)
  */
 const ShowDialogValidate = function(){
   state.showDialogValidate = true;
 }
 /**
- * Hàm ẩn dialog khi trùng mã
+ * Hàm ẩn dialog khi sai validate dữ liệu
  * CreatedBy: Bien (20/1/2023)
  */
 const ClearDialogValidate = function(){
   state.showDialogValidate = false;
 }
 /**
- * Hàm ẩn show nút trong dialog khi trùng mã
+ * Hàm ẩn show nút trong dialog khi sai validate dữ liệu
  * CreatedBy: Bien (20/1/2023)
  */
 const ShowBtnDialog = function(){
   state.showBtnDialog = true;
 };
 /**
- * Hàm ẩn nút trong dialog khi trùng mã
+ * Hàm ẩn nút trong dialog khi sai validate dữ liệu
  * CreatedBy: Bien (20/1/2023)
  */
 const ClearBtnDialog = function(){
@@ -91,16 +117,33 @@ const showFuncList= function(){
     state.showFuncList = !state.showFuncList;
 };
 /**
- * Hàm hiển thị EPLDetail
+ * Hàm hiển thị form nhân bản nhân viên
  * CreatedBy: Bien (4/1/2023)
  */
-const setEPLDetail = function () {
+const showDuplicateEPLDetail = function () {
+  state.showDuplicateEPLDetail = true;
+  this.clearDialog();
+};
+
+/**
+ * Hàm ẩn form nhân bản nhân viên
+ * CreatedBy: Bien (4/1/2023)
+ */
+const clearDuplicateEPLDetail = function () {
+  state.showDuplicateEPLDetail = false;
+};
+
+/**
+ * Hàm hiển thị EmployeeDetail
+ * CreatedBy: Bien (4/1/2023)
+ */
+const showEPLDetail = function () {
   state.showEPLDetail = true;
   state.showDialog = false;
 };
 
 /**
- * Hàm ẩn EPLDetail
+ * Hàm ẩn EmployeeDetail
  * CreatedBy: Bien (4/1/2023)
  */
 const clearEPLDetail = function () {
@@ -122,6 +165,23 @@ const showDialog = function () {
 const clearDialog = function () {
   state.showDialog = false;
 };
+
+/**
+ * Hàm hiển thị Dialog xóa nhiều
+ * CreatedBy: Bien (4/1/2023)
+ */
+const showDialogDeleteEmployees = function () {
+  state.showDialogDeleteEmployees = true;
+};
+
+/**
+ * Hàm ẩn Dialog xóa nhiều
+ * CreatedBy: Bien (4/1/2023)
+ */
+const clearDialogDeleteEmployees = function () {
+  state.showDialogDeleteEmployees = false;
+};
+
 
 /**
  * Hàm hiển thị thông báo
@@ -169,7 +229,7 @@ const clearLoading = function () {
 };
 export default {
   state: readonly(state),
-  setEPLDetail,
+  showEPLDetail,
   clearEPLDetail,
   showDialog,
   clearDialog,
@@ -187,5 +247,12 @@ export default {
   ClearDataDeparerment,
   ShowCloseDialog,
   ClearCloseDialog,
-  showNotifyError
+  showNotifyError,
+  showFunctionAll,
+  clearFunctionAll,
+  toggleFunctionAll,
+  clearDuplicateEPLDetail,
+  showDuplicateEPLDetail,
+  showDialogDeleteEmployees,
+  clearDialogDeleteEmployees
 };

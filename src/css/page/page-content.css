@@ -34,10 +34,19 @@
 
 .page__main__header {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
 }
-
+.page_main_header_right{
+    padding-left: 24px;
+    display: flex;
+    position: relative;
+    cursor: pointer;
+}
+.page_main_header_left{
+    display: flex;
+    align-items: center;
+}
 .search__text {
     display: flex;
     align-items: center;
@@ -59,10 +68,20 @@
     background-color: #ffff;
     height: 24px;
     width: 24px;
-    margin-right: 24px;
     cursor: pointer;
     display: flex;
     background: transparent url("../../assets/images/Sprites.64af8f61.svg") no-repeat -424px -200px;
+}
+.excel{
+    height: 24px;
+    width: 24px;
+    margin-right: 24px;
+    cursor: pointer;
+    display: flex;
+    background: transparent url("../../assets/images/Sprites.64af8f61.svg") no-repeat -704px -198px;
+}
+.excel:hover{
+    background: transparent url("../../assets/images/Sprites.64af8f61.svg") no-repeat -704px -254px;
 }
 
 .page__main__footer {

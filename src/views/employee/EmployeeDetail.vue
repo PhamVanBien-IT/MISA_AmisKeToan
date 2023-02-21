@@ -3,7 +3,7 @@
   <div
     class="overlay"
     v-on:keydown="clearValidate"
-    v-on:keyup.ctrl.shift.s = "btnSaveAndAddEmployee"
+    v-on:keyup.ctrl.shift.s="btnSaveAndAddEmployee"
     @click="clearValidate"
   >
     <div class="form-container">
@@ -37,27 +37,30 @@
                   type="text"
                   tabindex="1"
                   class="text-form"
-                  :class="[isActiveCode ? 'bd-red' : '']"
+                  :class="{ 'bd-red': isActiveCode }"
                   id="employeeCode"
                 ></MInputTextVue>
               </div>
-              <div class="col-7 p-relative"
-                :class="[isActive ? 'tags-error' :'']"
-                :data-gloss="errorFullName">
+              <div
+                class="col-7 p-relative"
+                :class="{ 'tags-error': isActive }"
+                :data-gloss="errorFullName"
+              >
                 <MInputTextVue
                   v-model="employee.fullName"
                   tabindex="2"
                   class="text-form"
-                  :class="[isActive ? 'bd-red' : '']"
+                  :class="{ 'bd-red': isActive }"
                 ></MInputTextVue>
               </div>
             </div>
             <div class="col-12 row-g label-text">
               Đơn vị <span style="color: red">*</span>
             </div>
-            <div class="col-12"
-            :class="[isActive ? 'tags-error-department' :'']"
-            :data-gloss="errorDepartment"
+            <div
+              class="col-12"
+              :class="{ 'tags-error-department': isActive }"
+              :data-gloss="errorDepartment"
             >
               <MComboboxVue
                 id="cbxDepartment"
@@ -65,7 +68,7 @@
                 propValue="departmentId"
                 v-model="employee.departmentId"
                 tabindex="3"
-                :class="[isActiveDepartment ? 'bd-red tags-error' : '']"
+                :class="{ 'bd-red tags-error': isActiveDepartment }"
               ></MComboboxVue>
             </div>
             <div class="col-12 row-g label-text">Chức danh</div>
@@ -76,13 +79,6 @@
                 class="text-form"
                 v-model="employee.position"
               ></MInputTextVue>
-              <!-- <MInputMoneyVue
-                class="text-form"
-                type="text"
-                tabindex="4"
-                v-model="salary"
-              >
-              </MInputMoneyVue> -->
             </div>
           </div>
           <div class="form-control-right">
@@ -276,7 +272,7 @@
     <!-- DIALOG -->
     <MDialogVue
       v-if="diy.state.showDialog"
-      label="Dữ liệu đã thay đổi. Bạn có muốn cất không"
+      :label="this.$MISAResource.CONTENTDIALOG.SAVE"
       classIcon="icondelete"
       @EditEPL="btnSaveEmployee"
     ></MDialogVue>
@@ -292,27 +288,25 @@ import employeeApi from "@/api/employeeApi";
 export default {
   inject: ["diy"],
   name: "EmployeeDatail",
-  props: ["id", "funcCallBack", "reFreshEmplpoyee"],
+  props: [
+    "id",
+    "funcCallBack",
+    "reFreshEmplpoyee",
+    "duplicateEmployeeCode",
+    "duplicateEmployeeIndex",
+  ],
   components: {},
   created() {
-    if (this.id == null) {
-      this.employee = {};
-    } else {
-      this.getEmployeeByID();
-    }
-    // Chọn giới tính theo phần tử chọn
-    this.getGender();
     if (this.id) {
-      this.employee.employeeCode = this.id;
+      this.getEmployeeByID();
     } else {
+      this.employee = {};
       this.setEmployeeCode();
     }
-
-    this.employeeID = this.id;
   },
   methods: {
     /**
-     * Sự kiện thêm
+     * Hàm thực hiện sự kiện khi nhấn nút cất và thêm
      * CreatedBy: Bien (4/1/2023)
      */
     btnSaveAndAddEmployee() {
@@ -322,12 +316,12 @@ export default {
         this.employee.employeeCode &&
         this.employee.departmentId
       ) {
-        this.editEmployee(this.id);
+        this.saveAndAddEmployee(this.id);
       }
     },
 
     /**
-     * Hàm sửa employee
+     * Hàm thực hiện sự kiện khi nhấn nút cất
      * CreatedBy: Bien (10/1/2023)
      */
     btnSaveEmployee() {
@@ -339,51 +333,128 @@ export default {
         this.employee.employeeCode &&
         this.employee.departmentId
       ) {
-        this.editEmployee(this.id);
-        this.diy.clearEPLDetail();
+        this.saveEmployee(this.id);
       }
     },
-
     /**
-     *  Hàm thêm dữ liệu
+     * Hàm xử lí thêm mới nhân viên
+     * CreatedBy: Bien (21/02/2023)
+     */
+    async createEmployee() {
+      // Nhận dữ liệu sau khi thêm nhân viên
+      const response = await employeeApi.createEmp(this.employee);
+
+      console.log("Posting data", response);
+
+      this.$parent.textSearch = null;
+      this.$parent.clickCallback(1);
+      this.setEmployeeCode();
+      this.employee = {};
+      this.diy.showNotify();
+    },
+    /**
+     * Hàm xử lí sửa thông tin nhân viên
+     * CreatedBy: Bien (21/02/2023)
+     */
+    async updateEmployee() {
+      this.$parent.clickCallback(this.$parent.indexPage);
+      this.setEmployeeCode();
+      this.employee = {};
+      this.$parent.employeeIDUpdate = null;
+    },
+    /**
+     * Hàm ẩn form EmployeeDetail
+     * CreatedBy: Bien (21/02/023)
+     */
+    clearAllEmployeeDetail() {
+      this.diy.clearEPLDetail();
+      this.diy.clearDuplicateEPLDetail();
+    },
+    /**
+     *  Hàm thêm dữ liệu và đóng form EmployeeDetail
      * CreatedBy: Bien(10/1/2023)
      */
-    async editEmployee(idE) {
+    async saveEmployee(employeeId) {
       try {
-        this.setGenderName();
+        // Kiểm id nhân viên có tồn tại hay không để biết nhiệm vụ là thêm hay sửa
+        if (employeeId != null) {
+          // Kiểm tra xem có phải chắc năng nhân bản hay không
+          if (!this.duplicateEmployeeCode) {
+            // Nhận dữ liệu sau khi sửa nhân viên
+            const response = await employeeApi.updateEmp(
+              employeeId,
+              this.employee
+            );
 
-        if (idE != null) {
-          // Nhận dữ liệu sau khi sửa nhân viên
-          const response = await employeeApi.updateEmp(idE, this.employee);
-
-          console.log("Posting data", response);
-
-          this.$parent.clickCallback(this.$parent.indexPage);
-          this.setEmployeeCode();
-          this.employee = {};
-          this.$parent.employeeIDUpdate = null;
+            console.log("Posting data", response);
+            this.clearAllEmployeeDetail();
+            this.updateEmployee();
+          } else {
+            this.createEmployee();
+            this.clearAllEmployeeDetail();
+          }
         } else {
-          // Nhận dữ liệu sau khi thêm nhân viên
-          const response = await employeeApi.createEmp(this.employee);
-
-          console.log("Posting data", response);
-
-          this.$parent.textSearch = null;
-          this.$parent.clickCallback(1);
-          this.setEmployeeCode();
-          this.employee = {};
-          this.diy.showNotify();
+          this.createEmployee();
+          this.clearAllEmployeeDetail();
         }
       } catch (error) {
-        this.diy.showNotifyError();
-
         console.log(error);
-        this.$parent.labelEmployeeCodeDuplicate = `Mã nhân viên ${this.employee.employeeCode} đã tồn tại`;
+        if (error.response.status == this.$MISAEnum.STATUSCODE.BADREQUEST) {
+          this.errorExistEmployeeCode();
+        }
+      }
+    },
+    /**
+     * Hàm thực hiện chức năng cất và thêm
+     * @param {Id nhân viên muốn sửa} employeeId
+     * CreaetedBy: Bien (21/02/2023)
+     */
+    async saveAndAddEmployee(employeeId) {
+      try {
+        if (employeeId != null) {
+          if (!this.duplicateEmployeeCode) {
+            // Nhận dữ liệu sau khi sửa nhân viên
+            const response = await employeeApi.updateEmp(
+              employeeId,
+              this.employee
+            );
+
+            console.log("Posting data", response);
+            this.updateEmployee();
+          } else {
+            this.createEmployee();
+          }
+        } else {
+          this.createEmployee();
+        }
+      } catch (error) {
+        console.log(error);
+
+        if (error.response.status == 400) {
+          this.errorExistEmployeeCode();
+        }
       }
     },
 
     /**
-     * Loại bỏ valide và set phím tắt cho form EmployeeDetail
+     * Hàm thông báo lỗi trùng mã nhân viên
+     * CreatedBy: Bien (21/2/2023)
+     */
+    errorExistEmployeeCode() {
+      // Gắn giá trị cho label dialog
+      this.lableValidateDepartment =
+        this.$MISAResource.ERRORVALIDATE.EXISTEMPLOYEECODE(
+          this.employee.employeeCode
+        );
+
+      // Ẩn nút trong dialog khi tên để trống
+      this.diy.ClearBtnDialog();
+
+      // Hiển thị dialog khi tên để trống
+      this.diy.ShowDialogValidate();
+    },
+    /**
+     * Loại bỏ validate và set phím tắt cho form EmployeeDetail
      * CreatedBy: Bien (5/1/2023)
      */
     clearValidate(event) {
@@ -409,16 +480,17 @@ export default {
     },
 
     /**
-     * Hàm validate employeeCode
+     * Hàm kiểm tra dữ liệu đầu vào employeeCode
      * CreatedBy: Bien (10/1/2023)
      */
     validateEmployee() {
       if (!this.employee.employeeCode) {
         this.isActiveCode = true;
-        
+
         // Gắn giá trị cho label dialog
-        this.lableValidateDepartment = this.$MISAResource.ERRORVALIDATE.ErrorEmployeeCode;
-    
+        this.lableValidateDepartment =
+          this.$MISAResource.ERRORVALIDATE.ErrorEmployeeCode;
+
         // Ẩn nút trong dialog khi tên để trống
         this.diy.ClearBtnDialog();
 
@@ -455,7 +527,8 @@ export default {
           this.lableValidateDepartment =
             this.$MISAResource.ERRORVALIDATE.ErrorFullName;
 
-            this.errorDepartment = this.$MISAResource.ERRORVALIDATE.ErrorDepartment;
+          this.errorDepartment =
+            this.$MISAResource.ERRORVALIDATE.ErrorDepartment;
         } else {
           // Gắn giá trị cho label dialog
           this.lableValidateDepartment =
@@ -470,28 +543,7 @@ export default {
     },
 
     /**
-     * Hàm gắn giá trị cho tên giới tính
-     * CreatedBy: Bien (15/1/2023)
-     */
-    setGenderName() {
-      switch (this.employee.gender) {
-        case this.$MISAEnum.GENDER.MALE:
-          this.employee.genderName = "Nam";
-          break;
-        case this.$MISAEnum.GENDER.FEMALE:
-          this.employee.genderName = "Nữ";
-          break;
-        case this.$MISAEnum.GENDER.ORTHER:
-          this.employee.genderName = "Chưa xác định";
-          break;
-        default:
-          this.employee.genderName = "Nam";
-          break;
-      }
-    },
-
-    /**
-     * Hàm gắn giá trị cho employeeDetail theo id
+     * Hàm gắn giá trị cho form employeeDetail theo id nhân viên
      * CreatedBy: Bien (11/1/2023)
      */
     async getEmployeeByID() {
@@ -508,6 +560,12 @@ export default {
         this.employee.identityDate = this.$MISACommon.formatDateReverse(
           this.employee.identityDate
         );
+        // Chọn giới tính theo phần tử chọn
+        this.getGender();
+      }
+      if (this.duplicateEmployeeCode) {
+        this.employee.employeeCode = this.duplicateEmployeeCode;
+        this.employee.employeeIndex = this.duplicateEmployeeIndex;
       }
     },
 
@@ -516,7 +574,7 @@ export default {
      * CreateBy: Bien (11/1/2023)
      */
     async setEmployeeCode() {
-      // Nhận dữ liệu sau khi tao ma
+      // Nhận dữ liệu mã nhân viên mới
       const response = await employeeApi.getEmpNewCode();
 
       this.employee.employeeCode = response.EmployeeCode;
@@ -524,7 +582,7 @@ export default {
     },
 
     /**
-     * Hàm POST lên Api
+     * Hàm gắn giá trị cho giới tính nhân viên khi chọn trong form EmployeeDeatail
      * CreatedBy: Bien (8/1/2023)
      */
     setGender() {
@@ -547,13 +605,10 @@ export default {
     },
 
     /**
-     * Hàm lấy giá trị giới tính khi dbclick
+     * Hàm checked input[Radio] tương ứng với giới tính khi hiển thị form EmployeeDetail
      * CreatedBy: Bien (10/1/2023)
      */
     async getGender() {
-      // Nhận dữ liệu sau khi lấy nhân viên theo id
-      const response = await employeeApi.getEmpById(this.id);
-      this.employees = response.data;
       if (this.employee.gender == this.$MISAEnum.GENDER.MALE) {
         document.getElementById("male").checked = true;
       } else if (this.employee.gender == this.$MISAEnum.GENDER.FEMALE) {
@@ -569,21 +624,24 @@ export default {
      */
     btnCloseOnClick() {
       this.diy.clearEPLDetail();
+      this.diy.clearDuplicateEPLDetail();
     },
 
     /**
-     * Sự kiện hiển thị dialog khi click nút close
+     * Sự kiện hiển thị dialog khi click icon X
      * CreatedBy: Bien (9/1/2023)
      */
     btnCloseOnClickIcon() {
       this.diy.showDialog();
-
       this.diy.ShowBtnDialog();
-
       this.diy.ClearCloseDialog();
     },
   },
   watch: {
+    /**
+     * Hàm lắng nghe sự đổi của input tiền
+     * @param {Gía trị mới của tiền} newValue
+     */
     salary: function (newValue) {
       var me = this;
       me.salary = newValue;
@@ -596,7 +654,7 @@ export default {
       errorDepartment: null,
 
       // Khai báo biến nhận giá trị lỗi FullName
-      errorFullName : null,
+      errorFullName: null,
 
       // Khai báo biến max thời gian
       maxDateInput: this.$MISACommon.formatDateReverse(Date.now()),
@@ -617,16 +675,13 @@ export default {
       isValidateName: null,
 
       // Khai báo biến isActive
-      isActiveCode: false,
+      isActiveCode: null,
 
       // Khai báo biến isActive
-      isActive: false,
+      isActive: null,
 
       // Khai báo biến bắt lỗi để trống department
-      isActiveDepartment: false,
-
-      // Khai báo biến boder
-      // 'bd-red': "bd-red",
+      isActiveDepartment: null,
 
       // Khai báo biến checked gender
       isCheckedGender: null,

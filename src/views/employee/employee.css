@@ -226,7 +226,52 @@ tbody tr:hover td{
     height: 100%;
     box-sizing: border-box;
 }
-
+.function-all{
+    box-sizing: border-box;
+    width: 160px;
+    height: 32px;
+    padding: 10px;
+    background-color: #fff;
+    color: #AFAFAF;
+    font-weight: 600;
+    border: 2px solid #E0E0E0;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.active-function-all{
+    color: #3b3c3f !important;
+    border: 1px solid #3b3c3f !important;
+}
+.icon-dropdown-func{
+    width: 26px;
+    height: 26px;
+    background: transparent url("../../assets/images/Sprites.64af8f61.svg") no-repeat -1752px -312px;
+    position: absolute;
+    top: 10px;
+    right: 0px;
+}
+.function-all-list{
+    position: absolute;
+    top: 24px;
+    z-index: 11;
+}
+.function-all-item{
+    border: 1px solid #E8E9EC;
+    width: 100px;
+    height: 27px;
+    padding-left: 12px;
+    font-size: 13px;
+    line-height: 27px;
+    color: #111111;
+    margin-left: 46px;
+    background-color: #fff;
+    position: absolute;
+    top: 10px;
+}
+.function-all:hover,
+.function-all-item:hover{
+    background-color: #E8E9EC;
+}
 .row {
     width: 100%;
     display: flex;

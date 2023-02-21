@@ -1,7 +1,7 @@
 <template>
          <div class="input-checkbox">
         <label>     
-            <input type="checkbox" id="chkProdTomove" v-model="select"/>
+            <input type="checkbox" v-model="value"/>
             <span class="check-box-effect"></span>
         </label>
          </div>
@@ -11,23 +11,24 @@ export default {
     name:"MCheckbox",
     emits:["update:modelValue"],
     props:["modelValue"],
-    created(){
-        this.select = this.modelValue;
-    }, 
+    updated(){
+    // Nhận giá trị modelValue
+        this.value = this.modelValue;
+    },
     watch:{
-        /**
+    /**
      * Theo dõi sự thay đổi của modelVualue
      * CreatedBy: Bien (16/1/2023)
      */
-        value: function(newValue){
+     value: function(newValue){
             this.$emit("update:modelValue", newValue)
         }
     },
     data(){
-        return{
-            // Khai báo biến nhận name
-            select :null,
-        }
+        return {
+            // Khai báo biện nhận giá trị modelValue truyền vào
+            value : null,
+        };
     }
 }
 </script>

@@ -1,5 +1,5 @@
 /**
- * Hàm định nghĩa các phím
+ * Hàm khai báo các giá trị số
  * CreatedBy: Bien (11/1/2023)
  */
 const MISAEnum = {
@@ -17,6 +17,10 @@ const MISAEnum = {
         MALE:0, // Giới tính nam
         FEMALE:1, // Giới tính nữ
         ORTHER:2 // Khác
+    },
+    STATUSCODE:{
+        OK:200, // Thành công
+        BADREQUEST: 400 // Lỗi dữ liệu nhập vào
     }
 }
 

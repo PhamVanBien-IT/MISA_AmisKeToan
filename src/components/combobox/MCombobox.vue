@@ -43,7 +43,6 @@ export default {
   emits: ["update:modelValue"],
   props: [
     "id",
-    "api",
     "propName",
     "propValue",
     "modelValue",

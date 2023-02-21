@@ -13,6 +13,11 @@
       </div>
       <div class="dialog__btn" v-if="diy.state.showBtnDialog">
         <MButtonVue
+          label="Hủy"
+          class="btn-cancel"
+          @click="btnCloseDialog"
+        ></MButtonVue>
+        <MButtonVue
           label="Không"
           class="btn-cancel-dialog"
           @click="btnCloseEPLDetailOnClick"
@@ -54,9 +59,10 @@ export default {
      */
     btnCloseEPLDetailOnClick() {
       this.diy.clearEPLDetail();
-
+      this.diy.clearDuplicateEPLDetail();
+      this.diy.clearDialogDeleteEmployees();
+      this.diy.clearFunctionAll();
       this.diy.clearDialog();
-
       this.diy.ShowCloseDialog();
     },
 
@@ -66,10 +72,9 @@ export default {
      */
     btnCloseDialog() {
       this.diy.clearDialog();
-
+      this.diy.clearDialogDeleteEmployees();
       this.diy.ClearDialogValidate();
 
-    //   this.diy.ClearCloseDialog();
     },
 
     /**
@@ -79,6 +84,8 @@ export default {
     funcEditEmployee() {
       this.$emit("EditEPL", this.funcEPL);
       this.diy.clearDialog();
+      this.diy.clearDialogDeleteEmployees();
+      this.diy.clearFunctionAll();
       // Hiển thị nút đóng
       this.diy.ShowCloseDialog();
     },

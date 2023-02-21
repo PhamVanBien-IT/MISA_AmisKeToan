@@ -31,7 +31,7 @@ export default {
     },
     methods:{
         /**
-         * Hàm hiển thị Comboboxdata
+         * Hàm ẩn và hiển thị danh sách item combobox
          * CreatedBy: Bien (9/1/2023)
          */
         onShowHideData(){

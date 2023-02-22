@@ -1,19 +1,19 @@
 <template>
        <div>
-        <input :tabindex="tabindexInput" :type="TypeInput" v-model="value" :id="idInput" :class="classInput" :placeholder="placeholderText" :max="maxDateInput"/>
+        <input :name="nameInput" :ref="nameInput" :tabindex="tabindexInput" :type="typeInput" v-model="value" :id="idInput" :class="classInput" :placeholder="placeholderText" :max="maxDateInput"/>
        </div>
 </template>
 <script>
 export default {
     name:"MInputText",
     emits:["update:modelValue"],
-    props: ["class","type","tabindex", "modelValue","placeholder","id","maxDate"],
+    props: ["class","type","tabindex", "modelValue","placeholder","id","maxDate","name"],
     created(){
         // Nhận giá trị modelValue
         this.classInput = this.class;
         
         // Nhận giá trị type đã truyền vào
-        this.TypeInput = this.type;
+        this.typeInput = this.type;
         
         // Nhận giá trị placeholder đã truyền vào
         this.placeholderText = this.placeholder;
@@ -24,15 +24,28 @@ export default {
         // Nhận giá trị id truyền vào
         this.idInput = this.id;
 
+        // Nhận giá trị thời gian hiện tại
         this.maxDateInput = this.maxDate;
+
+        // Nhận giá trị refs
+        this.nameInput = this.name
+
     },
     updated(){
-    // Nhận giá trị modelValue
+        // Nhận giá trị modelValue
         this.value = this.modelValue;
 
         // Nhận giá trị class đã truyền vào
         this.classInput = this.class;
-
+    },
+    methods:{
+        /**
+         * Hàm set focus cho input
+         * CreatedBy: Bien (22/02/2023)
+         */
+        onFocus(){
+            this.$refs[this.name].focus();
+        }
     },
     watch:{
     /**
@@ -45,6 +58,9 @@ export default {
     },
     data(){
         return {
+            // Khai báo biến nhận giá trị ref
+            nameInput : null,
+
             // Khai báo biến classInput
             classInput : null,
 
@@ -52,7 +68,7 @@ export default {
             value: null,
 
             // Khai baso biến nhận type
-            TypeInput: null,
+            typeInput: null,
 
             // Khai báo nhận biến tabindex
             tabindexInput: null,

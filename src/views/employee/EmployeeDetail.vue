@@ -2,8 +2,9 @@
   <!-- FORM -->
   <div
     class="overlay"
-    v-on:keydown="clearValidate"
-    v-on:keyup.ctrl.shift.s="btnSaveAndAddEmployee"
+    v-on:keydown.esc="clearValidate"
+    v-on:keyup.ctrl.shift.s.prevent="btnSaveAndAddEmployee"
+    v-on:keydown.alt.s.prevent="btnSaveEmployee"
     @click="clearValidate"
   >
     <div class="form-container">
@@ -17,10 +18,18 @@
         ></div>
         <div class="form-title">Thông tin nhân viên</div>
         <div class="client">
-          <MCheckboxVue style="margin-top: 4px"></MCheckboxVue>Là khách hàng
+          <MCheckboxVue
+            v-model="isCustomer"
+            style="margin-top: 4px"
+          ></MCheckboxVue
+          >Là khách hàng
         </div>
         <div class="supplier">
-          <MCheckboxVue style="margin-top: 4px"></MCheckboxVue> Là nhà cung cấp
+          <MCheckboxVue
+            v-model="isSupplier"
+            style="margin-top: 4px"
+          ></MCheckboxVue>
+          Là nhà cung cấp
         </div>
       </div>
       <div class="form-control">
@@ -39,6 +48,8 @@
                   class="text-form"
                   :class="{ 'bd-red': isActiveCode }"
                   id="employeeCode"
+                  :ref="inputEmployeeCode"
+                  :name="inputEmployeeCode"
                 ></MInputTextVue>
               </div>
               <div
@@ -94,6 +105,7 @@
                   tabindex="5"
                   class="text-form"
                   :maxDate="maxDateInput"
+                  :class="{ 'text-gray': !employee.dateOfBirth }"
                 ></MInputTextVue>
               </div>
               <div class="col-7 row">
@@ -146,6 +158,8 @@
                   tabindex="8"
                   class="text-form"
                   v-model="employee.identityDate"
+                  :maxDate="maxDateInput"
+                  :class="{ 'text-gray': !employee.identityDate }"
                 ></MInputTextVue>
               </div>
             </div>
@@ -251,20 +265,23 @@
             class="btn-cancel"
             @click="btnCloseOnClick"
             tabindex="19"
+            v-on:keydown.tab.prevent="inputOnFocus"
           ></MButtonVue>
         </div>
         <div class="form-footer-right">
           <MButtonVue
             label="Cất"
             @click="btnSaveEmployee"
-            class="btn-save"
+            class="btn-save tags-save"
             tabindex="17"
+            data-gloss="Ctrl + s"
           ></MButtonVue>
           <MButtonVue
             label="Cất và Thêm"
             @click="btnSaveAndAddEmployee"
-            class="btn"
+            class="btn tags-save-add"
             tabindex="18"
+            data-gloss="Ctrl + Shift + s"
           ></MButtonVue>
         </div>
       </div>
@@ -287,7 +304,7 @@
 import employeeApi from "@/api/employeeApi";
 export default {
   inject: ["diy"],
-  name: "EmployeeDatail",
+  name: "EmployeeDetail",
   props: [
     "id",
     "funcCallBack",
@@ -304,7 +321,17 @@ export default {
       this.setEmployeeCode();
     }
   },
+  mounted() {
+    this.$refs[this.inputEmployeeCode].onFocus();
+  },
   methods: {
+    /**
+     * Hàm focus cho input EmployeeCode
+     * CreatedBy: Bien (22/02/2023)
+     */
+    inputOnFocus() {
+      this.$refs[this.inputEmployeeCode].onFocus();
+    },
     /**
      * Hàm thực hiện sự kiện khi nhấn nút cất và thêm
      * CreatedBy: Bien (4/1/2023)
@@ -344,7 +371,7 @@ export default {
       // Nhận dữ liệu sau khi thêm nhân viên
       const response = await employeeApi.createEmp(this.employee);
 
-      console.log("Posting data", response);
+      console.log("Posting data",response);
 
       this.$parent.textSearch = null;
       this.$parent.clickCallback(1);
@@ -352,16 +379,18 @@ export default {
       this.employee = {};
       this.diy.showNotify();
     },
+
     /**
      * Hàm xử lí sửa thông tin nhân viên
      * CreatedBy: Bien (21/02/2023)
      */
-    async updateEmployee() {
+     updateEmployee() {
       this.$parent.clickCallback(this.$parent.indexPage);
       this.setEmployeeCode();
       this.employee = {};
       this.$parent.employeeIDUpdate = null;
     },
+
     /**
      * Hàm ẩn form EmployeeDetail
      * CreatedBy: Bien (21/02/023)
@@ -430,9 +459,10 @@ export default {
       } catch (error) {
         console.log(error);
 
-        if (error.response.status == 400) {
+        if (error.response.status == this.$MISAEnum.STATUSCODE.BADREQUEST) {
           this.errorExistEmployeeCode();
         }
+        console.log(this.diy.state.showDialogValidate + "status: " + error.response.status);
       }
     },
 
@@ -608,7 +638,7 @@ export default {
      * Hàm checked input[Radio] tương ứng với giới tính khi hiển thị form EmployeeDetail
      * CreatedBy: Bien (10/1/2023)
      */
-    async getGender() {
+     getGender() {
       if (this.employee.gender == this.$MISAEnum.GENDER.MALE) {
         document.getElementById("male").checked = true;
       } else if (this.employee.gender == this.$MISAEnum.GENDER.FEMALE) {
@@ -650,6 +680,15 @@ export default {
   },
   data() {
     return {
+      // Khai báo biến nhập giá trị check là khách hàng
+      isCustomer: false,
+
+      // Khai báo biến nhập giá trị check là nhà cung cấp
+      isSupplier: false,
+
+      // Khai báo biến gắn giá trị cho input EmployeeCode
+      inputEmployeeCode: "inputEmployeeCode",
+
       // Khai báo biến nhận giá trị lỗi department
       errorDepartment: null,
 

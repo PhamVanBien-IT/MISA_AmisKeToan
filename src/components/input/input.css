@@ -150,3 +150,8 @@ input[type="radio"] {
     background: #50B83C;
     transition: width 150ms ease 100ms;
   }
+.text-gray::-webkit-datetime-edit { color: #aaa; }
+.text-gray:focus::-webkit-datetime-edit { color: #000; }
+.text-gray::-webkit-calendar-picker-indicator {
+  filter: invert(0.5);
+}

@@ -93,7 +93,6 @@ export default {
       this.$emit("update:modelValue", entity[this.propValue]);
       // Set index của item được chọn
       this.indexItemSelect = me.findIndexSelected;
-      console.log(this.diy.state.ShowDataDeparerment);
       if(this.diy.state.ShowDataDeparerment){
         this.diy.ClearDataDeparerment();
       }

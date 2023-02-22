@@ -235,7 +235,7 @@
         Nhân bản
       </div>
       <div class="funclist-item" @click="btnDeleteEmployee(item)">Xóa</div>
-      <div class="funclist-item">Ngưng sử dụng</div>
+      <div class="funclist-item">Ngừng sử dụng</div>
     </div>
     <div
       class="boder-item-active"
@@ -428,7 +428,7 @@ export default {
       try {
         let me = this;
         // Nhận dữ liệu khi tìm kiếm
-        const response = this.getEmployeePaging(1, me.pageSize, value);
+        const response = await this.getEmployeePaging(1, me.pageSize, value);
 
         // Gắn dữ liệu
         this.setDataPaging(response)

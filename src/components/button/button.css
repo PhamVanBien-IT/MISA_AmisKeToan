@@ -44,6 +44,8 @@
     margin-right: 8px;
     right: 122px;
 }
+.btn-cancel-dialog:focus,
+.btn-cancel-dialog:hover,
 .btn-save:focus,
 .btn-save:hover,
 .btn-cancel:focus,
@@ -62,7 +64,8 @@
     cursor: pointer;
     outline: none;
 }
-
+.btn-dialog:focus,
+.btn-dialog:hover,
 #btn-create:focus,
 #btn-create:hover {
     background-color: #51b83c;

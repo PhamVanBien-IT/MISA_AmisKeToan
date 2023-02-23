@@ -4,9 +4,9 @@
  */
 const MISAResource = {
 	ERRORVALIDATE: {
-		ErrorEmployeeCode : "Mã không được để trống", 
-        ErrorFullName : "Tên không được để trống",
-        ErrorDepartment : "Đơn vị không được để trống",
+		ERROREMPLOYEECODE: "Mã không được để trống", 
+        ERRORFULLNAME : "Tên không được để trống",
+        ERRORDEPARTMENT: "Đơn vị không được để trống",
 		EXISTEMPLOYEECODE:(item) => `Mã nhân viên <${item}> đã tồn tại trong hệ thống.`
 		
 	},

@@ -3,7 +3,7 @@ import queryString from "query-string"
 
  /**
  * Config axios
- * Author: LHH - 02/01/23
+ * Author: Biển - 02/01/23
  */
 const axiosClient = axios.create({
 	baseURL: "https://localhost:7185/api",
@@ -18,7 +18,7 @@ const axiosClient = axios.create({
 
 /**
  * Config response
- * Author: LHH - 02/01/23
+ * Author: Biển - 02/01/23
  */
  axiosClient.interceptors.response.use(
 	(response) => {
@@ -28,7 +28,7 @@ const axiosClient = axios.create({
 		return response;
 	},
 	(error) => {
-		throw error;
+		return error;
 	}
 );
 

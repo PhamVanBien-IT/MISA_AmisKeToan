@@ -16,6 +16,7 @@
           label="Hủy"
           class="btn-cancel"
           @click="btnCloseDialog"
+          v-if="diy.state.showBtnCancel"
         ></MButtonVue>
         <MButtonVue
           label="Không"
@@ -59,7 +60,6 @@ export default {
      */
     btnCloseEPLDetailOnClick() {
       this.diy.clearEPLDetail();
-      this.diy.clearDuplicateEPLDetail();
       this.diy.clearDialogDeleteEmployees();
       this.diy.clearFunctionAll();
       this.diy.clearDialog();
@@ -88,6 +88,8 @@ export default {
       this.diy.clearFunctionAll();
       // Hiển thị nút đóng
       this.diy.ShowCloseDialog();
+      this.$parent.isFunctionAll = false;
+      this.$parent.selectedList = [];
     },
   },
 

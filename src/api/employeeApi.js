@@ -12,6 +12,7 @@ const employeeApi = {
      * CreatedBy: Bien (20/02/2023)
      */
     exportEmployees:() =>{
+       try {
         axios({
             url: "https://localhost:7185/api/Employees/ExportExcel",
             method: "GET",
@@ -26,6 +27,9 @@ const employeeApi = {
     
             fileLink.click();
           });
+       } catch (error) {
+        console.log(error);
+       }
     },
     /**
      * API lấy danh sách nhân viên theo trang

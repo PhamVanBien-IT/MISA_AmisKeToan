@@ -20,7 +20,13 @@ const MISAEnum = {
     },
     STATUSCODE:{
         OK:200, // Thành công
-        BADREQUEST: 400 // Lỗi dữ liệu nhập vào
+        INSERT:201,// Thêm thành công
+        BADREQUEST: 400, // Lỗi dữ liệu nhập vào
+        INTERNALSERVER: 500 // Lỗi 
+    },
+    ERRORCODE:{
+        SUCCESS:0, // Thành công
+        VALIDATERROR:2, // Dữ liệu đầu vào không hợp lệ
     }
 }
 

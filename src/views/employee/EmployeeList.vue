@@ -24,7 +24,7 @@
             disabled
             value="Thực hiện hàng loạt"
             class="function-all"
-            v-bind:class="{ 'active-function-all': isFunctionAll }"
+            v-bind:class="{ 'active-function-all': isFunctionAll}"
           />
           <div class="icon-dropdown-func"></div>
           <div class="function-all-list" v-if="diy.state.showFunctionAll">
@@ -249,10 +249,6 @@
   <EmployeeDetailVue
     :id="employeeIDUpdate"
     v-if="diy.state.showEPLDetail"
-  ></EmployeeDetailVue>
-  <EmployeeDetailVue
-    :id="employeeIDUpdate"
-    v-if="diy.state.showDuplicateEPLDetail"
     :duplicateEmployeeCode="duplicateEmployeeCode"
     :duplicateEmployeeIndex="duplicateEmployeeIndex"
   ></EmployeeDetailVue>
@@ -299,7 +295,7 @@ export default {
       this.duplicateEmployeeCode = response.EmployeeCode;
       this.duplicateEmployeeIndex = response.EmployeeIndex;
       // Gọi hàm hiển thị EmployeeDetail
-      this.diy.showDuplicateEPLDetail();
+      this.diy.showEPLDetail();
 
       // Gọi hàm ẩn danh sách chức năng trong bảng nhân viên
       this.clearFuncList();
@@ -331,15 +327,15 @@ export default {
      * CreatedBy: Bien (18/02/2023)
      */
     async deleteEmployeeListSelect() {
-      this.diy.clearFunctionAll();
 
       this.lableDeleteEmployee = this.$MISAResource.CONTENTDIALOG.DELETES;
 
       await this.diy.showDialogDeleteEmployees();
 
       this.clearDialogDelete();
-      
-      this.diy.clearFunctionAll();
+
+      this.diy.clearBtnCancel();
+
     },
     /**
      * Hàm thực hiện gọi API xóa danh sách nhân viên
@@ -380,7 +376,6 @@ export default {
           return result;
         }, []);
         this.selected = false;
-        console.log(this.selectedList);
       }
       // Kiểm tra để hiển thị được thao tác chức năng hàng loạt
       if (this.selectedList.length > 1) {
@@ -549,6 +544,7 @@ export default {
       await this.diy.showDialog();
       this.diy.clearDialogDeleteEmployees();
       this.clearDialogDelete();
+      this.diy.clearBtnCancel();
     },
 
     /**
@@ -682,6 +678,7 @@ export default {
         this.isFunctionAll = false;
         this.diy.clearFunctionAll();
       }
+      
     },
   },
   data() {

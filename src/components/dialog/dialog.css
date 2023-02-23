@@ -56,9 +56,9 @@
 }
 .btn-cancel-dialog{
     position: absolute;
-    right: 74px;
+    right: 104px;
     height: 36px;
-    width: 76px;
+    width: 80px;
     border:1px solid #E0E0E0;
     border-radius: 3px;
     background-color: #fff;
@@ -70,6 +70,7 @@
 }
 .btn-dialog{
     position: absolute;
+    width: 80px;
     right: 24px;
     border: unset;
     height: 36px;

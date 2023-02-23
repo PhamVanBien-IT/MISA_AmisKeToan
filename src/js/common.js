@@ -34,29 +34,29 @@ const MISACommon = {
   * Hàm đinh dạng ngày giờ YYYY-mm-dd
   * CreatedBy: Bien (23/12/2023)
   */
-formatDateReverse(datatime) {
- try {
-   // Kiểm tra dữ liệu đầu vào khác null
-   if (datatime != null && datatime != undefined) {
-     // Chuyển thành dữ liệu dd/mm/yy
-     datatime = new Date(datatime);
+  formatDateReverse(datatime) {
+    try {
+      // Kiểm tra dữ liệu đầu vào khác null
+      if (datatime != null && datatime != undefined) {
+        // Chuyển thành dữ liệu dd/mm/yy
+        datatime = new Date(datatime);
 
-     let date = datatime.getDate();
-     date = date < 10 ? `0${date}` : date;
+        let date = datatime.getDate();
+        date = date < 10 ? `0${date}` : date;
 
-     let month = datatime.getMonth() + 1;
-     month = month < 10 ? `0${month}` : month;
+        let month = datatime.getMonth() + 1;
+        month = month < 10 ? `0${month}` : month;
 
-     let year = datatime.getFullYear();
+        let year = datatime.getFullYear();
 
-     return `${year}-${month}-${date}`;
-   } else {
-     return "";
-   }
- } catch (error) {
-   console.log("Lỗi định dạng thời gian" + error);
- }
-},
+        return `${year}-${month}-${date}`;
+      } else {
+        return "";
+      }
+    } catch (error) {
+      console.log("Lỗi định dạng thời gian" + error);
+    }
+  },
 }
 
 export default MISACommon;

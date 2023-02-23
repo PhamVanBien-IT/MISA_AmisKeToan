@@ -22,6 +22,7 @@
           class="catergory-name"
           v-if="diy.state.showNav"
           id="catergory-name"
+          @click="alerDeveloping"
         >
           Tổng quan
         </div>

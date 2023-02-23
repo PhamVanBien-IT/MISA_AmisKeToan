@@ -17,9 +17,24 @@ const state = reactive({
   showCloseDialog:true,
   showNotifyError:false,
   showFunctionAll:false,
-  showDuplicateEPLDetail: false,
   showDialogDeleteEmployees:false,
+  showBtnCancel:false,
 });
+/**
+ * Hàm hiển thị nút hủy
+ * CreatedBy: Bien (18/2/2023)
+ */
+ const showBtnCancel = function(){
+  state.showBtnCancel = true;
+}
+
+/**
+ * Hàm ẩn nút hủy
+ * CreatedBy: Bien (18/2/2023)
+ */
+const clearBtnCancel = function(){
+  state.showBtnCancel = false;
+}
 /**
  * Hàm hiển thị thao tác thực hiên hàng loạt
  * CreatedBy: Bien (18/2/2023)
@@ -115,22 +130,6 @@ const ClearBtnDialog = function(){
  */
 const showFuncList= function(){
     state.showFuncList = !state.showFuncList;
-};
-/**
- * Hàm hiển thị form nhân bản nhân viên
- * CreatedBy: Bien (4/1/2023)
- */
-const showDuplicateEPLDetail = function () {
-  state.showDuplicateEPLDetail = true;
-  this.clearDialog();
-};
-
-/**
- * Hàm ẩn form nhân bản nhân viên
- * CreatedBy: Bien (4/1/2023)
- */
-const clearDuplicateEPLDetail = function () {
-  state.showDuplicateEPLDetail = false;
 };
 
 /**
@@ -251,8 +250,8 @@ export default {
   showFunctionAll,
   clearFunctionAll,
   toggleFunctionAll,
-  clearDuplicateEPLDetail,
-  showDuplicateEPLDetail,
   showDialogDeleteEmployees,
-  clearDialogDeleteEmployees
+  clearDialogDeleteEmployees,
+  showBtnCancel,
+  clearBtnCancel
 };

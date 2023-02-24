@@ -41,6 +41,9 @@ body {
     cursor: pointer;
     margin-left: 12px;
 }
+.labelValidate{
+    position: relative;
+}
 .tags-save,
 .tags-save-add,
 .tags-error-department,

@@ -27,6 +27,18 @@ table{
     border-bottom: 1px solid #c7c7c7;
 
 }
+tr:has(input:checked),
+tr:hover {
+	background-color: #e5f3ff;
+}
+td:has(input:checked),
+td:hover {
+	background-color: #e5f3ff;
+}
+tr:has(input:checked) td,
+tr:hover td {
+	background-color: #e5f3ff;
+}
 thead{
     background-color: #F5F5F5;
     position: sticky;
@@ -55,7 +67,7 @@ tbody tr{
     background-color: #fff;
 }
 tbody tr:hover td{
-    background-color: #f2f8fed8 !important;
+    background-color: #e5f3ff !important;
 }
 .td-cb{
     position: sticky;

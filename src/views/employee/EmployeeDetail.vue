@@ -1,14 +1,14 @@
 <template>
   <!-- FORM -->
-  <div
-    class="overlay"
-    v-on:keydown.esc="btnCloseOnClickIcon"
-    v-on:keydown.tab="clearValidate"
-    v-on:keyup.ctrl.shift.s.prevent="btnSaveAndAddEmployee"
-    v-on:keydown.alt.s.prevent="btnSaveEmployee"
-    @click="clearValidate"
-  >
-    <div class="form-container">
+  <div class="overlay">
+    <div
+      class="form-container"
+      v-on:keydown.esc="btnCloseOnClickIcon"
+      v-on:keydown.tab="clearValidate"
+      v-on:keyup.ctrl.shift.s.prevent="btnSaveAndAddEmployee"
+      v-on:keydown.alt.s.prevent="btnSaveEmployee"
+      @click="clearValidate"
+    >
       <div class="form-header">
         <div class="icon help tags" data-gloss="Help (F1)"></div>
         <div
@@ -41,28 +41,31 @@
               <div class="col-7">Tên <span style="color: red">*</span></div>
             </div>
             <div class="row col-g p-relative">
-              <div class="col-5">
+              <div class="col-5"
+              :class="{ 'tags-error': validateList[`EmployeeCode`].isStatus }"
+              :data-gloss="validateList[`EmployeeCode`].labelValidate"
+              >
                 <MInputTextVue
                   v-model="employee.employeeCode"
                   type="text"
                   tabindex="1"
                   class="text-form"
-                  :class="{ 'bd-red': isActiveCode }"
                   id="employeeCode"
                   :ref="inputEmployeeCode"
                   :name="inputEmployeeCode"
+                  :class="{ 'bd-red': validateList[`EmployeeCode`].isStatus }"
                 ></MInputTextVue>
               </div>
               <div
                 class="col-7 p-relative"
-                :class="{ 'tags-error': isActive }"
-                :data-gloss="errorFullName"
+                :class="{ 'tags-error': validateList[`FullName`].isStatus }"
+                :data-gloss="validateList[`FullName`].labelValidate"
               >
                 <MInputTextVue
                   v-model="employee.fullName"
                   tabindex="2"
                   class="text-form"
-                  :class="{ 'bd-red': isActive }"
+                  :class="{ 'bd-red': validateList[`FullName`].isStatus }"
                 ></MInputTextVue>
               </div>
             </div>
@@ -71,7 +74,9 @@
             </div>
             <div
               class="col-12"
-              :class="{ 'tags-error-department': isActiveDepartment }"
+              :class="{
+                'tags-error-department': isActiveDepartment,
+              }"
               :data-gloss="errorDepartment"
             >
               <MComboboxVue
@@ -99,7 +104,9 @@
               <div class="col-7">Giới tính</div>
             </div>
             <div class="row col-g">
-              <div class="col-5">
+              <div
+                class="col-5"
+              >
                 <MInputTextVue
                   v-model="employee.dateOfBirth"
                   type="date"
@@ -107,7 +114,10 @@
                   class="text-form"
                   placeholder="dd/mm/yyyy"
                   :maxDate="maxDateInput"
-                  :class="{ 'text-gray': !employee.dateOfBirth }"
+                  :class="{
+                    'text-gray': !employee.dateOfBirth,
+                    'bd-red': validateList[`DateOfBirth`].labelValidate,
+                  }"
                 ></MInputTextVue>
               </div>
               <div class="col-7 row">
@@ -147,21 +157,29 @@
               <div class="col-5">Ngày cấp</div>
             </div>
             <div class="row col-g">
-              <div class="col-7">
+              <div
+                class="col-7"
+              >
                 <MInputTextVue
                   tabindex="7"
                   class="text-form"
                   v-model="employee.identityNumber"
+                  :class="{ 'bd-red': validateList[`IdentityNumber`].isStatus }"
                 ></MInputTextVue>
               </div>
-              <div class="col-5">
+              <div
+                class="col-5"
+              >
                 <MInputTextVue
                   type="date"
                   tabindex="8"
                   class="text-form"
                   v-model="employee.identityDate"
                   :maxDate="maxDateInput"
-                  :class="{ 'text-gray': !employee.identityDate }"
+                  :class="{
+                    'text-gray': !employee.identityDate,
+                    'bd-red': validateList[`IdentityDate`].isStatus,
+                  }"
                 ></MInputTextVue>
               </div>
             </div>
@@ -192,18 +210,24 @@
                 <div title="Điện thoại cố định" class="col-6">ĐT cố định</div>
               </div>
               <div class="row col-g">
-                <div class="col-6">
+                <div
+                  class="col-6">
                   <MInputTextVue
                     class="text-form"
                     v-model="employee.phoneNumber"
                     tabindex="11"
+                    :class="{ 'bd-red': validateList[`PhoneNumber`].isStatus }"
                   ></MInputTextVue>
                 </div>
-                <div class="col-6">
+                <div
+                  class="col-6">
                   <MInputTextVue
                     v-model="employee.landlineNumber"
                     tabindex="12"
                     class="text-form"
+                    :class="{
+                      'bd-red': validateList[`LandlineNumber`].isStatus,
+                    }"
                   ></MInputTextVue>
                 </div>
               </div>
@@ -213,11 +237,13 @@
                 <div class="col-6">Email</div>
               </div>
               <div class="row col-g">
-                <div class="col-6">
+                <div
+                  class="col-6">
                   <MInputTextVue
                     v-model="employee.email"
                     tabindex="13"
                     class="text-form"
+                    :class="{ 'bd-red': validateList[`Email`].isStatus }"
                   ></MInputTextVue>
                 </div>
               </div>
@@ -297,7 +323,7 @@
     ></MDialogVue>
     <MDialogVue
       v-if="diy.state.showDialogValidate"
-      :label="lableValidate"
+      :label="labelValidate"
       classIcon="warning"
     ></MDialogVue>
   </div>
@@ -309,8 +335,6 @@ export default {
   name: "EmployeeDetail",
   props: [
     "id",
-    "funcCallBack",
-    "reFreshEmplpoyee",
     "duplicateEmployeeCode",
     "duplicateEmployeeIndex",
   ],
@@ -340,8 +364,14 @@ export default {
      */
     btnSaveAndAddEmployee() {
       this.validateEmployee();
-      this.saveEmployee(this.id);
       this.isSaveEmployee = false;
+      if (
+        this.employee.employeeCode &&
+        this.employee.fullName &&
+        this.employee.departmentId
+      ) {
+        this.saveEmployee(this.id);
+      }
     },
 
     /**
@@ -351,8 +381,14 @@ export default {
     btnSaveEmployee() {
       // Kiểm tra dữ liệu đầu vào
       this.validateEmployee();
-      this.saveEmployee(this.id);
       this.isSaveEmployee = true;
+      if (
+        this.employee.employeeCode &&
+        this.employee.fullName &&
+        this.employee.departmentId
+      ) {
+        this.saveEmployee(this.id);
+      }
     },
     /**
      * Hàm xử lí thêm mới nhân viên
@@ -387,6 +423,10 @@ export default {
               this.$MISAEnum.ERRORCODE.VALIDATERROR
             ) {
               this.errorValidate(moreInfo[0].value);
+              moreInfo.forEach((item) => {
+                this.validateList[`${item.key}`].labelValidate = item.value;
+                this.validateList[`${item.key}`].isStatus = true;
+              });
             }
             break;
           case this.$MISAEnum.STATUSCODE.INTERNALSERVER:
@@ -424,11 +464,16 @@ export default {
           case this.$MISAEnum.STATUSCODE.INSERT:
             break;
           case this.$MISAEnum.STATUSCODE.BADREQUEST:
+            var moreInfo = response.response.data.moreInfo;
             if (
               response.response.data.errorCode ==
               this.$MISAEnum.ERRORCODE.VALIDATERROR
             ) {
-              this.errorValidate(response.response.data.moreInfo.value);
+              this.errorValidate(moreInfo.value);
+              moreInfo.forEach((item) => {
+                this.validateList[`${item.key}`].labelValidate = item.value;
+                this.validateList[`${item.key}`].isStatus = true;
+              });
             }
             break;
           case this.$MISAEnum.STATUSCODE.INTERNALSERVER:
@@ -470,7 +515,7 @@ export default {
      */
     errorValidate(messageError) {
       // Gắn giá trị cho label dialog
-      this.lableValidate = messageError;
+      this.labelValidate = messageError;
 
       // Ẩn nút trong dialog khi tên để trống
       this.diy.ClearBtnDialog();
@@ -484,14 +529,26 @@ export default {
      */
     clearValidate() {
       if (this.employee.fullName != null) {
-        this.isActive = false;
+        this.validateList[`FullName`].isStatus = false;
       }
       if (this.employee.employeeCode != null) {
-        this.isActiveCode = false;
+        this.validateList[`EmployeeCode`].isStatus = false;
       }
       if (this.employee.departmentId != null) {
         this.isActiveDepartment = false;
       }
+      if (this.employee.identityNumber != null) {
+        this.validateList[`IdentityNumber`].isStatus = false;
+      }
+      if (this.employee.phoneNumber != null) {
+        this.validateList[`PhoneNumber`].isStatus = false;
+      }
+      if (this.employee.landlineNumber != null) {
+        this.validateList[`LandlineNumber`].isStatus = false;
+      }
+      if (this.employee.email != null) {
+        this.validateList[`Email`].isStatus = false;
+      } 
     },
 
     /**
@@ -500,34 +557,27 @@ export default {
      */
     validateEmployee() {
       if (!this.employee.employeeCode) {
-        this.isActiveCode = true;
+        this.validateList[`EmployeeCode`].isStatus = true;
 
         // Gắn giá trị cho label dialog
-        this.lableValidate = this.$MISAResource.ERRORVALIDATE.ErrorEmployeeCode;
+        this.validateList[`EmployeeCode`].labelValidate = this.$MISAResource.ERRORVALIDATE.EMPLOYEECODE;
 
-        // Ẩn nút trong dialog khi tên để trống
+        this.errorValidate(this.validateList[`EmployeeCode`].labelValidate);
+
+        // Ẩn nút trong dialog khi mã để trống
         this.diy.ClearBtnDialog();
 
-        // Hiển thị dialog khi tên để trống
+        // Hiển thị dialog khi mã để trống
         this.diy.ShowDialogValidate();
       }
 
       if (!this.employee.fullName) {
-        this.isActive = true;
+        this.validateList[`FullName`].isStatus = true;
 
-        this.errorFullName = this.$MISAResource.ERRORVALIDATE.ERRORFULLNAME;
+        this.validateList[`FullName`].labelValidate =
+          this.$MISAResource.ERRORVALIDATE.FULLNAME;
 
-        // Ẩn nút trong dialog khi tên để trống
-        this.diy.ClearBtnDialog();
-
-        // Hiển thị dialog khi tên để trống
-        this.diy.ShowDialogValidate();
-      } 
-
-      if (!this.employee.departmentId) {
-        this.isActiveDepartment = true;
-
-        this.errorDepartment = this.$MISAResource.ERRORVALIDATE.ERRORDEPARTMENT;
+        this.errorValidate(this.validateList[`FullName`].labelValidate);
 
         // Ẩn nút trong dialog khi tên để trống
         this.diy.ClearBtnDialog();
@@ -535,8 +585,24 @@ export default {
         // Hiển thị dialog khi tên để trống
         this.diy.ShowDialogValidate();
       }
-    },
 
+      if (!this.employee.departmentId) {
+        this.isActiveDepartment = true;
+
+        this.errorDepartment = this.$MISAResource.ERRORVALIDATE.DEPARTMENT;
+
+        // Ẩn nút trong dialog khi tên để trống
+        this.diy.ClearBtnDialog();
+
+        // Hiển thị dialog khi tên để trống
+        this.diy.ShowDialogValidate();
+        if (!this.employee.fullName) {
+          this.errorValidate(this.validateList[`FullName`].labelValidate);
+        } else {
+          this.errorValidate(this.errorDepartment);
+        }
+      }
+    },
     /**
      * Hàm gắn giá trị cho form employeeDetail theo id nhân viên
      * CreatedBy: Bien (11/1/2023)
@@ -655,11 +721,48 @@ export default {
       // Khai báo biến gắn giá trị cho input EmployeeCode
       inputEmployeeCode: "inputEmployeeCode",
 
+      // Khai báo biến nhận giá trị lỗi validate
+      validateList: {
+        EmployeeCode: {
+          labelValidate: null,
+          isStatus: false,
+        },
+        FullName: {
+          labelValidate: null,
+          isStatus: false,
+        },
+        DepartmentId: {
+          labelValidate: null,
+          isStatus: false,
+        },
+        DateOfBirth: {
+          labelValidate: null,
+          isStatus: false,
+        },
+        IdentityDate: {
+          labelValidate: null,
+          isStatus: false,
+        },
+        LandlineNumber: {
+          labelValidate: null,
+          isStatus: false,
+        },
+        PhoneNumber: {
+          labelValidate: null,
+          isStatus: false,
+        },
+        Email: {
+          labelValidate: null,
+          isStatus: false,
+        },
+        IdentityNumber: {
+          labelValidate: null,
+          isStatus: false,
+        },
+      },
+
       // Khai báo biến nhận giá trị lỗi department
       errorDepartment: null,
-
-      // Khai báo biến nhận giá trị lỗi tooltip
-      errorFullName: null,
 
       // Khai báo biến max thời gian
       maxDateInput: this.$MISACommon.formatDateReverse(Date.now()),
@@ -671,19 +774,7 @@ export default {
       employee: {},
 
       // Khai báo biến hiển thị label dialog đơn vị không được để trống
-      lableValidate: null,
-
-      // Khai báo biến hiển thị label dialog tên để trống
-      isLabelValide: true,
-
-      // Khai báo biến kiểm tra tên để trống
-      isValidateName: null,
-
-      // Khai báo biến isActive
-      isActiveCode: null,
-
-      // Khai báo biến isActive
-      isActive: null,
+      labelValidate: null,
 
       // Khai báo biến bắt lỗi để trống department
       isActiveDepartment: null,

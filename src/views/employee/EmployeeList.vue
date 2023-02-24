@@ -24,7 +24,7 @@
             disabled
             value="Thực hiện hàng loạt"
             class="function-all"
-            v-bind:class="{ 'active-function-all': isFunctionAll}"
+            v-bind:class="{ 'active-function-all': isFunctionAll }"
           />
           <div class="icon-dropdown-func"></div>
           <div class="function-all-list" v-if="diy.state.showFunctionAll">
@@ -121,7 +121,6 @@
                 v-for="(item, index) in employee"
                 :key="index"
                 @dblclick="rowOnDblClick(item)"
-                @click="btnSelectItem($event, item)"
               >
                 <td class="td-center td-cb" style="width: 60px">
                   <label>
@@ -188,7 +187,7 @@
           <div class="cbbox-number">
             <MDropdownVue
               :pageNumverRecord="pagination"
-              @pageSize="setPageNumber"
+              @pageSize="setPageSize"
             ></MDropdownVue>
           </div>
           <div class="pading">
@@ -287,27 +286,34 @@ export default {
      * CreatedBy: Bien (20/1/2023)
      */
     async btnDuplicateEmployee() {
-      // Lấy id nhân viên của hàng được chọn
-      this.employeeIDUpdate = this.employeeDuplidate.employeeId;
+      try {
+        // Lấy id nhân viên của hàng được chọn
+        this.employeeIDUpdate = this.employeeDuplidate.employeeId;
 
-      var response = await employeeApi.getEmpNewCode();
+        var response = await employeeApi.getEmpNewCode();
 
-      this.duplicateEmployeeCode = response.EmployeeCode;
-      this.duplicateEmployeeIndex = response.EmployeeIndex;
-      // Gọi hàm hiển thị EmployeeDetail
-      this.diy.showEPLDetail();
+        this.duplicateEmployeeCode = response.EmployeeCode;
+        this.duplicateEmployeeIndex = response.EmployeeIndex;
+        // Gọi hàm hiển thị EmployeeDetail
+        this.diy.showEPLDetail();
 
-      // Gọi hàm ẩn danh sách chức năng trong bảng nhân viên
-      this.clearFuncList();
+        // Gọi hàm ẩn danh sách chức năng trong bảng nhân viên
+        this.clearFuncList();
+      } catch (error) {
+        console.log(error);
+      }
     },
     /**
      * Hàm xuất khẩu dữ liệu sang Excel
      * CreatedBy: Bien (19/02/2023)
      */
     async btnExportEmployees() {
-      await employeeApi.exportEmployees();
+      try {
+        await employeeApi.exportEmployees();
+      } catch (error) {
+        console.log(error);
+      }
     },
-
     /**
      * Hàm ẩn và hiện danh sách chức năng của thao tác thực hiện hàng loạt
      * CreatedBy: Bien (20/02/2023)
@@ -319,15 +325,12 @@ export default {
       } else {
         this.isFunctionAll = false;
       }
-
-      console.log(this.isFunctionAll + " lengt: " + this.selectedList.length);
     },
     /**
-     * Hàm thực hiện xóa hàng loạt nhân viên được chọn
+     * Hàm thực hiện show dialog hỏi trước khi xóa hàng loạt nhân viên được chọn
      * CreatedBy: Bien (18/02/2023)
      */
     async deleteEmployeeListSelect() {
-
       this.lableDeleteEmployee = this.$MISAResource.CONTENTDIALOG.DELETES;
 
       await this.diy.showDialogDeleteEmployees();
@@ -335,21 +338,24 @@ export default {
       this.clearDialogDelete();
 
       this.diy.clearBtnCancel();
-
     },
     /**
      * Hàm thực hiện gọi API xóa danh sách nhân viên
      * CreatedBy: Bien (21/02/2023)
      */
     async deleteEPLs() {
-      this.diy.showLoading();
+      try {
+        this.diy.showLoading();
 
-      // Hàm thực hiện xóa khi xóa
-      await employeeApi.deleteEmployees(this.selectedList);
+        // Hàm thực hiện xóa khi xóa
+        await employeeApi.deleteEmployees(this.selectedList);
 
-      this.clickCallback(this.indexPage);
+        this.clickCallback(this.indexPage);
 
-      this.diy.clearLoading();
+        this.diy.clearLoading();
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     /**
@@ -385,78 +391,6 @@ export default {
       }
       console.log(this.selected + " select: " + this.selectedList.length);
     },
-
-    /**
-     * Hàm ẩn danh sách chức năng trong bảng
-     * CreatedBy: Bien (12/1/2023)
-     */
-    clearFuncList() {
-      this.showFuncList = false;
-    },
-
-    /**
-     * Hàm gắn giá trị cho pageNumber
-     * CreatedBy: Bien (11/1/2023)
-     */
-    setPageNumber(n) {
-      // Gắn giá trị cho biến pageSize
-      this.pageSize = n;
-
-      // Gọi hàm set pagation
-      this.getEmployeePaging(1, this.pageSize, this.textSearch);
-    },
-
-    // /**
-    //  * Gọi hàm tìm kiếm nhân viên theo sau 0.5s
-    //  * CreatedBy: Bien (10/1/2023)
-    //  */
-    searchEmployee: _.debounce(function () {
-      this.search(this.textSearch);
-    }, 500),
-
-    /**
-     * Hàm tìm kiếm nhân viên
-     * @param {Nội dung muốn tìm kiếm} value
-     * CreatedBy: Bien (19/1/2023)
-     */
-    async search(value) {
-      try {
-        let me = this;
-        // Nhận dữ liệu khi tìm kiếm
-        const response = await this.getEmployeePaging(1, me.pageSize, value);
-
-        // Gắn dữ liệu
-        this.setDataPaging(response)
-
-      } catch (error) {
-        console.log("Lỗi tìm kiếm" + error);
-      }
-    },
-    /**
-     * Hàm gắn giá trị danh sách nhân viên, số trang, số bảng ghi
-     * CreatedBy: Bien (21/02/2023)
-     */
-    setDataPaging(res) {
-      // Gắn dữ liệu
-      this.employee = res.data;
-      this.totalPage = res.totalPage;
-      this.totalRecord = res.totalRecord;
-    },
-    /**
-     * Hàm chuyển trang
-     * CreaetedBy: Bien (10/1/2023)
-     */
-    async clickCallback(pageNumber) {
-      // Nhận dữ liệu khi tìm kiếm
-      const response = await employeeApi.getEmpPaging(
-        pageNumber,
-        this.pageSize,
-        this.textSearch
-      );
-      this.setDataPaging(response)
-      this.indexPage = pageNumber;
-      this.autoCheckAllEmployee();
-    },
     /**
      * Hàm tự động hiển thị chức năng hàng loạt khi chọn 2 bản ghi trở lên
      * CreatedBy: Bien (20/02/2023)
@@ -476,24 +410,103 @@ export default {
       }
     },
     /**
+     * Hàm ẩn danh sách chức năng trong bảng
+     * CreatedBy: Bien (12/1/2023)
+     */
+    clearFuncList() {
+      this.showFuncList = false;
+    },
+
+    /**
+     * Hàm gắn giá trị cho pageSize
+     * @param {Kích thước trang} n
+     * CreatedBy: Bien (11/1/2023)
+     */
+    setPageSize(n) {
+      // Gắn giá trị cho biến pageSize
+      this.pageSize = n;
+
+      // Gọi hàm set pagation
+      this.getEmployeePaging(1, this.pageSize, this.textSearch);
+    },
+
+    /**
+     * Gọi hàm tìm kiếm nhân viên theo sau 0.5s
+     * CreatedBy: Bien (10/1/2023)
+     */
+    searchEmployee: _.debounce(function () {
+      this.search(this.textSearch);
+    }, 500),
+
+    /**
+     * Hàm tìm kiếm nhân viên
+     * @param {Nội dung muốn tìm kiếm} value
+     * CreatedBy: Bien (19/1/2023)
+     */
+    async search(value) {
+      try {
+        let me = this;
+        // Nhận dữ liệu khi tìm kiếm
+        const response = await this.getEmployeePaging(1, me.pageSize, value);
+
+        // Gắn dữ liệu
+        this.setDataPaging(response);
+      } catch (error) {
+        console.log("Lỗi tìm kiếm" + error);
+      }
+    },
+    /**
+     * Hàm gắn giá trị danh sách nhân viên, số trang, số bảng ghi
+     * CreatedBy: Bien (21/02/2023)
+     */
+    setDataPaging(res) {
+      // Gắn dữ liệu
+      this.employee = res.data;
+      this.totalPage = res.totalPage;
+      this.totalRecord = res.totalRecord;
+    },
+    /**
+     * Hàm chuyển trang
+     * CreaetedBy: Bien (10/1/2023)
+     */
+    async clickCallback(pageNumber) {
+      try {
+        // Nhận dữ liệu khi tìm kiếm
+        const response = await employeeApi.getEmpPaging(
+          pageNumber,
+          this.pageSize,
+          this.textSearch
+        );
+        this.setDataPaging(response);
+        this.indexPage = pageNumber;
+        this.autoCheckAllEmployee();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    /**
      * Hàm phân trang
      * CreatedBy: Bien (10/1/2023)
      */
     async getEmployeePaging(pageNumber, pageSize, filter) {
-      this.diy.showLoading();
- 
-      // Nhận dữ liệu gọi dữ liệu
-      const response = await employeeApi.getEmpPaging(
-        pageNumber,
-        pageSize,
-        filter
-      );
+      try {
+        this.diy.showLoading();
 
-      // Gắn giá trị cho danh sách nhân viên
-      this.setDataPaging(response);
-      this.indexPage = pageNumber;
+        // Nhận dữ liệu gọi dữ liệu
+        const response = await employeeApi.getEmpPaging(
+          pageNumber,
+          pageSize,
+          filter
+        );
 
-      this.diy.clearLoading();
+        // Gắn giá trị cho danh sách nhân viên
+        this.setDataPaging(response);
+        this.indexPage = pageNumber;
+
+        this.diy.clearLoading();
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     /**
@@ -513,27 +526,11 @@ export default {
         item.employeeCode
       );
       this.employeeDuplidate = item;
-
-      this.isSelect = true;
       if (this.positionY > 556) {
         this.isDropdown = false;
       } else {
         this.isDropdown = true;
       }
-    },
-
-    /**
-     * Hàm gọi vị trí set background
-     * @param {* Sự kiện hiện tại} event
-     * @param {* Nhân viên được chọn} item
-     * CreatedBy: Bien (13/1/2023)
-     */
-    btnSelectItem(event, item) {
-      this.positionX = event.clientX;
-      this.positionY = event.clientY;
-
-      this.employeeIdDelete = item.employeeId;
-      this.showBackgroudItem = true;
     },
 
     /**
@@ -563,18 +560,22 @@ export default {
      * CreatedBy: Bien (10/1/2023)
      */
     async deleteEPL() {
-      // Hàm hiển thị loading
-      this.diy.showLoading();
+      try {
+        // Hàm hiển thị loading
+        this.diy.showLoading();
 
-      // Hàm nhận dữ liệu sau khi xóa
-      const response = await employeeApi.deleteEmp(this.employeeIdDelete);
+        // Hàm nhận dữ liệu sau khi xóa
+        const response = await employeeApi.deleteEmp(this.employeeIdDelete);
 
-      console.log(response);
+        console.log(response);
 
-      this.clickCallback(this.indexPage);
+        this.clickCallback(this.indexPage);
 
-      //Hàm ẩn loading
-      this.diy.clearLoading();
+        //Hàm ẩn loading
+        this.diy.clearLoading();
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     /**
@@ -591,10 +592,11 @@ export default {
       }
     },
 
-    /**
-     * Hàm đọc dữ liệu vào form EmployeeDetail
-     * CreatedBy: Bien (4/1/2023)
-     */
+   /**
+    * Hàm đọc dữ liệu vào form EmployeeDetail
+    * @param {*Thông tin nhân viên muốn lấy} item 
+    * CreatedBy: Bien (4/1/2023)
+    */
     rowOnDblClick(item) {
       // Lấy id của hàng được chọn
       this.employeeIDUpdate = item.employeeId;
@@ -616,56 +618,45 @@ export default {
     },
   },
   computed: {
-    /**   
+    /**
      * Hàm set vị trị hiển thị danh sách chức năng trong bảng
-     * CreatedBy: Bien (20/01/2023) 
-     * */ 
+     * CreatedBy: Bien (20/01/2023)
+     * */
     dropdownPosition() {
       return {
         top: `calc(${this.positionY}px + 10px)`,
         left: `calc(${this.positionX}px -55px)`,
       };
     },
-    /**   
+    /**
      * Hàm set vị trí hiển thị phía cuối
-     * CreatedBy: Bien (20/01/2023) 
-     * */ 
+     * CreatedBy: Bien (20/01/2023)
+     * */
     dropdownPositionReverse() {
       return {
         top: `calc(${this.positionY}px - 103px)`,
         left: `calc(${this.positionX}px -55px)`,
       };
     },
-    /**   
-     * Hàm set border nhân viên được chọn danh sách chứ năng trong bảng
-     * CreatedBy: Bien (20/01/2023) 
-     * */ 
+    /**
+     * Hàm set border danh sách chức năng nhân viên được chọn
+     * CreatedBy: Bien (20/01/2023)
+     * */
     activePosition() {
       return {
         top: `calc(${this.positionY}px - 10px)`,
         left: `calc(${this.positionX}px - 15px)`,
       };
     },
-    /**
-     * Hàm set vị trí background khi được chọn
-     * CreatedBy: Bien (20/01/2023) 
-     * */ 
-    activeBackground() {
-      return {
-        top: `calc(${this.positionY}px - 9px)`,
-        left: `calc(${this.positionX}px -55px)`,
-      };
-    },
   },
   watch: {
     /**
-     * Hàm nắng nghe dữ liệu tìm kiếm
+     * Hàm tìm kiếm giá trị tìm kiếm thay đổi
      * CreatedBy: Bien (18/1/2023)
      */
     textSearch: async function () {
       await this.searchEmployee(this.textSearch);
     },
-
     /**
      * Hàm lắng nghe sự thay đổi checkall
      * CreatedBy: Bien (18/1/2023)
@@ -678,7 +669,6 @@ export default {
         this.isFunctionAll = false;
         this.diy.clearFunctionAll();
       }
-      
     },
   },
   data() {
@@ -701,9 +691,6 @@ export default {
       // Nội dung thông báo hỏi trước khi xóa
       lableDeleteEmployee: null,
 
-      // Khai báo biến hiển thị background khi chọn cột
-      showBackgroudItem: false,
-
       // Khai báo biến isDropdown
       isDropdown: true,
 
@@ -715,12 +702,6 @@ export default {
 
       // Khai báo biến indexPage
       indexPage: null,
-
-      // Khai báo giá trị mặc định của employeeCode khi click nút thêm
-      employeeCodeDefault: null,
-
-      //Khai báo biến hiển thị background khi click table
-      isSelect: false,
 
       // Khai báo biến hiển thị tọa độ theo Ox
       positionX: 0,

@@ -120,7 +120,7 @@ const employeeApi = {
       */
     deleteEmployees:(employeeIds) => {
         try {
-            return axios.delete("https://localhost:7185/api/Employees/DeleteEmployees",{
+            return axios.delete("https://localhost:7185/api/Employees/Deletes",{
                 data: employeeIds
             })
         } catch (error) {

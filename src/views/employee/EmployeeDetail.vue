@@ -4,10 +4,9 @@
     <div
       class="form-container"
       v-on:keydown.esc="btnCloseOnClickIcon"
-      v-on:keydown.tab="clearValidate"
+      v-on:keydown.tab="clearValidateEmployee"
       v-on:keyup.ctrl.shift.s.prevent="btnSaveAndAddEmployee"
       v-on:keydown.alt.s.prevent="btnSaveEmployee"
-      @click="clearValidate"
     >
       <div class="form-header">
         <div class="icon help tags" data-gloss="Help (F1)"></div>
@@ -41,9 +40,13 @@
               <div class="col-7">Tên <span style="color: red">*</span></div>
             </div>
             <div class="row col-g p-relative">
-              <div class="col-5"
-              :class="{ 'tags-error': validateList[`EmployeeCode`].isStatus }"
-              :data-gloss="validateList[`EmployeeCode`].labelValidate"
+              <div
+                class="col-5"
+                :class="{
+                  'tags-error-employeecode':
+                    validateList[`EmployeeCode`].isStatus,
+                }"
+                :data-gloss="validateList[`EmployeeCode`].labelValidate"
               >
                 <MInputTextVue
                   v-model="employee.employeeCode"
@@ -73,7 +76,7 @@
               Đơn vị <span style="color: red">*</span>
             </div>
             <div
-              class="col-12"
+              class="col-12 p-relative"
               :class="{
                 'tags-error-department': isActiveDepartment,
               }"
@@ -103,9 +106,14 @@
               <div class="col-5">Ngày sinh</div>
               <div class="col-7">Giới tính</div>
             </div>
-            <div class="row col-g">
+            <div class="row col-g p-relative">
               <div
                 class="col-5"
+                :class="{
+                  'tags-error-date-of-birth':
+                    validateList[`DateOfBirth`].isStatus,
+                }"
+                :data-gloss="validateList[`DateOfBirth`].labelValidate"
               >
                 <MInputTextVue
                   v-model="employee.dateOfBirth"
@@ -116,7 +124,7 @@
                   :maxDate="maxDateInput"
                   :class="{
                     'text-gray': !employee.dateOfBirth,
-                    'bd-red': validateList[`DateOfBirth`].labelValidate,
+                    'bd-red': validateList[`DateOfBirth`].isStatus,
                   }"
                 ></MInputTextVue>
               </div>
@@ -156,9 +164,14 @@
               <div class="col-7" title="Chứng minh nhân dân">Số CMND</div>
               <div class="col-5">Ngày cấp</div>
             </div>
-            <div class="row col-g">
+            <div class="row col-g p-relative">
               <div
                 class="col-7"
+                :class="{
+                  'tags-error-identity-number':
+                    validateList[`IdentityNumber`].isStatus,
+                }"
+                :data-gloss="validateList[`IdentityNumber`].labelValidate"
               >
                 <MInputTextVue
                   tabindex="7"
@@ -169,6 +182,11 @@
               </div>
               <div
                 class="col-5"
+                :class="{
+                  'tags-error-date-identity-date':
+                    validateList[`IdentityDate`].isStatus,
+                }"
+                :data-gloss="validateList[`IdentityDate`].labelValidate"
               >
                 <MInputTextVue
                   type="date"
@@ -209,9 +227,15 @@
                 <div title="Điện thoại di động" class="col-6">ĐT di động</div>
                 <div title="Điện thoại cố định" class="col-6">ĐT cố định</div>
               </div>
-              <div class="row col-g">
+              <div class="row col-g p-relative">
                 <div
-                  class="col-6">
+                  class="col-6"
+                  :class="{
+                    'tags-error-phone-number':
+                      validateList[`PhoneNumber`].isStatus,
+                  }"
+                  :data-gloss="validateList[`PhoneNumber`].labelValidate"
+                >
                   <MInputTextVue
                     class="text-form"
                     v-model="employee.phoneNumber"
@@ -220,7 +244,13 @@
                   ></MInputTextVue>
                 </div>
                 <div
-                  class="col-6">
+                  class="col-6"
+                  :class="{
+                    'tags-error-landline-number':
+                      validateList[`LandlineNumber`].isStatus,
+                  }"
+                  :data-gloss="validateList[`LandlineNumber`].labelValidate"
+                >
                   <MInputTextVue
                     v-model="employee.landlineNumber"
                     tabindex="12"
@@ -236,9 +266,14 @@
               <div class="row col-g row-g label-text">
                 <div class="col-6">Email</div>
               </div>
-              <div class="row col-g">
+              <div class="row col-g p-relative">
                 <div
-                  class="col-6">
+                  class="col-6"
+                  :class="{
+                    'tags-error-email': validateList[`Email`].isStatus,
+                  }"
+                  :data-gloss="validateList[`Email`].labelValidate"
+                >
                   <MInputTextVue
                     v-model="employee.email"
                     tabindex="13"
@@ -333,11 +368,7 @@ import employeeApi from "@/api/employeeApi";
 export default {
   inject: ["diy"],
   name: "EmployeeDetail",
-  props: [
-    "id",
-    "duplicateEmployeeCode",
-    "duplicateEmployeeIndex",
-  ],
+  props: ["id", "duplicateEmployeeCode", "duplicateEmployeeIndex"],
   components: {},
   created() {
     if (this.id) {
@@ -363,17 +394,22 @@ export default {
      * CreatedBy: Bien (4/1/2023)
      */
     btnSaveAndAddEmployee() {
-      this.validateEmployee();
-      this.isSaveEmployee = false;
-      if (
-        this.employee.employeeCode &&
-        this.employee.fullName &&
-        this.employee.departmentId
-      ) {
-        this.saveEmployee(this.id);
+      try {
+        this.validateEmployee();
+
+        this.isSaveEmployee = false;
+
+        if (
+          this.employee.employeeCode &&
+          this.employee.fullName &&
+          this.employee.departmentId
+        ) {
+          this.saveEmployee(this.id);
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
-
     /**
      * Hàm thực hiện sự kiện khi nhấn nút cất
      * CreatedBy: Bien (10/1/2023)
@@ -381,7 +417,10 @@ export default {
     btnSaveEmployee() {
       // Kiểm tra dữ liệu đầu vào
       this.validateEmployee();
+
+      // Xác nhận là hành động cất
       this.isSaveEmployee = true;
+
       if (
         this.employee.employeeCode &&
         this.employee.fullName &&
@@ -395,100 +434,96 @@ export default {
      * CreatedBy: Bien (21/02/2023)
      */
     async createEmployee() {
-      // Nhận dữ liệu sau khi thêm nhân viên
-      const response = await employeeApi.createEmp(this.employee);
+      try {
+        // Nhận dữ liệu sau khi thêm nhân viên
+        const response = await employeeApi.createEmp(this.employee);
 
-      console.log("Posting data", response);
+        console.log("Posting data", response);
 
-      if (response.errorCode == this.$MISAEnum.ERRORCODE.SUCCESS) {
-        this.diy.showNotify();
+        if (response.errorCode == this.$MISAEnum.ERRORCODE.SUCCESS) {
+          this.diy.showNotify();
 
-        this.$parent.textSearch = "";
-        this.$parent.clickCallback(1);
-        this.setEmployeeCode();
-        this.employee = {};
-        // Thực hiện khi click nút cất
-        if (this.isSaveEmployee) {
-          this.diy.clearEPLDetail();
+          this.$parent.textSearch = "";
+          this.$parent.clickCallback(1);
+          this.setEmployeeCode();
+          this.employee = {};
+          this.validateList[`isActive`] = false;
+          console.log(this.validateList[`isActive`]);
+          // Thực hiện khi click nút cất
+          if (this.isSaveEmployee) {
+            this.diy.clearEPLDetail();
+          }
+          this.$parent.duplicateEmployeeCode = null;
+        } else {
+          this.handleErrorValidate(response);
         }
-        this.$parent.duplicateEmployeeCode = null;
-      } else {
-        switch (response.response.status) {
-          case this.$MISAEnum.STATUSCODE.INSERT:
-            break;
-          case this.$MISAEnum.STATUSCODE.BADREQUEST:
-            var moreInfo = response.response.data.moreInfo;
-            if (
-              response.response.data.errorCode ==
-              this.$MISAEnum.ERRORCODE.VALIDATERROR
-            ) {
-              this.errorValidate(moreInfo[0].value);
-              moreInfo.forEach((item) => {
-                this.validateList[`${item.key}`].labelValidate = item.value;
-                this.validateList[`${item.key}`].isStatus = true;
-              });
-            }
-            break;
-          case this.$MISAEnum.STATUSCODE.INTERNALSERVER:
-            this.errorValidate(
-              this.$MISAResource.ERRORVALIDATE.ERRORDEPARTMENT
-            );
-            break;
-          default:
-            break;
-        }
+      } catch (error) {
+        console.log(error);
       }
     },
-
     /**
      * Hàm xử lí sửa thông tin nhân viên
      * CreatedBy: Bien (21/02/2023)
      */
     async updateEmployee(employeeId, employee) {
-      // Nhận dữ liệu sau khi sửa nhân viên
-      const response = await employeeApi.updateEmp(employeeId, employee);
-      console.log("Posting data", response);
+      try {
+        // Nhận dữ liệu sau khi sửa nhân viên
+        const response = await employeeApi.updateEmp(employeeId, employee);
+        console.log("Posting data", response);
 
-      if (response.errorCode == this.$MISAEnum.ERRORCODE.SUCCESS) {
-        this.$parent.clickCallback(this.$parent.indexPage);
-        this.employee = {};
-        this.$parent.employeeIDUpdate = null;
-        this.setEmployeeCode();
+        if (response.errorCode == this.$MISAEnum.ERRORCODE.SUCCESS) {
+          this.$parent.clickCallback(this.$parent.indexPage);
+          this.employee = {};
+          this.$parent.employeeIDUpdate = null;
+          this.setEmployeeCode();
 
-        // Thực hiện khi click nút cất
-        if (this.isSaveEmployee) {
-          this.diy.clearEPLDetail();
+          // Thực hiện khi click nút cất
+          if (this.isSaveEmployee) {
+            this.diy.clearEPLDetail();
+          }
+        } else {
+          this.handleErrorValidate(response);
         }
-      } else {
-        switch (response.response.status) {
-          case this.$MISAEnum.STATUSCODE.INSERT:
-            break;
-          case this.$MISAEnum.STATUSCODE.BADREQUEST:
-            var moreInfo = response.response.data.moreInfo;
-            if (
-              response.response.data.errorCode ==
-              this.$MISAEnum.ERRORCODE.VALIDATERROR
-            ) {
-              this.errorValidate(moreInfo.value);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    /**
+     * Hàm handle lỗi validate khi gọi API
+     * @param {Kết quả gọi API} res
+     * CreatedBy: Bien (24/02/2023)
+     */
+    handleErrorValidate(res) {
+      switch (res.response.status) {
+        case this.$MISAEnum.STATUSCODE.OK:
+          this.validateList[`isActive`] = false;
+          break;
+        case this.$MISAEnum.STATUSCODE.BADREQUEST:
+          var moreInfo = res.response.data.moreInfo;
+          if (
+            res.response.data.errorCode == this.$MISAEnum.ERRORCODE.VALIDATERROR
+          ) {
+            this.showErrorValidate(moreInfo[0].value);
+            this.validateList[`isActive`] = true;
+            if (this.validateList[`isActive`]) {
               moreInfo.forEach((item) => {
                 this.validateList[`${item.key}`].labelValidate = item.value;
                 this.validateList[`${item.key}`].isStatus = true;
               });
             }
-            break;
-          case this.$MISAEnum.STATUSCODE.INTERNALSERVER:
-            this.errorValidate(
-              this.$MISAResource.ERRORVALIDATE.ERRORDEPARTMENT
-            );
-            break;
-          default:
-            break;
-        }
+          }
+          break;
+        case this.$MISAEnum.STATUSCODE.INTERNALSERVER:
+          this.showErrorValidate(
+            this.$MISAResource.ERRORVALIDATE.ERRORDEPARTMENT
+          );
+          break;
+        default:
+          break;
       }
     },
-
     /**
-     *  Hàm thực hiện lưu nhân viên
+     *  Hàm thực hiện cất nhân viên
      * CreatedBy: Bien(10/1/2023)
      */
     saveEmployee(employeeId) {
@@ -508,12 +543,11 @@ export default {
         console.log(error);
       }
     },
-
     /**
-     * Hàm thông báo lỗi trùng mã nhân viên
+     * Hàm thông báo lỗi validate popup
      * CreatedBy: Bien (21/2/2023)
      */
-    errorValidate(messageError) {
+    showErrorValidate(messageError) {
       // Gắn giá trị cho label dialog
       this.labelValidate = messageError;
 
@@ -524,71 +558,82 @@ export default {
       this.diy.ShowDialogValidate();
     },
     /**
-     * Loại bỏ validate và set phím tắt cho form EmployeeDetail
-     * CreatedBy: Bien (5/1/2023)
+     * Hàm loại bỏ lỗi khi nhập giá trị đúng định dạng
+     * CreatedBy: Bien (24/02/2023)
      */
-    clearValidate() {
-      if (this.employee.fullName != null) {
-        this.validateList[`FullName`].isStatus = false;
-      }
+    clearValidateEmployee() {
       if (this.employee.employeeCode != null) {
         this.validateList[`EmployeeCode`].isStatus = false;
       }
+
+      if (this.employee.fullName != null) {
+        this.validateList[`FullName`].isStatus = false;
+      }
+
       if (this.employee.departmentId != null) {
         this.isActiveDepartment = false;
       }
-      if (this.employee.identityNumber != null) {
-        this.validateList[`IdentityNumber`].isStatus = false;
-      }
-      if (this.employee.phoneNumber != null) {
-        this.validateList[`PhoneNumber`].isStatus = false;
-      }
-      if (this.employee.landlineNumber != null) {
+
+      // Khai báo chuỗi định dạng số điện thoại
+      const phoneNumberFormat = new RegExp(
+        /([\+84|84|0]+(3|5|7|8|9|1[2|6|8|9]))+([0-9]{8})\b/
+      );
+
+      if (phoneNumberFormat.test(this.employee.landlineNumber)) {
         this.validateList[`LandlineNumber`].isStatus = false;
       }
-      if (this.employee.email != null) {
+      if (phoneNumberFormat.test(this.employee.phoneNumber)) {
+        this.validateList[`PhoneNumber`].isStatus = false;
+      }
+      // Khai báo chuỗi định dạng số chứng minh nhân dân
+      const identityNumberFormat = new RegExp(/^([0-9]{12})\b/);
+      if (identityNumberFormat.test(this.employee.identityNumber)) {
+        this.validateList[`IdentityNumber`].isStatus = false;
+      }
+      // Khai báo chuỗi định dạnh email
+      const emailFormat = new RegExp(/^([\w\.\-]+)@([\w\-]+)((\.(\w){2,5})+)$/);
+      if (emailFormat.test(this.employee.email)) {
         this.validateList[`Email`].isStatus = false;
-      } 
-    },
+      }
+      // Khai báo biến nhận ngày hiện tại
+      const dateNow = new Date();
 
+      const identityDate = new Date(this.employee.identityDate);
+      if (identityDate < dateNow) {
+        this.validateList[`IdentityDate`].isStatus = false;
+      }
+      const dateOfBirth = new Date(this.employee.dateOfBirth);
+      if (dateOfBirth < dateNow) {
+        this.validateList[`DateOfBirth`].isStatus = false;
+      }
+    },
     /**
-     * Hàm kiểm tra dữ liệu đầu vào employeeCode
-     * CreatedBy: Bien (10/1/2023)
+     * Validate dứ liệu đầu thông tin nhân viên
+     * CreatedBy: Bien (24/02/2023)
      */
     validateEmployee() {
-      if (!this.employee.employeeCode) {
+      if (this.employee.employeeCode) {
+        this.validateList[`EmployeeCode`].isStatus = false;
+      } else {
         this.validateList[`EmployeeCode`].isStatus = true;
-
-        // Gắn giá trị cho label dialog
-        this.validateList[`EmployeeCode`].labelValidate = this.$MISAResource.ERRORVALIDATE.EMPLOYEECODE;
-
-        this.errorValidate(this.validateList[`EmployeeCode`].labelValidate);
-
-        // Ẩn nút trong dialog khi mã để trống
-        this.diy.ClearBtnDialog();
-
-        // Hiển thị dialog khi mã để trống
-        this.diy.ShowDialogValidate();
+        this.validateList[`EmployeeCode`].labelValidate =
+          this.$MISAResource.ERRORVALIDATE.EMPLOYEECODE;
+        this.showErrorValidate(this.validateList[`EmployeeCode`].labelValidate);
       }
 
-      if (!this.employee.fullName) {
+      if (this.employee.fullName) {
+        this.validateList[`FullName`].isStatus = false;
+      } else {
         this.validateList[`FullName`].isStatus = true;
-
         this.validateList[`FullName`].labelValidate =
           this.$MISAResource.ERRORVALIDATE.FULLNAME;
-
-        this.errorValidate(this.validateList[`FullName`].labelValidate);
-
-        // Ẩn nút trong dialog khi tên để trống
-        this.diy.ClearBtnDialog();
-
-        // Hiển thị dialog khi tên để trống
-        this.diy.ShowDialogValidate();
+        this.showErrorValidate(this.validateList[`FullName`].labelValidate);
       }
 
-      if (!this.employee.departmentId) {
+      if (this.employee.departmentId) {
+        this.isActiveDepartment = false;
+      } else {
         this.isActiveDepartment = true;
-
         this.errorDepartment = this.$MISAResource.ERRORVALIDATE.DEPARTMENT;
 
         // Ẩn nút trong dialog khi tên để trống
@@ -596,10 +641,100 @@ export default {
 
         // Hiển thị dialog khi tên để trống
         this.diy.ShowDialogValidate();
-        if (!this.employee.fullName) {
-          this.errorValidate(this.validateList[`FullName`].labelValidate);
-        } else {
-          this.errorValidate(this.errorDepartment);
+      }
+      // Khai báo chuỗi định dạng số điện thoại
+      const phoneNumberFormat = new RegExp(
+        /([\+84|84|0]+(3|5|7|8|9|1[2|6|8|9]))+([0-9]{8})\b/
+      );
+
+      if (phoneNumberFormat.test(this.employee.landlineNumber)) {
+        this.validateList[`LandlineNumber`].isStatus = false;
+      } else {
+        if (this.employee.landlineNumber != null) {
+          this.validateList[`LandlineNumber`].isStatus = true;
+          this.validateList[`LandlineNumber`].labelValidate =
+            this.$MISAResource.ERRORVALIDATE.LANDLINENUMBER;
+          this.showErrorValidate(
+            this.validateList[`LandlineNumber`].labelValidate
+          );
+        }
+      }
+
+      if (
+        phoneNumberFormat.test(this.employee.phoneNumber) &&
+        this.employee.phoneNumber
+      ) {
+        this.validateList[`PhoneNumber`].isStatus = false;
+      } else {
+        if (this.employee.phoneNumber != null) {
+          this.validateList[`PhoneNumber`].isStatus = true;
+          this.validateList[`PhoneNumber`].labelValidate =
+            this.$MISAResource.ERRORVALIDATE.PHONENUMBER;
+          this.showErrorValidate(
+            this.validateList[`PhoneNumber`].labelValidate
+          );
+        }
+      }
+
+      // Khai báo chuỗi định dạng số chứng minh nhân dân
+      const identityNumberFormat = new RegExp(/^([0-9]{12})\b/);
+      if (
+        identityNumberFormat.test(this.employee.identityNumber) &&
+        this.employee.identityNumber
+      ) {
+        this.validateList[`IdentityNumber`].isStatus = false;
+      } else {
+        if (this.employee.identityNumber != null) {
+          this.validateList[`IdentityNumber`].isStatus = true;
+          this.validateList[`IdentityNumber`].labelValidate =
+            this.$MISAResource.ERRORVALIDATE.IDENTITYNUMBER;
+          this.showErrorValidate(
+            this.validateList[`IdentityNumber`].labelValidate
+          );
+        }
+      }
+
+      // Khai báo chuỗi định dạnh email
+      const emailFormat = new RegExp(/^([\w\.\-]+)@([\w\-]+)((\.(\w){2,5})+)$/);
+      if (emailFormat.test(this.employee.email) && this.employee.email) {
+        this.validateList[`Email`].isStatus = false;
+      } else {
+        if (this.employee.email != null) {
+          this.validateList[`Email`].isStatus = true;
+          this.validateList[`Email`].labelValidate =
+            this.$MISAResource.ERRORVALIDATE.EMAIL;
+          this.showErrorValidate(this.validateList[`Email`].labelValidate);
+        }
+      }
+
+      // Khai báo biến nhận ngày hiện tại
+      const dateNow = new Date();
+
+      const identityDate = new Date(this.employee.identityDate);
+      if (identityDate < dateNow && this.employee.identityDate) {
+        this.validateList[`IdentityDate`].isStatus = false;
+      } else {
+        if (this.employee.identityDate != null) {
+          this.validateList[`IdentityDate`].isStatus = true;
+          this.validateList[`IdentityDate`].labelValidate =
+            this.$MISAResource.ERRORVALIDATE.IDENTITYDATE;
+          this.showErrorValidate(
+            this.validateList[`IdentityDate`].labelValidate
+          );
+        }
+      }
+
+      const dateOfBirth = new Date(this.employee.dateOfBirth);
+      if (dateOfBirth < dateNow) {
+        this.validateList[`DateOfBirth`].isStatus = false;
+      } else {
+        if (this.employee.dateOfBirth != null) {
+          this.validateList[`DateOfBirth`].isStatus = true;
+          this.validateList[`DateOfBirth`].labelValidate =
+            this.$MISAResource.ERRORVALIDATE.DATEOFBIRTH;
+          this.showErrorValidate(
+            this.validateList[`DateOfBirth`].labelValidate
+          );
         }
       }
     },
@@ -608,38 +743,45 @@ export default {
      * CreatedBy: Bien (11/1/2023)
      */
     async getEmployeeByID() {
-      if (this.id) {
-        // Nhận dữ liệu sau khi lấy nhân viên theo id
-        const response = await employeeApi.getEmpById(this.id);
+      try {
+        if (this.id) {
+          // Nhận dữ liệu sau khi lấy nhân viên theo id
+          const response = await employeeApi.getEmpById(this.id);
 
-        console.log(response);
+          console.log(response);
 
-        this.employee = response.data;
-        this.employee.dateOfBirth = this.$MISACommon.formatDateReverse(
-          this.employee.dateOfBirth
-        );
-        this.employee.identityDate = this.$MISACommon.formatDateReverse(
-          this.employee.identityDate
-        );
-        // Chọn giới tính theo phần tử chọn
-        this.getGender();
-      }
-      if (this.duplicateEmployeeCode) {
-        this.employee.employeeCode = this.duplicateEmployeeCode;
-        this.employee.employeeIndex = this.duplicateEmployeeIndex;
+          this.employee = response.data;
+          this.employee.dateOfBirth = this.$MISACommon.formatDateReverse(
+            this.employee.dateOfBirth
+          );
+          this.employee.identityDate = this.$MISACommon.formatDateReverse(
+            this.employee.identityDate
+          );
+          // Chọn giới tính theo phần tử chọn
+          this.getGender();
+        }
+        if (this.duplicateEmployeeCode) {
+          this.employee.employeeCode = this.duplicateEmployeeCode;
+          this.employee.employeeIndex = this.duplicateEmployeeIndex;
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
-
     /**
      * Hàm set giá trị mặc định cho employeeCode
      * CreateBy: Bien (11/1/2023)
      */
     async setEmployeeCode() {
-      // Nhận dữ liệu mã nhân viên mới
-      const response = await employeeApi.getEmpNewCode();
+      try {
+        // Nhận dữ liệu mã nhân viên mới
+        const response = await employeeApi.getEmpNewCode();
 
-      this.employee.employeeCode = response.EmployeeCode;
-      this.employee.employeeIndex = response.EmployeeIndex;
+        this.employee.employeeCode = response.EmployeeCode;
+        this.employee.employeeIndex = response.EmployeeIndex;
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     /**
@@ -723,6 +865,7 @@ export default {
 
       // Khai báo biến nhận giá trị lỗi validate
       validateList: {
+        isActive: false,
         EmployeeCode: {
           labelValidate: null,
           isStatus: false,

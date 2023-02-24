@@ -25,7 +25,6 @@ app.component("MInputTextVue",MInputText);
 app.component("MInputMoneyVue",MInputMoney);
 app.component("MCheckboxVue",MCheckbox);
 app.component("MDatepicker",MDatepicker);
-console.log(provide);
 app.provide("diy",diy);
 app.mount('#app')
 

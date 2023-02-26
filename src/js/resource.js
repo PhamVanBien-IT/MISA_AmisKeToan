@@ -18,7 +18,8 @@ const MISAResource = {
 	CONTENTDIALOG:{
 		DELETE:(item) => `Bạn có muốn xóa nhân viên <${item}> không?`,
 		SAVE:"Dữ liệu đã thay đổi. Bạn có muốn cất không?",
-		DELETES:"Bạn có muốn xóa những nhân viên đã chọn không?"
+		DELETES:"Bạn có muốn xóa những nhân viên đã chọn không?",
+		DEVELOPING:"Tính năng đang phát triển"
 	}
 };
 

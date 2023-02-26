@@ -14,9 +14,9 @@
       </div>
       <!-- CONTENT-HEADER-RIGHT -->
       <div class="content__header__right">
-        <div class="notify icon"></div>
-        <div class="avatar"></div>
-        <div class="user">
+        <div class="notify icon" @click="alerDeveloping"></div>
+        <div class="avatar" @click="alerDeveloping"></div>
+        <div class="user" @click="alerDeveloping">
           <div class="user-name">Phạm Văn Biển</div>
           <div class="icon-user"></div>
         </div>
@@ -39,6 +39,14 @@ export default {
     // MComboboxVue,
   },
   methods: {
+    /**
+     * Hàm show dialog đang phát triển
+     * CreatedBy: Bien (25/02/2023)
+     */
+     alerDeveloping(){
+      this.diy.showDialogDevelop();
+      this.diy.ClearBtnDialog();
+    },
     /**
      * Hàm ẩn hiện nav
      * CreatedBy: Bien (14/1/2023)

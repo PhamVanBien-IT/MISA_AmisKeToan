@@ -40,36 +40,39 @@ import departmentApi from "@/api/departmentApi";
 export default {
   inject: ["diy"],
   name: "MCombobox",
-  emits: ["update:modelValue"],
-  props: [
-    "id",
-    "propName",
-    "propValue",
-    "modelValue",
-    "class",
-    "tabindex",
-  ],
+  emits: ["update:modelValue","textSelected"],
+  props: ["id", "propName", "propValue", "modelValue", "class", "tabindex"],
   created() {
     // Lấy dữ liệu của bảng department
     this.getDepartments();
+  
 
   },
   updated() {
     this.classInputCBox = this.class;
+    
+    // Xóa giá trị input sau khi cất nhân viên
+    if(!this.modelValue){
+      this.textSelected = "";
+    }
   },
   methods: {
     /**
      * Hàm lấy dữ liệu cho combobox đơn vị
      * CreatedBy: Bien (9/1/2023)
      */
-    async getDepartments(){
-      // Gắn giá trị kết quả lấy dữ liệu bảng department
-      const response = await departmentApi.getDeparmentPaging();
+    async getDepartments() {
+      try {
+        // Gắn giá trị kết quả lấy dữ liệu bảng department
+        const response = await departmentApi.getDeparmentPaging();
 
-      // Gắn dữ liệu
-      this.entities = response.data;  
-      this.setItemSelected();
-      this.entitySearch = response.data;
+        // Gắn dữ liệu
+        this.entities = response.data;
+        this.setItemSelected();
+        this.entitySearch = response.data;
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     /**
@@ -93,7 +96,7 @@ export default {
       this.$emit("update:modelValue", entity[this.propValue]);
       // Set index của item được chọn
       this.indexItemSelect = me.findIndexSelected;
-      if(this.diy.state.ShowDataDeparerment){
+      if (this.diy.state.ShowDataDeparerment) {
         this.diy.ClearDataDeparerment();
       }
     },
@@ -119,7 +122,6 @@ export default {
      * CreatedBy: Bien (9/1/2023)
      */
     onSearchItem() {
-      console.log(this.textSelected);
       var me = this;
       // Tìm item tướng ứng với modelValue
       this.entitySearch = this.entities.filter((item) =>
@@ -127,7 +129,7 @@ export default {
       );
       this.isShowData = true;
     },
-    
+
     /**
      * Hàm bắt sự kiện keydown của input combobox
      * CreatedBy: Bien ( 11/1/2023)
@@ -136,7 +138,6 @@ export default {
       const keyCode = event.keyCode;
       switch (keyCode) {
         case this.$MISAEnum.KEY_CODE.ENTER:
-
           this.unUpIndexItemSelect = true;
           // Xác định item đang chọn dựa vào index
           // eslint-disable-next-line no-case-declarations

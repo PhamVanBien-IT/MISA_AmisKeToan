@@ -18,19 +18,14 @@
       <!-- PAGE-MAIN-HEADER -->
       <div class="page__main__header">
         <!-- SEARCH-INPUT -->
-        <div class="page_main_header_right" @click="toggleFunctionAll">
-          <input
-            type="text"
-            disabled
-            value="Thực hiện hàng loạt"
-            class="function-all"
-            v-bind:class="{ 'active-function-all': isFunctionAll }"
-          />
-          <div class="icon-dropdown-func"></div>
-          <div class="function-all-list" v-if="diy.state.showFunctionAll">
-            <div class="function-all-item" @click="deleteEmployeeListSelect">
-              Xóa
-            </div>
+        <div class="page_main_header_right">
+          <div class="handle-deletes" v-if="diy.state.showFunctionAll">
+            <div class="sum-check-ked">Đã chọn: <span style="font-weight: 600;">{{ this.selectedList.length }}</span></div>
+          <div class="clear-select-all" @click="this.selectedList = []">Bỏ chọn</div>
+          <div class="deletes" @click="deleteEmployeeListSelect">
+            <div class="icon-deletes"></div>
+            <div class="">Xóa tất cả</div>
+          </div>
           </div>
         </div>
         <div class="page_main_header_left">
@@ -243,7 +238,6 @@
       v-if="showFuncList"
       id="boder-item-active"
     ></div>
-    <div class="bg-select-item" :style="activeBackground"></div>
   </teleport>
   <EmployeeDetailVue
     :id="employeeIDUpdate"
@@ -252,11 +246,7 @@
     :duplicateEmployeeIndex="duplicateEmployeeIndex"
   ></EmployeeDetailVue>
   <!-- NOTIFY -->
-  <MNotifyVue v-if="diy.state.showNotify"></MNotifyVue>
-  <MNotifyError
-    v-if="diy.state.showNotifyError"
-    :label="labelEmployeeCodeDuplicate"
-  ></MNotifyError>
+  <MNotifyVue v-if="diy.state.showNotify"  :label="labelInsertValid"></MNotifyVue>
 </template>
 <script>
 import _ from "lodash";
@@ -309,21 +299,9 @@ export default {
      */
     async btnExportEmployees() {
       try {
-        await employeeApi.exportEmployees();
+        await employeeApi.exportEmployees(this.textSearch);
       } catch (error) {
         console.log(error);
-      }
-    },
-    /**
-     * Hàm ẩn và hiện danh sách chức năng của thao tác thực hiện hàng loạt
-     * CreatedBy: Bien (20/02/2023)
-     */
-    toggleFunctionAll() {
-      if (this.selectedList.length > 1) {
-        this.diy.toggleFunctionAll();
-        this.isFunctionAll = true;
-      } else {
-        this.isFunctionAll = false;
       }
     },
     /**
@@ -382,10 +360,12 @@ export default {
           return result;
         }, []);
         this.selected = false;
+      
       }
       // Kiểm tra để hiển thị được thao tác chức năng hàng loạt
       if (this.selectedList.length > 1) {
         this.isFunctionAll = true;
+        this.diy.showFunctionAll();
       } else {
         this.isFunctionAll = false;
       }
@@ -665,6 +645,7 @@ export default {
       this.autoCheckAllEmployee();
       if (this.selectedList.length > 1) {
         this.isFunctionAll = true;
+        this.diy.showFunctionAll();
       } else {
         this.isFunctionAll = false;
         this.diy.clearFunctionAll();

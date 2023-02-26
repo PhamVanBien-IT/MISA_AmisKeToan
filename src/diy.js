@@ -19,7 +19,22 @@ const state = reactive({
   showFunctionAll:false,
   showDialogDeleteEmployees:false,
   showBtnCancel:false,
+  showDialogDevelop:false
 });
+/**
+ * Hàm show dialog tính năng đang phát triển
+ * CreatedBy: Bien (20/1/2023)
+ */
+const showDialogDevelop = function(){
+  state.showDialogDevelop = true;
+}
+/**
+ * Hàm ẩn dialog khi sai validate dữ liệu
+ * CreatedBy: Bien (20/1/2023)
+ */
+const clearDialogDevelop = function(){
+  state.showDialogDevelop = false;
+}
 /**
  * Hàm hiển thị nút hủy
  * CreatedBy: Bien (18/2/2023)
@@ -253,5 +268,7 @@ export default {
   showDialogDeleteEmployees,
   clearDialogDeleteEmployees,
   showBtnCancel,
-  clearBtnCancel
+  clearBtnCancel,
+  clearDialogDevelop,
+  showDialogDevelop
 };

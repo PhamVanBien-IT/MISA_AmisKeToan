@@ -61,7 +61,6 @@ export default {
     btnCloseEPLDetailOnClick() {
       this.diy.clearEPLDetail();
       this.diy.clearDialogDeleteEmployees();
-      this.diy.clearFunctionAll();
       this.diy.clearDialog();
       this.diy.ShowCloseDialog();
     },
@@ -74,7 +73,7 @@ export default {
       this.diy.clearDialog();
       this.diy.clearDialogDeleteEmployees();
       this.diy.ClearDialogValidate();
-
+      this.diy.clearDialogDevelop();
     },
 
     /**

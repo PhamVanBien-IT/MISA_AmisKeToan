@@ -17,7 +17,7 @@ const departmentApi = {
         try {
             return axiosClient.get(baseUrl + `filter?pageNumber=1&pageSize=20`);
         } catch (error) {
-            console.log(error);
+            console.log("Lỗi lấy danh sách đơn vị theo phân trang"+error);
         }
     },
 };

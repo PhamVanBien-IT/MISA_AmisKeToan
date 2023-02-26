@@ -374,7 +374,42 @@ tbody tr:hover td{
     z-index: 900;
     cursor: pointer;
 }
-
+.handle-deletes{
+    width: 100%;
+    display: flex;
+    position: relative;
+    cursor: pointer;
+    font-size: 14px;
+    align-items: center;
+}
+.sum-check-ked{
+    margin-right: 16px;
+}
+.clear-select-all{
+    margin-right: 16px;
+    color: red;
+}
+.icon-deletes{
+    width: 20px;
+    height: 20px;
+    background: url("../../assets/images/Sprites.64af8f61.svg") no-repeat -462px -311px;
+    top: 0px;
+    left: 0px;
+    margin-left: 4px;
+    margin-right: 4px;
+    background-color: #eaecf198;
+}
+.deletes{
+    height: 24px;
+    padding: 2px;
+    width: 100px;
+    border: 1px solid #b1b3ba98;
+    display: flex;
+    align-items: center;
+}
+.deletes:hover{
+    background-color: rgb(213, 206, 206);
+}
 .col-1 {
     width: 8.33%;
 }

@@ -441,14 +441,13 @@ export default {
         console.log("Posting data", response);
 
         if (response.errorCode == this.$MISAEnum.ERRORCODE.SUCCESS) {
+          this.$parent.labelInsertValid = " Nhân viên <"+this.employee.employeeCode+"> đã được thêm vào hệ thống"
           this.diy.showNotify();
-
           this.$parent.textSearch = "";
           this.$parent.clickCallback(1);
           this.setEmployeeCode();
           this.employee = {};
           this.validateList[`isActive`] = false;
-          console.log(this.validateList[`isActive`]);
           // Thực hiện khi click nút cất
           if (this.isSaveEmployee) {
             this.diy.clearEPLDetail();
@@ -635,12 +634,11 @@ export default {
       } else {
         this.isActiveDepartment = true;
         this.errorDepartment = this.$MISAResource.ERRORVALIDATE.DEPARTMENT;
-
-        // Ẩn nút trong dialog khi tên để trống
-        this.diy.ClearBtnDialog();
-
-        // Hiển thị dialog khi tên để trống
-        this.diy.ShowDialogValidate();
+        if (this.validateList[`FullName`].isStatus) {
+          this.showErrorValidate(this.validateList[`FullName`].labelValidate);
+        } else {
+          this.showErrorValidate(this.errorDepartment);
+        }
       }
       // Khai báo chuỗi định dạng số điện thoại
       const phoneNumberFormat = new RegExp(

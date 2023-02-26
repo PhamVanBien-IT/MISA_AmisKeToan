@@ -11,10 +11,10 @@ const employeeApi = {
      * API xuất khẩu nhân viên
      * CreatedBy: Bien (20/02/2023)
      */
-    exportEmployees:() =>{
+    exportEmployees:(filter) =>{
        try {
         axios({
-            url: "https://localhost:7185/api/Employees/ExportExcel",
+            url: `https://localhost:7185/api/Employees/ExportExcel?filter=${filter}`,
             method: "GET",
             responseType: "blob",
           }).then((response) => {
@@ -28,7 +28,7 @@ const employeeApi = {
             fileLink.click();
           });
        } catch (error) {
-        console.log(error);
+        console.log("Lỗi xuất khẩu nhân viên: "+error);
        }
     },
     /**
@@ -47,7 +47,7 @@ const employeeApi = {
                 return axiosClient.get(baseUrl + `filter?pageNumber=${pageNumber}&pageSize=${pageSize}`);
             }
         } catch (error) {
-            console.log(error);
+            console.log("Lỗi lấy nhân viên theo phân trang và tìm kiến: "+error);
         }
     },
      /**
@@ -58,7 +58,7 @@ const employeeApi = {
         try {
             return axiosClient.get(baseUrl + "NewEmployeeCode")
         } catch (error) {
-            console.log(error);
+            console.log("Lỗi lấy mã nhân viên mới: "+error);
         }
     },
      /**
@@ -70,7 +70,7 @@ const employeeApi = {
         try {
             return axiosClient.get(baseUrl + id);
         } catch (error) {
-            console.log(error);
+            console.log("Lỗi lấy nhân viên theo id: "+error);
         }
     },
      /**
@@ -82,7 +82,7 @@ const employeeApi = {
         try {
             return axiosClient.post(baseUrl, employee);
         } catch (error) {
-            console.log(error);
+            console.log("Lỗi thêm nhân viên mới: "+error);
         }
     },
      /**
@@ -95,7 +95,7 @@ const employeeApi = {
         try {
             return axiosClient.put(baseUrl + id, newEmployee);
         } catch (error) {
-            console.log(error);
+            console.log("Lỗi cập nhật nhân viên mới: "+error);
         }
     },
      /**
@@ -107,7 +107,7 @@ const employeeApi = {
         try {
             return axiosClient.delete(baseUrl + id);
         } catch (error) {
-            console.log(error);
+            console.log("Lỗi xóa nhân viên: "+error);
         }
     },
      /**
@@ -124,7 +124,7 @@ const employeeApi = {
                 data: employeeIds
             })
         } catch (error) {
-            console.log(error);
+            console.log("Lỗi xóa nhiều nhân viên: "+error);
         }
     }
 };

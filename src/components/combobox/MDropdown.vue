@@ -9,7 +9,7 @@
         <div class="dropdown__button iconBtndropdown" @click="onShowHideData"></div>
         <div v-show="isShowData" class="dropdown__data">
            <div class="dropdown-item"
-           v-for="(item,index) in NumverRecord" 
+           v-for="(item,index) in numverRecord" 
            :key="index"
            :class="{'item-select': index == indexItemSelect}"
            @click="itemOnSelect(item,index)"
@@ -23,11 +23,11 @@
 export default {
     inject:['diy'],
     name:"MDropdown",
-    emits:["update:modelValue"],
+    emits:["update:modelValue",'pageSize'],
     props:["id","pageNumverRecord"],
     created(){
         // Nhận giá trị tổng bản ghi
-        this.NumverRecord = this.pageNumverRecord;
+        this.numverRecord = this.pageNumverRecord;
     },
     methods:{
         /**
@@ -67,7 +67,7 @@ export default {
             indexItemSelect: 1,
 
             // Khai báo biến giá trị cho func
-            NumverRecord: [],
+            numverRecord: [],
         }
     }
 }

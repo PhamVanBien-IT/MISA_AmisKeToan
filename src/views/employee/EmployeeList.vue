@@ -188,6 +188,7 @@
           <div class="pading">
             <div class="page-list mgl-8">
               <paginate
+                v-model="indexPage"
                 :page-count="totalPage"
                 :page-range="3"
                 :margin-pages="1"
@@ -250,7 +251,8 @@
 </template>
 <script>
 import _ from "lodash";
-import Paginate from "vuejs-paginate/src/components/Paginate.vue";
+// import Paginate from "vuejs-paginate/src/components/Paginate.vue";
+import Paginate from "vuejs-paginate-next";
 import MLoadingVue from "@/components/loading/MLoading.vue";
 import EmployeeDetailVue from "./EmployeeDetail.vue";
 import MNotifyVue from "@/components/notify/MNotify.vue";
@@ -268,7 +270,7 @@ export default {
   },
   created() {
     // Gọi hàm load dữ liệu danh sách nhân viên
-    this.getEmployeePaging(1, this.pageSize, this.textSearch);
+    this.clickCallback(1);
   },
   methods: {
     /**
@@ -408,6 +410,8 @@ export default {
 
       // Gọi hàm set pagation
       this.getEmployeePaging(1, this.pageSize, this.textSearch);
+
+      this.autoCheckAllEmployee();
     },
 
     /**
@@ -589,12 +593,14 @@ export default {
     },
 
     /**
-     * Hàm reFreshEPLList
+     * Hàm reset danh sách nhân viên
      * CreatedBy: Bien (4/1/2023)
      */
     btnRefreshOnClick() {
       // Gọi hàm load lại trang
-      this.clickCallback(this.textSearch, this.pageSize, this.indexPage);
+      this.clickCallback(1);
+
+      console.log(this.indexPage);
     },
   },
   computed: {

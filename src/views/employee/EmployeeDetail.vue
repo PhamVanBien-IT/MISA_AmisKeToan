@@ -448,6 +448,7 @@ export default {
           this.setEmployeeCode();
           this.employee = {};
           this.validateList[`isActive`] = false;
+          this.$refs[this.inputEmployeeCode].onFocus();
           // Thực hiện khi click nút cất
           if (this.isSaveEmployee) {
             this.diy.clearEPLDetail();
@@ -475,6 +476,8 @@ export default {
           this.employee = {};
           this.$parent.employeeIDUpdate = null;
           this.setEmployeeCode();
+          this.$refs[this.inputEmployeeCode].onFocus();
+
 
           // Thực hiện khi click nút cất
           if (this.isSaveEmployee) {

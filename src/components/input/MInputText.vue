@@ -26,6 +26,7 @@ export default {
     "id",
     "maxDate",
     "name",
+    "maxlength",
   ],
   created() {
     // Nhận giá trị modelValue

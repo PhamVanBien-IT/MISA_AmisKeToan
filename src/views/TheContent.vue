@@ -36,7 +36,6 @@ export default {
   name: "TheContent",
   components: {
     EmployeeListVue,
-    // MComboboxVue,
   },
   methods: {
     /**
@@ -56,22 +55,30 @@ export default {
       this.diy.showNavToggle();
       if (!this.diy.state.showNav) {
         document.getElementById("nav").style.width = "50px";
-        document.getElementById("content").style.width = "calc(100% - 50px)";
-        document.getElementById("cartegory").style.background = "none";
-        document.getElementById("nav__header").style.display = "none";
         document.getElementById("nav").style.paddingTop = "56px";
+
+        document.getElementById("content").style.width = "calc(100% - 50px)";
+
+        document.getElementById("cartegory").style.background = "none";
+
+        document.getElementById("nav__header").style.display = "none";
+
         document.getElementById("content__header__left").style.position =
           "absolute";
         document.getElementById("content__header__left").style.left = "0px";
+
         document.getElementById("city__name").style.marginLeft = "10px";
         arrayIcon.forEach((element) => {
           element.style.marginLeft = "0px";
         });
       } else {
         document.getElementById("nav").style.width = "200px";
-        document.getElementById("cartegory").style.background = "#a7c4ff53";
-        document.getElementById("nav__header").style.display = "flex";
         document.getElementById("nav").style.paddingTop = "0px";
+
+        document.getElementById("cartegory").style.background = "#a7c4ff53";
+        
+        document.getElementById("nav__header").style.display = "flex";
+
         document.getElementById("content__header__left").style.position =
           "static";
         document.getElementById("city__name").style.marginLeft = "0px";

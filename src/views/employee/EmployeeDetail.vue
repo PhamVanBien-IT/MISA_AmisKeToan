@@ -441,7 +441,7 @@ export default {
         console.log("Posting data", response);
 
         if (response.errorCode == this.$MISAEnum.ERRORCODE.SUCCESS) {
-          this.$parent.labelInsertValid = " Nhân viên <"+this.employee.employeeCode+"> đã được thêm vào hệ thống"
+          this.$parent.labelInsertValid = " Nhân viên đã được thêm vào hệ thống"
           this.diy.showNotify();
           this.$parent.textSearch = "";
           this.$parent.clickCallback(1);
@@ -778,8 +778,7 @@ export default {
         // Nhận dữ liệu mã nhân viên mới
         const response = await employeeApi.getEmpNewCode();
 
-        this.employee.employeeCode = response.EmployeeCode;
-        this.employee.employeeIndex = response.EmployeeIndex;
+        this.employee.employeeCode = response.data;
       } catch (error) {
         console.log(error);
       }
@@ -828,7 +827,6 @@ export default {
      */
     btnCloseOnClick() {
       this.diy.clearEPLDetail();
-      this.diy.showEPLDetail();
     },
 
     /**

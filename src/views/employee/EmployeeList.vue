@@ -20,12 +20,19 @@
         <!-- SEARCH-INPUT -->
         <div class="page_main_header_right">
           <div class="handle-deletes" v-if="diy.state.showFunctionAll">
-            <div class="sum-check-ked">Đã chọn: <span style="font-weight: 600;">{{ this.selectedList.length }}</span></div>
-          <div class="clear-select-all" @click="this.selectedList = []">Bỏ chọn</div>
-          <div class="deletes" @click="deleteEmployeeListSelect">
-            <div class="icon-deletes"></div>
-            <div class="">Xóa tất cả</div>
-          </div>
+            <div class="sum-check-ked">
+              Đã chọn:
+              <span style="font-weight: 600">{{
+                this.selectedList.length
+              }}</span>
+            </div>
+            <div class="clear-select-all" @click="this.selectedList = []">
+              Bỏ chọn
+            </div>
+            <div class="deletes" @click="deleteEmployeeListSelect">
+              <div class="icon-deletes"></div>
+              <div class="">Xóa tất cả</div>
+            </div>
           </div>
         </div>
         <div class="page_main_header_left">
@@ -211,13 +218,13 @@
     v-if="diy.state.showDialog"
     :label="lableDeleteEmployee"
     classIcon="warning"
-    @EditEPL="deleteEPL"
+    @EditEPL="deleteEmployee"
   ></MDialogVue>
   <MDialogVue
     v-if="diy.state.showDialogDeleteEmployees"
     :label="lableDeleteEmployee"
     classIcon="warning"
-    @EditEPL="deleteEPLs"
+    @EditEPL="deleteEmployees"
   ></MDialogVue>
   <teleport to="body">
     <div
@@ -247,11 +254,13 @@
     :duplicateEmployeeIndex="duplicateEmployeeIndex"
   ></EmployeeDetailVue>
   <!-- NOTIFY -->
-  <MNotifyVue v-if="diy.state.showNotify"  :label="labelInsertValid"></MNotifyVue>
+  <MNotifyVue
+    v-if="diy.state.showNotify"
+    :label="labelInsertValid"
+  ></MNotifyVue>
 </template>
 <script>
 import _ from "lodash";
-// import Paginate from "vuejs-paginate/src/components/Paginate.vue";
 import Paginate from "vuejs-paginate-next";
 import MLoadingVue from "@/components/loading/MLoading.vue";
 import EmployeeDetailVue from "./EmployeeDetail.vue";
@@ -323,7 +332,7 @@ export default {
      * Hàm thực hiện gọi API xóa danh sách nhân viên
      * CreatedBy: Bien (21/02/2023)
      */
-    async deleteEPLs() {
+    async deleteEmployees() {
       try {
         this.diy.showLoading();
 
@@ -362,7 +371,6 @@ export default {
           return result;
         }, []);
         this.selected = false;
-      
       }
       // Kiểm tra để hiển thị được thao tác chức năng hàng loạt
       if (this.selectedList.length > 1) {
@@ -427,16 +435,13 @@ export default {
      * @param {Nội dung muốn tìm kiếm} value
      * CreatedBy: Bien (19/1/2023)
      */
-    async search(value) {
+    async search() {
       try {
         let me = this;
         // Nhận dữ liệu khi tìm kiếm
-        const response = await this.getEmployeePaging(1, me.pageSize, value);
-
-        // Gắn dữ liệu
-        this.setDataPaging(response);
+        await this.getEmployeePaging(1, me.pageSize, this.textSearch);
       } catch (error) {
-        console.log("Lỗi tìm kiếm" + error);
+        console.log(error);
       }
     },
     /**
@@ -543,7 +548,7 @@ export default {
      * Hàm xóa nhân viên
      * CreatedBy: Bien (10/1/2023)
      */
-    async deleteEPL() {
+    async deleteEmployee() {
       try {
         // Hàm hiển thị loading
         this.diy.showLoading();
@@ -576,11 +581,11 @@ export default {
       }
     },
 
-   /**
-    * Hàm đọc dữ liệu vào form EmployeeDetail
-    * @param {*Thông tin nhân viên muốn lấy} item 
-    * CreatedBy: Bien (4/1/2023)
-    */
+    /**
+     * Hàm đọc dữ liệu vào form EmployeeDetail
+     * @param {*Thông tin nhân viên muốn lấy} item
+     * CreatedBy: Bien (4/1/2023)
+     */
     rowOnDblClick(item) {
       // Lấy id của hàng được chọn
       this.employeeIDUpdate = item.employeeId;
@@ -600,7 +605,6 @@ export default {
       // Gọi hàm load lại trang
       this.clickCallback(1);
 
-      console.log(this.indexPage);
     },
   },
   computed: {

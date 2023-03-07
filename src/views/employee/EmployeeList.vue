@@ -200,7 +200,7 @@
                 :page-range="3"
                 :margin-pages="1"
                 :click-handler="clickCallback"
-                :prev-text="'Truớc'"
+                :prev-text="'Trước'"
                 :page-class="'page-item'"
                 :prev-class="'prev-btn'"
                 :next-class="'next-btn'"
@@ -251,7 +251,7 @@
     :id="employeeIDUpdate"
     v-if="diy.state.showEPLDetail"
     :duplicateEmployeeCode="duplicateEmployeeCode"
-    :duplicateEmployeeIndex="duplicateEmployeeIndex"
+    :title="titleEmployeeDetail"
   ></EmployeeDetailVue>
   <!-- NOTIFY -->
   <MNotifyVue
@@ -293,8 +293,9 @@ export default {
 
         var response = await employeeApi.getEmpNewCode();
 
-        this.duplicateEmployeeCode = response.EmployeeCode;
-        this.duplicateEmployeeIndex = response.EmployeeIndex;
+        this.titleEmployeeDetail = this.$MISAResource.TITLEFORM.ADD;
+
+        this.duplicateEmployeeCode = response.data;
         // Gọi hàm hiển thị EmployeeDetail
         this.diy.showEPLDetail();
 
@@ -337,7 +338,13 @@ export default {
         this.diy.showLoading();
 
         // Hàm thực hiện xóa khi xóa
-        await employeeApi.deleteEmployees(this.selectedList);
+        const response = await employeeApi.deleteEmployees(this.selectedList);
+
+        console.log(response);
+        if (response.data.isSuccess) {
+          this.labelInsertValid = " Nhân viên đã được xóa";
+          this.diy.showNotify();
+        }
 
         this.clickCallback(this.indexPage);
 
@@ -417,7 +424,7 @@ export default {
       this.pageSize = n;
 
       // Gọi hàm set pagation
-      this.getEmployeePaging(1, this.pageSize, this.textSearch);
+      this.clickCallback(1, this.pageSize, this.textSearch);
 
       this.autoCheckAllEmployee();
     },
@@ -558,6 +565,11 @@ export default {
 
         console.log(response);
 
+        if (response.isSuccess) {
+          this.labelInsertValid = " Nhân viên đã được xóa";
+          this.diy.showNotify();
+        }
+
         this.clickCallback(this.indexPage);
 
         //Hàm ẩn loading
@@ -574,6 +586,8 @@ export default {
     btnAddOnClick() {
       try {
         this.diy.showEPLDetail();
+        this.titleEmployeeDetail = this.$MISAResource.TITLEFORM.ADD;
+
         this.employeeIDUpdate = null;
         this.showFuncList = false;
       } catch (error) {
@@ -590,6 +604,7 @@ export default {
       // Lấy id của hàng được chọn
       this.employeeIDUpdate = item.employeeId;
 
+      this.titleEmployeeDetail = this.$MISAResource.TITLEFORM.UPDATE;
       // Gọi hàm hiển thị form EmployeeDetail
       this.diy.showEPLDetail();
 
@@ -604,7 +619,6 @@ export default {
     btnRefreshOnClick() {
       // Gọi hàm load lại trang
       this.clickCallback(1);
-
     },
   },
   computed: {
@@ -664,9 +678,8 @@ export default {
   },
   data() {
     return {
-      // Khai báo biến nhận giá trị tự tăng mã
-      duplicateEmployeeIndex: null,
-
+      // Khai báo biến tiêu đề form
+      titleEmployeeDetail: "Thông tin nhân viên",
       // Khai báo biến nhận mã nhân viên mới khi nhân bản
       duplicateEmployeeCode: null,
 

@@ -26,6 +26,7 @@ const MISAEnum = {
     },
     ERRORCODE:{
         SUCCESS:0, // Thành công
+        UNKNOWNERROR:1,// Lỗi không xác định
         VALIDATERROR:2, // Dữ liệu đầu vào không hợp lệ
     }
 }

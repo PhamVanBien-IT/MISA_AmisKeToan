@@ -12,9 +12,7 @@ import MInputText from "./components/input/MInputText.vue";
 import MInputMoney from "./components/input/MInputMoney.vue";
 import MCheckbox from "./components/input/MCheckbox.vue";
 import MDatepicker from "./components/datepicker/MDatepicker.vue";
-
-
-
+import vClickOutside from 'v-click-outside';
 
 const app = createApp(App);
 app.component("MButtonVue",MButton);
@@ -26,7 +24,8 @@ app.component("MInputMoneyVue",MInputMoney);
 app.component("MCheckboxVue",MCheckbox);
 app.component("MDatepicker",MDatepicker);
 app.provide("diy",diy);
-app.mount('#app')
+app.mount('#app');
+app.use(vClickOutside);
 
 app.config.globalProperties.$MISAEnum = MISAEnum;
 app.config.globalProperties.$MISACommon = MISACommon;

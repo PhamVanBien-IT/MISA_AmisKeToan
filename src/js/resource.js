@@ -20,6 +20,10 @@ const MISAResource = {
 		SAVE:"Dữ liệu đã thay đổi. Bạn có muốn cất không?",
 		DELETES:"Bạn có muốn xóa những nhân viên đã chọn không?",
 		DEVELOPING:"Chức năng đang phát triển."
+	},
+	TITLEFORM:{
+		ADD: "Thông tin nhân viên",
+		UPDATE:"Sửa nhân viên"
 	}
 };
 

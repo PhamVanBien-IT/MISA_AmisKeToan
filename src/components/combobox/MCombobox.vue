@@ -11,6 +11,8 @@
         type="text"
         :class="classInputCBox"
         :tabindex="tabindex"
+        :name="nameInput"
+        :ref="nameInput"
       />
       <div class="iconBtnCombobox">
         <button
@@ -20,7 +22,7 @@
         ></button>
       </div>
     </div>
-    <div v-if="diy.state.ShowDataDeparerment" class="combobox__data">
+    <div v-if="diy.state.ShowDataDeparerment" class="combobox__data" @scroll="onScroll">
       <div
         class="combobox-item"
         :ref="`item_${index}`"
@@ -37,34 +39,51 @@
 </template>
 <script>
 import departmentApi from "@/api/departmentApi";
+import _ from "lodash";
 export default {
   inject: ["diy"],
   name: "MCombobox",
-  emits: ["update:modelValue","textSelected"],
-  props: ["id", "propName", "propValue", "modelValue", "class", "tabindex"],
+  emits: ["update:modelValue", "textSelected"],
+  props: ["id", "propName", "propValue", "modelValue", "class", "tabindex","name"],
   created() {
     // Lấy dữ liệu của bảng department
-    this.getDepartments();
-  
+    this.getDepartments(this.pageSize);
 
+    this.nameInput = this.name;
   },
   updated() {
     this.classInputCBox = this.class;
-    
+
     // Xóa giá trị input sau khi cất nhân viên
-    if(!this.modelValue){
+    if (!this.modelValue) {
       this.textSelected = "";
     }
   },
   methods: {
     /**
+     * Hàm hiển thị thêm danh sách chức danh khi scroll
+     * CreatedBy: Bien (07/03/2023)
+     */
+    onScroll:_.debounce(function () {
+      this.pageSize += 4;
+      this.getDepartments(this.pageSize);
+      console.log(this.pageSize);
+    }, 500),    
+     /**
+     * Hàm set focus cho input
+     * CreatedBy: Bien (22/02/2023)
+     */
+     onFocus() {
+      this.$refs[this.name].focus();
+    },
+    /**
      * Hàm lấy dữ liệu cho combobox đơn vị
      * CreatedBy: Bien (9/1/2023)
      */
-    async getDepartments() {
+    async getDepartments(pageSize) {
       try {
         // Gắn giá trị kết quả lấy dữ liệu bảng department
-        const response = await departmentApi.getDeparmentPaging();
+        const response = await departmentApi.getDeparmentPaging(pageSize);
 
         // Gắn dữ liệu
         this.entities = response.data;
@@ -232,6 +251,10 @@ export default {
   },
   data() {
     return {
+      // Khai báo biến pageSize hiển thị
+      pageSize :4,
+
+      nameInput :null,
       // Khai báo biện nhân class
       classInputCBox: null,
 

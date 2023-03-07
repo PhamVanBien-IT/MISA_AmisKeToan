@@ -45,7 +45,7 @@ import MButtonVue from "../button/MButton.vue";
 export default {
   inject: ["diy"],
   name: "MDialog",
-  props: ["label", "func", "classIcon", "funcEPL"],
+  props: ["label", "func", "classIcon", "funcEPL","inputValidate"],
   components: {
     MButtonVue,
   },
@@ -74,6 +74,7 @@ export default {
       this.diy.clearDialogDeleteEmployees();
       this.diy.ClearDialogValidate();
       this.diy.clearDialogDevelop();
+      this.$parent.inputOnFocus(this.inputValidate);
     },
 
     /**

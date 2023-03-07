@@ -30,7 +30,6 @@
 <script>
 //  import MComboboxVue from '@/components/combobox/MCombobox.vue';
 import EmployeeListVue from "./employee/EmployeeList.vue";
-
 export default {
   inject: ["diy"],
   name: "TheContent",

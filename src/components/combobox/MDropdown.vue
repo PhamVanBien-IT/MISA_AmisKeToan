@@ -7,7 +7,7 @@
         class="dropdown__input" 
         type="text">
         <div class="dropdown__button iconBtndropdown" @click="onShowHideData"></div>
-        <div v-show="isShowData" class="dropdown__data">
+        <div v-show="this.diy.state.showPageSize" class="dropdown__data">
            <div class="dropdown-item"
            v-for="(item,index) in numverRecord" 
            :key="index"
@@ -35,7 +35,7 @@ export default {
          * CreatedBy: Bien (9/1/2023)
          */
         onShowHideData(){
-            this.isShowData = !this.isShowData;
+            this.diy.togglePageSize();
         },
 
         /**

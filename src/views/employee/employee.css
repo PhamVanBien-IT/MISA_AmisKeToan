@@ -196,7 +196,6 @@ tbody tr:hover td{
 }
 .func-data{
     position: absolute;
-    /* top: 280px; */
     right: 85px;
     background-color: #fff;
     border: 1px solid #ccc;
@@ -358,7 +357,7 @@ tbody tr:hover td{
 }
 
 .cbbox-number{
-    background-color: #fff;
+      background-color: #fff;
 }
 
 .bg-select-item{

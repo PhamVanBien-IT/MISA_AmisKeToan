@@ -19,8 +19,23 @@ const state = reactive({
   showFunctionAll:false,
   showDialogDeleteEmployees:false,
   showBtnCancel:false,
-  showDialogDevelop:false
+  showDialogDevelop:false,
+  showPageSize:false,
 });
+/**
+ * Hàm show dropdown chọn số bản ghi
+ * CreatedBy: Bien (20/1/2023)
+ */
+const togglePageSize = function(){
+  state.showPageSize = !state.showPageSize;
+}
+/**
+ * Hàm ẩn dropdown chọn số bản ghi
+ * CreatedBy: Bien (20/1/2023)
+ */
+const clearPageSize = function(){
+  state.showPageSize = false;
+}
 /**
  * Hàm show dialog tính năng đang phát triển
  * CreatedBy: Bien (20/1/2023)
@@ -97,7 +112,7 @@ const ToggleDataDeparerment= function(){
 };
 
 /**
- * Hàm hiển thị funcList
+ * Hàm hiển thị danh sách đơn vị
  * CreatedBy: Bien (20/1/2023)
  */
 const ShowDataDeparerment= function(){
@@ -105,7 +120,7 @@ const ShowDataDeparerment= function(){
 };
 
 /**
- * Hàm hiển thị funcList
+ * Hàm ẩn danh sách đơn vị
  * CreatedBy: Bien (20/1/2023)
  */
 const ClearDataDeparerment= function(){
@@ -140,11 +155,18 @@ const ClearBtnDialog = function(){
   state.showBtnDialog = false;
 };
 /**
- * Hàm hiển thị funcList
+ * Hàm hiển thị danh sách chức năng
  * CreatedBy: Bien (15/1/2023)
  */
 const showFuncList= function(){
     state.showFuncList = !state.showFuncList;
+};
+/**
+ * Hàm ẩn danh sách chức năng
+ * CreatedBy: Bien (15/1/2023)
+ */
+ const clearFuncList= function(){
+  state.showFuncList = false;
 };
 
 /**
@@ -251,7 +273,6 @@ export default {
   clearLoading,
   showNotify,
   showNavToggle,
-  showFuncList,
   ShowBtnDialog,
   ClearBtnDialog,
   ClearDialogValidate,
@@ -270,5 +291,9 @@ export default {
   showBtnCancel,
   clearBtnCancel,
   clearDialogDevelop,
-  showDialogDevelop
+  showDialogDevelop,
+  clearPageSize,
+  togglePageSize,
+  showFuncList,
+  clearFuncList
 };

@@ -168,7 +168,8 @@
                     class="btn-funclist"
                     @click="btnShowFuncList($event, item)"
                   >
-                    <div class="icon-funclist"></div>
+                    <div
+                      class="icon-funclist"></div>
                   </div>
                 </td>
               </tr>
@@ -186,7 +187,10 @@
         </div>
         <!-- PAGE-MAIN-FOOTER-RIGHT -->
         <div class="page__main__footer__right">
-          <div class="cbbox-number">
+          <div
+            class="cbbox-number"
+            v-click-outside-element="onClickOutsidePageSize"
+          >
             <MDropdownVue
               :pageNumverRecord="pagination"
               @pageSize="setPageSize"
@@ -227,25 +231,27 @@
     @EditEPL="deleteEmployees"
   ></MDialogVue>
   <teleport to="body">
-    <div
-      class="func-data"
-      id="func-data"
-      :style="[isDropdown ? dropdownPosition : dropdownPositionReverse]"
-      v-if="showFuncList"
-    >
-      <div class="funclist-item" @click="btnDuplicateEmployee(item)">
-        Nhân bản
+    <div>
+      <div
+        class="func-data"
+        id="func-data"
+        :style="[isDropdown ? dropdownPosition : dropdownPositionReverse]"
+        v-if="showFuncList"
+      >
+        <div class="funclist-item" @click="btnDuplicateEmployee(item)">
+          Nhân bản
+        </div>
+        <div class="funclist-item" @click="btnDeleteEmployee(item)">Xóa</div>
+        <div class="funclist-item">Ngừng sử dụng</div>
       </div>
-      <div class="funclist-item" @click="btnDeleteEmployee(item)">Xóa</div>
-      <div class="funclist-item">Ngừng sử dụng</div>
+      <div
+        class="boder-item-active"
+        :style="activePosition"
+        @click="clearFuncList"
+        v-if="showFuncList"
+        id="boder-item-active"
+      ></div>
     </div>
-    <div
-      class="boder-item-active"
-      :style="activePosition"
-      @click="clearFuncList"
-      v-if="showFuncList"
-      id="boder-item-active"
-    ></div>
   </teleport>
   <EmployeeDetailVue
     :id="employeeIDUpdate"
@@ -282,6 +288,13 @@ export default {
     this.clickCallback(1);
   },
   methods: {
+    /**
+     * Hàm ẩn list số bản ghi
+     * CreatedBy: Bien (08/03/2023)
+     */
+    onClickOutsidePageSize() {
+      this.diy.clearPageSize();
+    },
     /**
      * Hàm nhân bản nhân viên
      * CreatedBy: Bien (20/1/2023)

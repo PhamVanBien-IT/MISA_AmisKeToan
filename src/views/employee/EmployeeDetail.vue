@@ -83,6 +83,7 @@
                 'tags-error-department': isActiveDepartment,
               }"
               :data-gloss="errorDepartment"
+              v-click-outside-element="onClickOutsideDepartment"
             >
               <MComboboxVue
                 id="cbxDepartment"
@@ -382,7 +383,6 @@
 </template>
 <script>
 import employeeApi from "@/api/employeeApi";
-import { tr } from "date-fns/locale";
 export default {
   inject: ["diy"],
   name: "EmployeeDetail",
@@ -400,9 +400,12 @@ export default {
     this.inputOnFocus("EmployeeCode");
   },
   methods: {
-    onClickOutside() {
-      // this.diy.clearFunctionAll();
-      this.diy.ToggleDataDeparerment();
+    /**
+     * Hàm ẩn danh sách đơn vị khi click ra ngoài
+     * CreatedBy: Bien (08/03/2023)
+     */
+    onClickOutsideDepartment() {
+      this.diy.ClearDataDeparerment();
     },
     /**
      * Hàm focus cho input EmployeeCode

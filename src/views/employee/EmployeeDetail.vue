@@ -16,7 +16,7 @@
           data-gloss="Đóng (ESC)"
           id="close-form-icon"
         ></div>
-        <div class="form-title">{{title}}</div>
+        <div class="form-title">{{ title }}</div>
         <div class="client">
           <MCheckboxVue
             v-model="isCustomer"
@@ -386,7 +386,7 @@ import employeeApi from "@/api/employeeApi";
 export default {
   inject: ["diy"],
   name: "EmployeeDetail",
-  props: ["id", "duplicateEmployeeCode", "duplicateEmployeeIndex","title"],
+  props: ["id", "duplicateEmployeeCode", "duplicateEmployeeIndex", "title"],
   components: {},
   created() {
     if (this.id) {
@@ -406,6 +406,7 @@ export default {
      */
     onClickOutsideDepartment() {
       this.diy.ClearDataDeparerment();
+      this.clearValidateClick();
     },
     /**
      * Hàm focus cho input EmployeeCode
@@ -429,8 +430,6 @@ export default {
         if (this.isValidate) {
           this.saveEmployee(this.id);
         }
-
-        console.log(this.isValidate);
       } catch (error) {
         console.log(error);
       }
@@ -469,12 +468,12 @@ export default {
           this.$parent.clickCallback(1);
           this.employee = {};
           this.validateList[`isActive`] = false;
-          this.inputOnFocus("EmployeeCode");
           // Thực hiện khi click nút cất
           if (this.isSaveEmployee) {
             this.diy.clearEPLDetail();
           } else {
             this.setEmployeeCode();
+            this.inputOnFocus("EmployeeCode");
           }
           this.$parent.duplicateEmployeeCode = null;
         } else {
@@ -498,13 +497,13 @@ export default {
           this.$parent.clickCallback(this.$parent.indexPage);
           this.employee = {};
           this.$parent.employeeIDUpdate = null;
-          this.inputOnFocus("EmployeeCode");
 
           // Thực hiện khi click nút cất
           if (this.isSaveEmployee) {
             this.diy.clearEPLDetail();
           } else {
             this.setEmployeeCode();
+            this.inputOnFocus("EmployeeCode");
           }
         } else {
           this.handleErrorValidate(response);
@@ -529,7 +528,9 @@ export default {
             res.response.data.errorCode == this.$MISAEnum.ERRORCODE.VALIDATERROR
           ) {
             this.showErrorValidate(moreInfo[0].value);
-
+            if (moreInfo[0].key == "EmployeeCode") {
+              this.inputValidate = "EmployeeCode";
+            }
             this.validateList[`isActive`] = true;
             if (this.validateList[`isActive`]) {
               moreInfo.forEach((item) => {
@@ -540,10 +541,10 @@ export default {
           }
           break;
         case this.$MISAEnum.STATUSCODE.INTERNALSERVER:
-          if(res.response.data.errorCode == this.$MISAEnum.ERRORCODE.UNKNOWNERROR){
-            this.showErrorValidate(
-            this.$MISAResource.ERRORVALIDATE.DEPARTMENT
-          );
+          if (
+            res.response.data.errorCode == this.$MISAEnum.ERRORCODE.UNKNOWNERROR
+          ) {
+            this.showErrorValidate(this.$MISAResource.ERRORVALIDATE.DEPARTMENT);
           }
           break;
         default:
@@ -585,6 +586,7 @@ export default {
       // Hiển thị dialog khi tên để trống
       this.diy.ShowDialogValidate();
     },
+
     /**
      * Hàm loại bỏ lỗi khi nhập giá trị đúng định dạng
      * CreatedBy: Bien (24/02/2023)
@@ -597,6 +599,13 @@ export default {
         this.validateList[`EmployeeCode`].labelValidate =
           this.$MISAResource.ERRORVALIDATE.EMPLOYEECODE;
       }
+
+      // if (!this.employee.departmentId) {
+      //   this.isActiveDepartment = true;
+      //   this.errorDepartment = this.$MISAResource.ERRORVALIDATE.DEPARTMENT;
+      // } else {
+      //   this.isActiveDepartment = false;
+      // }
 
       if (this.employee.fullName) {
         this.validateList[`FullName`].isStatus = false;
@@ -697,62 +706,77 @@ export default {
      * CreatedBy: Bien (24/02/2023)
      */
     validateEmployee() {
-      if (this.employee.employeeCode) {
-        this.validateList[`EmployeeCode`].isStatus = false;
+      // Khai báo chuỗi định dạnh email
+      const emailFormat = new RegExp(/^([\w\.\-]+)@([\w\-]+)((\.(\w){2,5})+)$/);
+      if (emailFormat.test(this.employee.email) && this.employee.email) {
+        this.validateList[`Email`].isStatus = false;
         this.isValidate = true;
       } else {
-        this.validateList[`EmployeeCode`].isStatus = true;
-        this.validateList[`EmployeeCode`].labelValidate =
-          this.$MISAResource.ERRORVALIDATE.EMPLOYEECODE;
-        this.showErrorValidate(this.validateList[`EmployeeCode`].labelValidate);
-        this.isValidate = false;
-        this.inputValidate = "EmployeeCode";
-      }
-
-      if (this.employee.fullName) {
-        this.validateList[`FullName`].isStatus = false;
-        this.isValidate = true;
-      } else {
-        this.validateList[`FullName`].isStatus = true;
-        this.validateList[`FullName`].labelValidate =
-          this.$MISAResource.ERRORVALIDATE.FULLNAME;
-        this.showErrorValidate(this.validateList[`FullName`].labelValidate);
-        this.inputValidate = "FullName";
-        this.isValidate = false;
-      }
-
-      if (this.employee.departmentId) {
-        this.isActiveDepartment = false;
-        this.isValidate = true;
-      } else {
-        this.isActiveDepartment = true;
-        this.errorDepartment = this.$MISAResource.ERRORVALIDATE.DEPARTMENT;
-        if (this.validateList[`FullName`].isStatus) {
-          this.showErrorValidate(this.validateList[`FullName`].labelValidate);
-          this.inputValidate = "FullName";
-        } else {
-          this.showErrorValidate(this.errorDepartment);
-          this.inputValidate = "Department";
+        if (this.employee.email != null) {
+          this.validateList[`Email`].isStatus = true;
+          this.validateList[`Email`].labelValidate =
+            this.$MISAResource.ERRORVALIDATE.EMAIL;
+          this.showErrorValidate(this.validateList[`Email`].labelValidate);
+          this.inputValidate = "Email";
+          this.isValidate = false;
         }
-        this.isValidate = false;
+      }
+
+      // Khai báo chuỗi định dạng số điện thoại
+      const phoneNumberFormat = new RegExp(
+        /([\+84|84|0]+(3|5|7|8|9|1[2|6|8|9]))+([0-9]{8})\b/
+      );
+
+      if (phoneNumberFormat.test(this.employee.landlineNumber)) {
+        this.validateList[`LandlineNumber`].isStatus = false;
+      } else {
+        if (this.employee.landlineNumber != null) {
+          this.validateList[`LandlineNumber`].isStatus = true;
+          this.validateList[`LandlineNumber`].labelValidate =
+            this.$MISAResource.ERRORVALIDATE.LANDLINENUMBER;
+          this.showErrorValidate(
+            this.validateList[`LandlineNumber`].labelValidate
+          );
+          this.inputValidate = "LandlineNumber";
+          this.isValidate = false;
+        }
+      }
+
+      if (
+        phoneNumberFormat.test(this.employee.phoneNumber) &&
+        this.employee.phoneNumber
+      ) {
+        this.validateList[`PhoneNumber`].isStatus = false;
+        this.isValidate = true;
+      } else {
+        if (this.employee.phoneNumber != null) {
+          this.validateList[`PhoneNumber`].isStatus = true;
+          this.validateList[`PhoneNumber`].labelValidate =
+            this.$MISAResource.ERRORVALIDATE.PHONENUMBER;
+          this.showErrorValidate(
+            this.validateList[`PhoneNumber`].labelValidate
+          );
+          this.inputValidate = "PhoneNumber";
+          this.isValidate = false;
+        }
       }
 
       // Khai báo biến nhận ngày hiện tại
       const dateNow = new Date();
 
-      const dateOfBirth = new Date(this.employee.dateOfBirth);
-      if (dateOfBirth < dateNow && this.employee.dateOfBirth) {
-        this.validateList[`DateOfBirth`].isStatus = false;
+      const identityDate = new Date(this.employee.identityDate);
+      if (identityDate < dateNow && this.employee.identityDate) {
+        this.validateList[`IdentityDate`].isStatus = false;
         this.isValidate = true;
       } else {
-        if (this.employee.dateOfBirth != null) {
-          this.validateList[`DateOfBirth`].isStatus = true;
-          this.validateList[`DateOfBirth`].labelValidate =
-            this.$MISAResource.ERRORVALIDATE.DATEOFBIRTH;
+        if (this.employee.identityDate != null) {
+          this.validateList[`IdentityDate`].isStatus = true;
+          this.validateList[`IdentityDate`].labelValidate =
+            this.$MISAResource.ERRORVALIDATE.IDENTITYDATE;
           this.showErrorValidate(
-            this.validateList[`DateOfBirth`].labelValidate
+            this.validateList[`IdentityDate`].labelValidate
           );
-          this.inputValidate = "DateOfBirth";
+          this.inputValidate = "IdentityDate";
           this.isValidate = false;
         }
       }
@@ -777,76 +801,61 @@ export default {
           this.isValidate = false;
         }
       }
-
-      const identityDate = new Date(this.employee.identityDate);
-      if (identityDate < dateNow && this.employee.identityDate) {
-        this.validateList[`IdentityDate`].isStatus = false;
+      const dateOfBirth = new Date(this.employee.dateOfBirth);
+      if (dateOfBirth < dateNow && this.employee.dateOfBirth) {
+        this.validateList[`DateOfBirth`].isStatus = false;
         this.isValidate = true;
       } else {
-        if (this.employee.identityDate != null) {
-          this.validateList[`IdentityDate`].isStatus = true;
-          this.validateList[`IdentityDate`].labelValidate =
-            this.$MISAResource.ERRORVALIDATE.IDENTITYDATE;
+        if (this.employee.dateOfBirth != null) {
+          this.validateList[`DateOfBirth`].isStatus = true;
+          this.validateList[`DateOfBirth`].labelValidate =
+            this.$MISAResource.ERRORVALIDATE.DATEOFBIRTH;
           this.showErrorValidate(
-            this.validateList[`IdentityDate`].labelValidate
+            this.validateList[`DateOfBirth`].labelValidate
           );
-          this.inputValidate = "IdentityDate";
-          this.isValidate = false;
-        }
-      }
-      // Khai báo chuỗi định dạng số điện thoại
-      const phoneNumberFormat = new RegExp(
-        /([\+84|84|0]+(3|5|7|8|9|1[2|6|8|9]))+([0-9]{8})\b/
-      );
-
-      if (
-        phoneNumberFormat.test(this.employee.phoneNumber) &&
-        this.employee.phoneNumber
-      ) {
-        this.validateList[`PhoneNumber`].isStatus = false;
-        this.isValidate = true;
-      } else {
-        if (this.employee.phoneNumber != null) {
-          this.validateList[`PhoneNumber`].isStatus = true;
-          this.validateList[`PhoneNumber`].labelValidate =
-            this.$MISAResource.ERRORVALIDATE.PHONENUMBER;
-          this.showErrorValidate(
-            this.validateList[`PhoneNumber`].labelValidate
-          );
-          this.inputValidate = "PhoneNumber";
+          this.inputValidate = "DateOfBirth";
           this.isValidate = false;
         }
       }
 
-      if (phoneNumberFormat.test(this.employee.landlineNumber)) {
-        this.validateList[`LandlineNumber`].isStatus = false;
-      } else {
-        if (this.employee.landlineNumber != null) {
-          this.validateList[`LandlineNumber`].isStatus = true;
-          this.validateList[`LandlineNumber`].labelValidate =
-            this.$MISAResource.ERRORVALIDATE.LANDLINENUMBER;
-          this.showErrorValidate(
-            this.validateList[`LandlineNumber`].labelValidate
-          );
-          this.inputValidate = "LandlineNumber";
-          this.isValidate = false;
-        }
-      }
-
-      // Khai báo chuỗi định dạnh email
-      const emailFormat = new RegExp(/^([\w\.\-]+)@([\w\-]+)((\.(\w){2,5})+)$/);
-      if (emailFormat.test(this.employee.email) && this.employee.email) {
-        this.validateList[`Email`].isStatus = false;
+      if (this.employee.departmentId) {
+        this.isActiveDepartment = false;
         this.isValidate = true;
       } else {
-        if (this.employee.email != null) {
-          this.validateList[`Email`].isStatus = true;
-          this.validateList[`Email`].labelValidate =
-            this.$MISAResource.ERRORVALIDATE.EMAIL;
-          this.showErrorValidate(this.validateList[`Email`].labelValidate);
-          this.inputValidate = "Email";
-          this.isValidate = false;
+        this.isActiveDepartment = true;
+        this.errorDepartment = this.$MISAResource.ERRORVALIDATE.DEPARTMENT;
+        if (this.validateList[`FullName`].isStatus) {
+          this.showErrorValidate(this.validateList[`FullName`].labelValidate);
+          this.inputValidate = "FullName";
+        } else {
+          this.showErrorValidate(this.errorDepartment);
+          this.inputValidate = "Department";
         }
+        this.isValidate = false;
+      }
+
+      if (this.employee.fullName) {
+        this.validateList[`FullName`].isStatus = false;
+        this.isValidate = true;
+      } else {
+        this.validateList[`FullName`].isStatus = true;
+        this.validateList[`FullName`].labelValidate =
+          this.$MISAResource.ERRORVALIDATE.FULLNAME;
+        this.showErrorValidate(this.validateList[`FullName`].labelValidate);
+        this.inputValidate = "FullName";
+        this.isValidate = false;
+      }
+
+      if (this.employee.employeeCode) {
+        this.validateList[`EmployeeCode`].isStatus = false;
+        this.isValidate = true;
+      } else {
+        this.validateList[`EmployeeCode`].isStatus = true;
+        this.validateList[`EmployeeCode`].labelValidate =
+          this.$MISAResource.ERRORVALIDATE.EMPLOYEECODE;
+        this.showErrorValidate(this.validateList[`EmployeeCode`].labelValidate);
+        this.isValidate = false;
+        this.inputValidate = "EmployeeCode";
       }
     },
     /**
@@ -862,6 +871,9 @@ export default {
           console.log(response);
 
           this.employee = response.data;
+
+          // this.employeeClone = response.data;
+
           this.employee.dateOfBirth = this.$MISACommon.formatDateReverse(
             this.employee.dateOfBirth
           );
@@ -870,6 +882,7 @@ export default {
           );
           // Chọn giới tính theo phần tử chọn
           this.getGender();
+          this.employeeClone = {...this.employee};
         }
         if (this.duplicateEmployeeCode) {
           this.employee.employeeCode = this.duplicateEmployeeCode;
@@ -944,13 +957,98 @@ export default {
      * CreatedBy: Bien (9/1/2023)
      */
     btnCloseOnClickIcon() {
-      this.diy.showDialog();
-      this.diy.ShowBtnDialog();
-      this.diy.ClearCloseDialog();
-      this.diy.showBtnCancel();
+      // console.log(this.employeeClone);
+
+      // console.log(this.employee);
+      if (this.isEmployeeClone) {
+        this.diy.clearEPLDetail();
+      } else {
+        this.diy.showDialog();
+        this.diy.ShowBtnDialog();
+        this.diy.ClearCloseDialog();
+        this.diy.showBtnCancel();
+      }
+    },
+    /**
+     * Hàm loại bỏ lỗi khi click ra ngoài
+     * CreatedBy: Bien (18/03/2023)
+     */
+    clearValidateClick() {
+      if (this.employee.employeeCode) {
+        this.validateList[`EmployeeCode`].isStatus = false;
+      }
+
+      if (this.employee.fullName) {
+        this.validateList[`FullName`].isStatus = false;
+      }
+
+      if (this.employee.departmentId) {
+        this.isActiveDepartment = false;
+      }
+
+      // Khai báo chuỗi định dạng số điện thoại
+      const phoneNumberFormat = new RegExp(
+        /([\+84|84|0]+(3|5|7|8|9|1[2|6|8|9]))+([0-9]{8})\b/
+      );
+
+      if (phoneNumberFormat.test(this.employee.landlineNumber)) {
+        this.validateList[`LandlineNumber`].isStatus = false;
+      }
+
+      if (
+        phoneNumberFormat.test(this.employee.phoneNumber) &&
+        this.employee.phoneNumber
+      ) {
+        this.validateList[`PhoneNumber`].isStatus = false;
+      }
+
+      // Khai báo chuỗi định dạng số chứng minh nhân dân
+      const identityNumberFormat = new RegExp(/^([0-9]{12})\b/);
+      if (
+        identityNumberFormat.test(this.employee.identityNumber) &&
+        this.employee.identityNumber
+      ) {
+        this.validateList[`IdentityNumber`].isStatus = false;
+      }
+
+      // Khai báo chuỗi định dạnh email
+      const emailFormat = new RegExp(/^([\w\.\-]+)@([\w\-]+)((\.(\w){2,5})+)$/);
+      if (emailFormat.test(this.employee.email) && this.employee.email) {
+        this.validateList[`Email`].isStatus = false;
+      }
+
+      // Khai báo biến nhận ngày hiện tại
+      const dateNow = new Date();
+
+      const identityDate = new Date(this.employee.identityDate);
+      if (identityDate < dateNow && this.employee.identityDate) {
+        this.validateList[`IdentityDate`].isStatus = false;
+      }
+
+      const dateOfBirth = new Date(this.employee.dateOfBirth);
+      if (dateOfBirth < dateNow && this.employee.dateOfBirth) {
+        this.validateList[`DateOfBirth`].isStatus = false;
+      }
     },
   },
   watch: {
+    /**
+     * Theo dõi sự thay đổi của employee
+     * CreatedBy: Bien (18/03/2023)
+     */
+    employee:{
+      handler(newValue) {
+      console.log('Employee changed from', this.employeeClone, 'to', newValue)
+      if(newValue && this.employeeClone){
+        if(JSON.stringify(newValue) == JSON.stringify(this.employeeClone)){
+          this.isEmployeeClone = true;
+        }else{
+          this.isEmployeeClone = false;
+        }
+      }
+    },
+    deep: true
+    },
     /**
      * Hàm lắng nghe sự đổi của input tiền
      * @param {Gía trị mới của tiền} newValue
@@ -963,10 +1061,15 @@ export default {
   },
   data() {
     return {
+      // Khai báo biến theo dõi sự thay đổi của employee
+      isEmployeeClone:true,
+
       // Khai báo biến validate dữ liệu
       isValidate: null,
+
       // Khai báo biến focus vào lỗi input tương ứng
       inputValidate: null,
+
       // Khai báo biến nhập giá trị check là khách hàng
       isCustomer: false,
 
@@ -1040,6 +1143,9 @@ export default {
 
       // Khai báo biến thể thiện thực hiện hành động cất
       isSaveEmployee: false,
+
+      // Biến lưu tạm thời nhân viên
+      employeeClone: {},
     };
   },
 };

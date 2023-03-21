@@ -693,6 +693,7 @@ export default {
     return {
       // Khai báo biến tiêu đề form
       titleEmployeeDetail: "Thông tin nhân viên",
+
       // Khai báo biến nhận mã nhân viên mới khi nhân bản
       duplicateEmployeeCode: null,
 

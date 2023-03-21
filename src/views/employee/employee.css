@@ -396,7 +396,6 @@ tbody tr:hover td{
     left: 0px;
     margin-left: 4px;
     margin-right: 4px;
-    background-color: #eaecf198;
 }
 .deletes{
     height: 24px;
@@ -405,9 +404,11 @@ tbody tr:hover td{
     border: 1px solid #b1b3ba98;
     display: flex;
     align-items: center;
+    background-color: rgb(255, 45, 45);
+    color: #fff;
 }
 .deletes:hover{
-    background-color: rgb(213, 206, 206);
+    background-color: rgb(250, 78, 78);
 }
 .col-1 {
     width: 8.33%;

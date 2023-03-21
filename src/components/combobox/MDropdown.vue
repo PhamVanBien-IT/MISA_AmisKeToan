@@ -44,7 +44,7 @@ export default {
          */
         itemOnSelect(item,index){
             this.textSelectTed = item.value;
-            this.isShowData = false;
+            this.diy.clearPageSize();
             this.indexItemSelect = index
             this.$emit('pageSize',item.key)
         },

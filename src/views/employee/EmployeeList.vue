@@ -11,6 +11,7 @@
           class="btn"
           @click="btnAddOnClick"
         ></MButtonVue>
+        <!-- <input type="file" @change="handleFileUpload"> -->
       </div>
     </div>
     <!-- PAGE-CONTENT -->
@@ -288,6 +289,22 @@ export default {
     this.clickCallback(1);
   },
   methods: {
+  // async handleFileUpload(event) {
+  //   // const file = event.target.files[0];
+  //   // const reader = new FileReader();
+  //   // reader.onload = e => {
+  //   //   const data = e.target.result;
+  //   //   // Do something with the file data, such as parse it into a JavaScript object
+  //   //   // or send it to a server for further processing
+  //   // };
+  //   // reader.readAsBinaryString(file);
+
+  //   // console.log(file);
+  //   const file = event.target.files[0];
+  //   const response = employeeApi.checkFileEmployee(file);
+
+  //   console.log(response);
+  // },
     /**
      * Hàm ẩn list số bản ghi
      * CreatedBy: Bien (08/03/2023)

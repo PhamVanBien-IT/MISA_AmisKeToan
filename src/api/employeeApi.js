@@ -7,6 +7,23 @@ const baseUrl = "Employees/";
  * CreatedBy: Bien (20/01/2023)
  */
 const employeeApi = {
+    checkFileEmployee:(file)=>{
+        const formData = new FormData();
+        formData.append("file", file);
+    
+        axios.post("https://localhost:7185/api/Employees/CheckBasicFileImport", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        }).then(response => {
+          console.log(response.data);
+          // Do something with the response data
+        }).catch(error => {
+          console.log(error);
+          // Handle the error
+        });
+    }
+    ,
     /**
      * API xuất khẩu nhân viên
      * CreatedBy: Bien (20/02/2023)

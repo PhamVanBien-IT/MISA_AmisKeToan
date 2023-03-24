@@ -386,7 +386,7 @@ import employeeApi from "@/api/employeeApi";
 export default {
   inject: ["diy"],
   name: "EmployeeDetail",
-  props: ["id", "duplicateEmployeeCode", "duplicateEmployeeIndex", "title"],
+  props: ["id", "duplicateEmployeeCode", "title"],
   components: {},
   created() {
     if (this.id) {
@@ -886,7 +886,6 @@ export default {
         }
         if (this.duplicateEmployeeCode) {
           this.employee.employeeCode = this.duplicateEmployeeCode;
-          this.employee.employeeIndex = this.duplicateEmployeeIndex;
         }
       } catch (error) {
         console.log(error);
@@ -1038,7 +1037,6 @@ export default {
      */
     employee:{
       handler(newValue) {
-      console.log('Employee changed from', this.employeeClone, 'to', newValue)
       if(newValue && this.employeeClone){
         if(JSON.stringify(newValue) == JSON.stringify(this.employeeClone)){
           this.isEmployeeClone = true;

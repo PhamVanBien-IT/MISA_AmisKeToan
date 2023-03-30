@@ -874,6 +874,8 @@ export default {
 
           this.employee = response.data;
 
+          this.clearValidateEmployee();
+
           // this.employeeClone = response.data;
 
           this.employee.dateOfBirth = this.$MISACommon.formatDateReverse(
@@ -965,67 +967,6 @@ export default {
         this.diy.ShowBtnDialog();
         this.diy.ClearCloseDialog();
         this.diy.showBtnCancel();
-      }
-    },
-    /**
-     * Hàm loại bỏ lỗi khi click ra ngoài
-     * CreatedBy: Bien (18/03/2023)
-     */
-    clearValidateClick() {
-      if (this.employee.employeeCode) {
-        this.validateList[`EmployeeCode`].isStatus = false;
-      }
-
-      if (this.employee.fullName) {
-        this.validateList[`FullName`].isStatus = false;
-      }
-
-      if (this.employee.departmentId) {
-        this.isActiveDepartment = false;
-      }
-
-      // Khai báo chuỗi định dạng số điện thoại
-      const phoneNumberFormat = new RegExp(
-        /([\+84|84|0]+(3|5|7|8|9|1[2|6|8|9]))+([0-9]{8})\b/
-      );
-
-      if (phoneNumberFormat.test(this.employee.landlineNumber)) {
-        this.validateList[`LandlineNumber`].isStatus = false;
-      }
-
-      if (
-        phoneNumberFormat.test(this.employee.phoneNumber) &&
-        this.employee.phoneNumber
-      ) {
-        this.validateList[`PhoneNumber`].isStatus = false;
-      }
-
-      // Khai báo chuỗi định dạng số chứng minh nhân dân
-      const identityNumberFormat = new RegExp(/^([0-9]{12})\b/);
-      if (
-        identityNumberFormat.test(this.employee.identityNumber) &&
-        this.employee.identityNumber
-      ) {
-        this.validateList[`IdentityNumber`].isStatus = false;
-      }
-
-      // Khai báo chuỗi định dạnh email
-      const emailFormat = new RegExp(/^([\w\.\-]+)@([\w\-]+)((\.(\w){2,5})+)$/);
-      if (emailFormat.test(this.employee.email) && this.employee.email) {
-        this.validateList[`Email`].isStatus = false;
-      }
-
-      // Khai báo biến nhận ngày hiện tại
-      const dateNow = new Date();
-
-      const identityDate = new Date(this.employee.identityDate);
-      if (identityDate < dateNow && this.employee.identityDate) {
-        this.validateList[`IdentityDate`].isStatus = false;
-      }
-
-      const dateOfBirth = new Date(this.employee.dateOfBirth);
-      if (dateOfBirth < dateNow && this.employee.dateOfBirth) {
-        this.validateList[`DateOfBirth`].isStatus = false;
       }
     },
   },

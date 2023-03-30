@@ -91,7 +91,7 @@
                 <td class="tb-head td-left" style="width: 450px">
                   TÊN NHÂN VIÊN
                 </td>
-                <td class="tb-head td-left" style="width: 250px">GIỚI TÍNH</td>
+                <td class="tb-head td-left" style="width: 180px">GIỚI TÍNH</td>
                 <td class="tb-head td-center" style="width: 200px">
                   NGÀY SINH
                 </td>

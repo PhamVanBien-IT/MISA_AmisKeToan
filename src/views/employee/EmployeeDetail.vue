@@ -402,11 +402,13 @@ export default {
   methods: {
     /**
      * Hàm ẩn danh sách đơn vị khi click ra ngoài
-     * CreatedBy: Bien (08/03/2023)
+     * CreatedBy: Bien (30/03/2023)
      */
     onClickOutsideDepartment() {
-      this.diy.ClearDataDeparerment();
-      this.clearValidateClick();
+      if (this.diy.state.showEPLDetail) {
+        this.diy.ClearDataDeparerment();
+        console.log("Outside Combobox");
+      }
     },
     /**
      * Hàm focus cho input EmployeeCode
@@ -600,12 +602,12 @@ export default {
           this.$MISAResource.ERRORVALIDATE.EMPLOYEECODE;
       }
 
-      // if (!this.employee.departmentId) {
-      //   this.isActiveDepartment = true;
-      //   this.errorDepartment = this.$MISAResource.ERRORVALIDATE.DEPARTMENT;
-      // } else {
-      //   this.isActiveDepartment = false;
-      // }
+      if (!this.employee.departmentId) {
+        this.isActiveDepartment = true;
+        this.errorDepartment = this.$MISAResource.ERRORVALIDATE.DEPARTMENT;
+      } else {
+        this.isActiveDepartment = false;
+      }
 
       if (this.employee.fullName) {
         this.validateList[`FullName`].isStatus = false;
@@ -882,7 +884,7 @@ export default {
           );
           // Chọn giới tính theo phần tử chọn
           this.getGender();
-          this.employeeClone = {...this.employee};
+          this.employeeClone = { ...this.employee };
         }
         if (this.duplicateEmployeeCode) {
           this.employee.employeeCode = this.duplicateEmployeeCode;
@@ -956,9 +958,6 @@ export default {
      * CreatedBy: Bien (9/1/2023)
      */
     btnCloseOnClickIcon() {
-      // console.log(this.employeeClone);
-
-      // console.log(this.employee);
       if (this.isEmployeeClone) {
         this.diy.clearEPLDetail();
       } else {
@@ -1035,17 +1034,17 @@ export default {
      * Theo dõi sự thay đổi của employee
      * CreatedBy: Bien (18/03/2023)
      */
-    employee:{
+    employee: {
       handler(newValue) {
-      if(newValue && this.employeeClone){
-        if(JSON.stringify(newValue) == JSON.stringify(this.employeeClone)){
-          this.isEmployeeClone = true;
-        }else{
-          this.isEmployeeClone = false;
+        if (newValue && this.employeeClone) {
+          if (JSON.stringify(newValue) == JSON.stringify(this.employeeClone)) {
+            this.isEmployeeClone = true;
+          } else {
+            this.isEmployeeClone = false;
+          }
         }
-      }
-    },
-    deep: true
+      },
+      deep: true,
     },
     /**
      * Hàm lắng nghe sự đổi của input tiền
@@ -1060,7 +1059,7 @@ export default {
   data() {
     return {
       // Khai báo biến theo dõi sự thay đổi của employee
-      isEmployeeClone:true,
+      isEmployeeClone: true,
 
       // Khai báo biến validate dữ liệu
       isValidate: null,

@@ -388,24 +388,17 @@ tbody tr:hover td{
     margin-right: 16px;
     color: red;
 }
-.icon-deletes{
-    width: 20px;
-    height: 20px;
-    background: url("../../assets/images/Sprites.64af8f61.svg") no-repeat -462px -311px;
-    top: 0px;
-    left: 0px;
-    margin-left: 4px;
-    margin-right: 4px;
-}
+
 .deletes{
     height: 24px;
     padding: 2px;
-    width: 100px;
+    width: 80px;
     border: 1px solid #b1b3ba98;
     display: flex;
     align-items: center;
     background-color: rgb(255, 45, 45);
     color: #fff;
+    justify-content: center;
 }
 .deletes:hover{
     background-color: rgb(250, 78, 78);

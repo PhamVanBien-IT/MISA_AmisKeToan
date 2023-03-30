@@ -10,6 +10,7 @@
           label="Thêm mới nhân viên"
           class="btn"
           @click="btnAddOnClick"
+          v-click-outside-element="onClickOutsideValidate"
         ></MButtonVue>
         <!-- <input type="file" @change="handleFileUpload"> -->
       </div>
@@ -31,8 +32,7 @@
               Bỏ chọn
             </div>
             <div class="deletes" @click="deleteEmployeeListSelect">
-              <div class="icon-deletes"></div>
-              <div class="">Xóa tất cả</div>
+              <div style="text-align: center">Xóa tất cả</div>
             </div>
           </div>
         </div>
@@ -169,8 +169,7 @@
                     class="btn-funclist"
                     @click="btnShowFuncList($event, item)"
                   >
-                    <div
-                      class="icon-funclist"></div>
+                    <div class="icon-funclist"></div>
                   </div>
                 </td>
               </tr>
@@ -255,6 +254,7 @@
     </div>
   </teleport>
   <EmployeeDetailVue
+    ref="employeeDetail"
     :id="employeeIDUpdate"
     v-if="diy.state.showEPLDetail"
     :duplicateEmployeeCode="duplicateEmployeeCode"
@@ -289,28 +289,41 @@ export default {
     this.clickCallback(1);
   },
   methods: {
-  // async handleFileUpload(event) {
-  //   // const file = event.target.files[0];
-  //   // const reader = new FileReader();
-  //   // reader.onload = e => {
-  //   //   const data = e.target.result;
-  //   //   // Do something with the file data, such as parse it into a JavaScript object
-  //   //   // or send it to a server for further processing
-  //   // };
-  //   // reader.readAsBinaryString(file);
+    // async handleFileUpload(event) {
+    //   // const file = event.target.files[0];
+    //   // const reader = new FileReader();
+    //   // reader.onload = e => {
+    //   //   const data = e.target.result;
+    //   //   // Do something with the file data, such as parse it into a JavaScript object
+    //   //   // or send it to a server for further processing
+    //   // };
+    //   // reader.readAsBinaryString(file);
 
-  //   // console.log(file);
-  //   const file = event.target.files[0];
-  //   const response = employeeApi.checkFileEmployee(file);
+    //   // console.log(file);
+    //   const file = event.target.files[0];
+    //   const response = employeeApi.checkFileEmployee(file);
 
-  //   console.log(response);
-  // },
+    //   console.log(response);
+    // },
     /**
-     * Hàm ẩn list số bản ghi
-     * CreatedBy: Bien (08/03/2023)
+     * Hàm ẩn danh sách bản ghi khi click ra ngoài
+     * CreatedBy: Bien (30/03/2023)
      */
     onClickOutsidePageSize() {
-      this.diy.clearPageSize();
+      if (!this.diy.state.showEPLDetail) {
+        this.diy.clearPageSize();
+        console.log("Outside PageSize");
+      }
+    },
+    /**
+     * Hàm ẩn danh sách đơn vị khi click ra ngoài
+     * CreatedBy: Bien (08/03/2023)
+     */
+    onClickOutsideValidate() {
+      if (this.diy.state.showEPLDetail && !this.diy.state.showDialog) {
+        this.$refs.employeeDetail.clearValidateEmployee();
+        console.log("outSide validate");
+      }
     },
     /**
      * Hàm nhân bản nhân viên
@@ -640,6 +653,7 @@ export default {
 
       // Gọi hàm ẩn danh sách chức năng trong bảng nhân viên
       this.clearFuncList();
+
     },
 
     /**
@@ -828,13 +842,11 @@ export default {
 }
 
 .prev-btn {
-  margin-right: 13px;
-  margin-top: 3px;
+  margin-right: 12px;
 }
 
 .next-btn {
-  margin-top: 1px;
-  margin-left: 13px;
+  margin-left: 12px;
 }
 
 .page-item.active {

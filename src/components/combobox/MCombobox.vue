@@ -13,6 +13,7 @@
         :tabindex="tabindex"
         :name="nameInput"
         :ref="nameInput"
+        @blur="hanldeBlurCombobox"
       />
       <div class="iconBtnCombobox">
         <button
@@ -22,7 +23,7 @@
         ></button>
       </div>
     </div>
-    <div v-if="diy.state.ShowDataDeparerment" class="combobox__data" @scroll="onScroll">
+    <div v-if="diy.state.showDataDeparerment" class="combobox__data" @scroll="onScroll">
       <div
         class="combobox-item"
         :ref="`item_${index}`"
@@ -44,7 +45,7 @@ export default {
   inject: ["diy"],
   name: "MCombobox",
   emits: ["update:modelValue", "textSelected"],
-  props: ["id", "propName", "propValue", "modelValue", "class", "tabindex","name"],
+  props: ["id", "propName", "propValue", "modelValue", "class", "tabindex","name","labelValidate"],
   created() {
     // Lấy dữ liệu của bảng department
     this.getDepartments(this.pageSize);
@@ -60,6 +61,18 @@ export default {
     }
   },
   methods: {
+    /**
+     * Hàm validate khi blur
+     * CreatedBy: Bien (04/04/2023)
+     */
+    hanldeBlurCombobox(){
+        if(!this.modelValue){
+          this.$parent.validateList[`${this.nameInput}`].isStatus = true;
+        this.$parent.validateList[`${this.nameInput}`].labelValidate = this.$MISAResource.ERRORVALIDATE.REQUIRED(`${this.labelValidate}`);
+        }else{
+          this.$parent.validateList[`${this.nameInput}`].isStatus = false;
+        }
+    },
     /**
      * Hàm hiển thị thêm danh sách chức danh khi scroll
      * CreatedBy: Bien (07/03/2023)
@@ -99,7 +112,7 @@ export default {
      * CreatedBy: Bien (9/1/2023)
      */
     onShowHideData() {
-      this.diy.ToggleDataDeparerment();
+      this.diy.toggleDataDeparerment();
     },
 
     /**
@@ -115,8 +128,9 @@ export default {
       this.$emit("update:modelValue", entity[this.propValue]);
       // Set index của item được chọn
       this.indexItemSelect = me.findIndexSelected;
-      if (this.diy.state.ShowDataDeparerment) {
-        this.diy.ClearDataDeparerment();
+      if (this.diy.state.showDataDeparerment) {
+        this.diy.clearDataDeparerment();
+        this.$parent.validateList[`${this.nameInput}`].isStatus = false;
       }
     },
 
@@ -166,7 +180,7 @@ export default {
         case this.$MISAEnum.KEY_CODE.ROW_UP:
           //  Kiểm tra hiển thị
           if (!this.isShowData) {
-            this.diy.ShowDataDeparerment();
+            this.diy.showDataDeparerment();
           }
 
           if (this.indexItemSelect > 0 && !this.unUpIndexItemSelect) {
@@ -178,7 +192,7 @@ export default {
         case this.$MISAEnum.KEY_CODE.ROW_DOWN:
           //  Kiểm tra hiển thị
           if (!this.isShowData) {
-            this.diy.ShowDataDeparerment();
+            this.diy.showDataDeparerment();
           }
           // eslint-disable-next-line no-case-declarations
           let maxLength = this.entitySearch.length;
@@ -204,7 +218,7 @@ export default {
       const keyCode = event.keyCode;
       switch (keyCode) {
         case this.$MISAEnum.KEY_CODE.ENTER:
-          this.diy.ClearDataDeparerment();
+          this.diy.clearDataDeparerment();
           // Xác định item đang chọn dựa vào index
           // eslint-disable-next-line no-case-declarations
           const item = this.entitySearch[this.indexItemSelect];
@@ -212,8 +226,8 @@ export default {
           break;
         case this.$MISAEnum.KEY_CODE.ROW_UP:
           //  Kiểm tra hiển thị
-          if (!this.diy.state.ShowDataDeparerment) {
-            this.diy.ShowDataDeparerment();
+          if (!this.diy.state.showDataDeparerment) {
+            this.diy.showDataDeparerment();
           }
           if (this.indexItemSelect > 0) {
             this.indexItemSelect--;
@@ -221,8 +235,8 @@ export default {
           break;
         case this.$MISAEnum.KEY_CODE.ROW_DOWN:
           //  Kiểm tra hiển thị
-          if (!this.diy.state.ShowDataDeparerment) {
-            this.diy.ShowDataDeparerment();
+          if (!this.diy.state.showDataDeparerment) {
+            this.diy.showDataDeparerment();
           }
           // eslint-disable-next-line no-case-declarations
           let maxLength = this.entitySearch.length;

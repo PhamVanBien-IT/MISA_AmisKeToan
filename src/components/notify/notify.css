@@ -6,6 +6,7 @@
     box-shadow: 0 0 4px rgba(0,0,0,0.078);
     border-radius: 4px;
     animation: showNotify 2s infinite;
+    z-index: 999;
 }
 .notify-content{
     padding: 18px 16px;

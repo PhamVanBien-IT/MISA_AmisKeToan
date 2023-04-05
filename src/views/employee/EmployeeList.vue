@@ -10,7 +10,6 @@
           label="Thêm mới nhân viên"
           class="btn"
           @click="btnAddOnClick"
-          v-click-outside-element="onClickOutsideValidate"
         ></MButtonVue>
         <!-- <input type="file" @change="handleFileUpload"> -->
       </div>
@@ -75,7 +74,7 @@
             <thead>
               <tr>
                 <td class="tb-head td-center td-cb" style="width: 60px">
-                  <label>
+                  <label> 
                     <input
                       type="checkbox"
                       id="chkProdTomove"
@@ -85,10 +84,10 @@
                     <span class="check-box-effect"></span>
                   </label>
                 </td>
-                <td class="tb-head td-left" style="width: 250px">
+                <td class="tb-head td-left td-code" style="width: 250px">
                   MÃ NHÂN VIÊN
                 </td>
-                <td class="tb-head td-left" style="width: 450px">
+                <td class="tb-head td-left td-name" style="width: 450px">
                   TÊN NHÂN VIÊN
                 </td>
                 <td class="tb-head td-left" style="width: 180px">GIỚI TÍNH</td>
@@ -102,15 +101,18 @@
                 >
                   SỐ CMND
                 </td>
-                <td class="tb-head td-center" style="width: 250px">NGÀY CẤP</td>
-                <td class="tb-head td-left" style="width: 200px">NƠI CẤP</td>
+                <td class="tb-head td-left" style="width: 250px">CHỨC DANH</td>
+                <td class="tb-head td-left" style="width: 350px">TÊN ĐƠN VỊ</td>
                 <td class="tb-head td-left" style="width: 230px">
                   SỐ TÀI KHOẢN
+                </td>
+                <td class="tb-head td-left" style="width: 200px">
+                  TÊN NGÂN HÀNG
                 </td>
                 <td
                   class="tb-head td-left"
                   title="Chi nhánh tài khoản ngân hàng"
-                  style="width: 500px"
+                  style="width: 300px"
                 >
                   CHI NHÁNH TK NGÂN HÀNG
                 </td>
@@ -136,10 +138,10 @@
                     <span class="check-box-effect"></span>
                   </label>
                 </td>
-                <td class="td-left" style="width: 250px">
+                <td class="td-left td-code" style="width: 250px">
                   {{ item.employeeCode || "" }}
                 </td>
-                <td class="td-left" style="width: 450px">
+                <td class="td-left td-name" style="width: 450px">
                   {{ item.fullName || "" }}
                 </td>
                 <td class="td-left" style="width: 200px">
@@ -151,16 +153,19 @@
                 <td class="td-left" style="width: 250px">
                   {{ item.identityNumber || "" }}
                 </td>
-                <td class="td-center" style="width: 250px">
-                  {{ this.$MISACommon.formatDate(item.identityDate) || "" }}
+                <td class="td-left" style="width: 250px">
+                  {{ item.position || "" }}
                 </td>
                 <td class="td-left" style="width: 200px">
-                  {{ item.identityPlace || "" }}
+                  {{ item.departmentName || "" }}
                 </td>
                 <td class="td-left" style="width: 230px">
                   {{ item.bankAccount || "" }}
                 </td>
-                <td class="td-left" style="width: 500px">
+                <td class="td-left" style="width: 230px">
+                  {{ item.bankName || "" }}
+                </td>
+                <td class="td-left" style="width: 300px">
                   {{ item.bankBranch || "" }}
                 </td>
                 <td class="td-func td-center" style="width: 120px">
@@ -289,22 +294,6 @@ export default {
     this.clickCallback(1);
   },
   methods: {
-    // async handleFileUpload(event) {
-    //   // const file = event.target.files[0];
-    //   // const reader = new FileReader();
-    //   // reader.onload = e => {
-    //   //   const data = e.target.result;
-    //   //   // Do something with the file data, such as parse it into a JavaScript object
-    //   //   // or send it to a server for further processing
-    //   // };
-    //   // reader.readAsBinaryString(file);
-
-    //   // console.log(file);
-    //   const file = event.target.files[0];
-    //   const response = employeeApi.checkFileEmployee(file);
-
-    //   console.log(response);
-    // },
     /**
      * Hàm ẩn danh sách bản ghi khi click ra ngoài
      * CreatedBy: Bien (30/03/2023)
@@ -312,17 +301,6 @@ export default {
     onClickOutsidePageSize() {
       if (!this.diy.state.showEPLDetail) {
         this.diy.clearPageSize();
-        console.log("Outside PageSize");
-      }
-    },
-    /**
-     * Hàm ẩn danh sách đơn vị khi click ra ngoài
-     * CreatedBy: Bien (08/03/2023)
-     */
-    onClickOutsideValidate() {
-      if (this.diy.state.showEPLDetail && !this.diy.state.showDialog) {
-        this.$refs.employeeDetail.clearValidateEmployee();
-        console.log("outSide validate");
       }
     },
     /**
@@ -378,20 +356,18 @@ export default {
      */
     async deleteEmployees() {
       try {
-        this.diy.showLoading();
 
         // Hàm thực hiện xóa khi xóa
         const response = await employeeApi.deleteEmployees(this.selectedList);
 
         console.log(response);
         if (response.data.isSuccess) {
-          this.labelInsertValid = " Nhân viên đã được xóa";
+          this.labelInsertValid = this.$MISAResource.NOTIFY.DELETE("Nhân viên");
           this.diy.showNotify();
         }
 
         this.clickCallback(this.indexPage);
 
-        this.diy.clearLoading();
       } catch (error) {
         console.log(error);
       }
@@ -510,6 +486,7 @@ export default {
      */
     async clickCallback(pageNumber) {
       try {
+        this.diy.showLoading();
         // Nhận dữ liệu khi tìm kiếm
         const response = await employeeApi.getEmpPaging(
           pageNumber,
@@ -519,6 +496,10 @@ export default {
         this.setDataPaging(response);
         this.indexPage = pageNumber;
         this.autoCheckAllEmployee();
+
+        if(response){
+          this.diy.clearLoading();
+        }
       } catch (error) {
         console.log(error);
       }
@@ -600,8 +581,6 @@ export default {
      */
     async deleteEmployee() {
       try {
-        // Hàm hiển thị loading
-        this.diy.showLoading();
 
         // Hàm nhận dữ liệu sau khi xóa
         const response = await employeeApi.deleteEmp(this.employeeIdDelete);
@@ -609,14 +588,12 @@ export default {
         console.log(response);
 
         if (response.isSuccess) {
-          this.labelInsertValid = " Nhân viên đã được xóa";
+          this.labelInsertValid = this.$MISAResource.NOTIFY.DELETE("Nhân viên");
           this.diy.showNotify();
         }
 
         this.clickCallback(this.indexPage);
 
-        //Hàm ẩn loading
-        this.diy.clearLoading();
       } catch (error) {
         console.log(error);
       }
@@ -731,11 +708,8 @@ export default {
       // Khai báo biến nhận giá trị khi nhân bản
       employeeDuplidate: {},
 
-      // Khai báo biến thay đổi css khi cho phép thực hiện hàng loạt
+      // Khai báo biến thay đổi checked khi cho phép thực hiện hàng loạt
       isFunctionAll: false,
-
-      // Nội dung thông báo mã nhân viên đã tồn tại
-      labelEmployeeCodeDuplicate: null,
 
       // Nội dung thông báo hỏi trước khi xóa
       lableDeleteEmployee: null,

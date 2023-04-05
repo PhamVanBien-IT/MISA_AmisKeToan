@@ -72,9 +72,13 @@ export default {
     btnCloseDialog() {
       this.diy.clearDialog();
       this.diy.clearDialogDeleteEmployees();
-      this.diy.ClearDialogValidate();
+      this.diy.clearDialogValidate();
       this.diy.clearDialogDevelop();
-      this.$parent.inputOnFocus(this.inputValidate);
+      if(this.inputValidate){
+        this.$parent.inputOnFocus(this.inputValidate);
+      }else{
+      this.$parent.inputOnFocus('EmployeeCode');
+      }
     },
 
     /**

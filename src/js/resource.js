@@ -4,16 +4,11 @@
  */
 const MISAResource = {
 	ERRORVALIDATE: {
+		FORMATCODE:"Mã nhân viên không đúng định dạng <NV-XXXXX>",
 		EXISTEMPLOYEECODE:(item) => `Mã nhân viên <${item}> đã tồn tại trong hệ thống.`,
-		EMPLOYEECODE: "Mã không được để trống", 
-        FULLNAME : "Tên không được để trống",
-        DEPARTMENT: "Đơn vị không được để trống",
-		PHONENUMBER:"Số điện thoại di động không đúng định dạng",
-		LANDLINENUMBER:"Số điện thoại cố định không đúng định dạng",
-		DATEOFBIRTH:"Ngày sinh lớn hơn ngày hiện tại",
-		IDENTITYDATE:"Ngày cấp lớn hơn ngày hiện tại",
-		IDENTITYNUMBER:"Số chứng minh nhân dân không đúng định dạng",
-		EMAIL:"Email không đúng định dạng"
+		REQUIRED:(item) => `${item} không được để trống`, 
+		INVALIDFORMAT:(item) => `${item} không đúng định dạng`,
+		INVALIDDATETIME:(item) => `${item} lớn hơn ngày hiện tại`,
 	},
 	CONTENTDIALOG:{
 		DELETE:(item) => `Bạn có muốn xóa nhân viên <${item}> không?`,
@@ -24,6 +19,11 @@ const MISAResource = {
 	TITLEFORM:{
 		ADD: "Thông tin nhân viên",
 		UPDATE:"Sửa nhân viên"
+	},
+	NOTIFY:{
+		ADD:(item) =>` ${item} đã được thêm vào hệ thống`,
+		DELETE:(item) =>` ${item} đã được xóa khỏi hệ thống`,
+		UPDATE:(item) => `${item} đã được cập nhật vào hệ thống`
 	}
 };
 

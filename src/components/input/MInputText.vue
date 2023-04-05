@@ -10,6 +10,7 @@
       :class="classInput"
       :placeholder="placeholderText"
       :max="maxDateInput"
+      @blur="hanldeBlurInput"
     />
   </div>
 </template>
@@ -27,6 +28,8 @@ export default {
     "maxDate",
     "name",
     "maxlength",
+    "labelValidate",
+    "regexString",
   ],
   created() {
     // Nhận giá trị modelValue
@@ -40,7 +43,7 @@ export default {
 
     // Nhận giá trị id truyền vào
     this.idInput = this.id;
-    
+
     // Nhận giá trị placeholder đã truyền vào
     this.placeholderText = this.placeholder;
 
@@ -56,9 +59,67 @@ export default {
 
     // Nhận giá trị class đã truyền vào
     this.classInput = this.class;
-
   },
   methods: {
+     /**
+     * Hàm kiểm tra ngày giờ
+     * CreatedBy: Bien (05/04/2023)
+     */
+    validateDateTime() {
+      if (this.type == "date") {
+        const dateNow = new Date();
+
+        const inputDate = new Date(this.modelValue);
+
+        if (inputDate > dateNow) {
+          this.$parent.validateList[`${this.nameInput}`].isStatus = true;
+          this.$parent.validateList[`${this.nameInput}`].labelValidate =
+            this.$MISAResource.ERRORVALIDATE.INVALIDDATETIME(
+              `${this.labelValidate}`
+            );
+        } else {
+          this.$parent.validateList[`${this.nameInput}`].isStatus = false;
+        }
+      }
+    },
+    /**
+     * Hàm validate dữ liệu bằng regex
+     * CreatedBy: Bien (05/04/2023)
+     */
+    validateRegex() {
+      if (this.regexString) {
+        if (new RegExp(this.regexString).test(this.modelValue)) {
+          this.$parent.validateList[`${this.nameInput}`].isStatus = false;
+        } else {
+          this.$parent.validateList[`${this.nameInput}`].isStatus = true;
+          this.$parent.validateList[`${this.nameInput}`].labelValidate =
+            this.$MISAResource.ERRORVALIDATE.INVALIDFORMAT(
+              `${this.labelValidate}`
+            );
+        }
+      } else {
+        this.$parent.validateList[`${this.nameInput}`].isStatus = false;
+      }
+    },
+    /**
+     * Hàm validate khi blur
+     * CreatedBy: Bien (04/04/2023)
+     */
+    hanldeBlurInput() {
+      if (
+        !this.modelValue &&
+        (this.nameInput == "EmployeeCode" || this.nameInput == "FullName")
+      ) {
+        this.$parent.validateList[`${this.nameInput}`].isStatus = true;
+        this.$parent.validateList[`${this.nameInput}`].labelValidate =
+          this.$MISAResource.ERRORVALIDATE.REQUIRED(`${this.labelValidate}`);
+      } else if (this.modelValue != "" && this.modelValue != null) {
+        this.validateRegex();
+        this.validateDateTime();
+      } else {
+        this.$parent.validateList[`${this.nameInput}`].isStatus = false;
+      }
+    },
     /**
      * Hàm set focus cho input
      * CreatedBy: Bien (22/02/2023)
@@ -101,6 +162,9 @@ export default {
 
       // Khai báo biến nhận giá trị ngày lớn nhất
       maxDateInput: null,
+
+      // Chuỗi regex muốn validate
+      regexFormat: null,
     };
   },
 };

@@ -75,7 +75,18 @@ tbody tr:hover td{
     left: 0;
     border-right:1px solid #c7c7c7;
     background-color:#fff ;
-
+}
+.td-code{
+    position: sticky;
+    left: 38px;
+    border-right:1px solid #c7c7c7;
+    background-color:#fff ;
+}
+.td-name{
+    position: sticky;
+    left: 189px;
+    border-right:1px solid #c7c7c7;
+    background-color:#fff ;
 }
 .tb-title{
     height: 48px;

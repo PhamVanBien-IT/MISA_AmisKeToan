@@ -13,7 +13,7 @@ const state = reactive({
   showFuncList: false,
   showBtnDialog: true,
   showDialogValidate: false,
-  ShowDataDeparerment:false,
+  showDataDeparerment:false,
   showCloseDialog:true,
   showNotifyError:false,
   showFunctionAll:false,
@@ -107,37 +107,37 @@ const ClearCloseDialog= function(){
  * Hàm hiển thị funcList
  * CreatedBy: Bien (20/1/2023)
  */
-const ToggleDataDeparerment= function(){
-  state.ShowDataDeparerment = !state.ShowDataDeparerment;
+const toggleDataDeparerment= function(){
+  state.showDataDeparerment = !state.showDataDeparerment;
 };
 
 /**
  * Hàm hiển thị danh sách đơn vị
  * CreatedBy: Bien (20/1/2023)
  */
-const ShowDataDeparerment= function(){
-  state.ShowDataDeparerment = true;
+const showDataDeparerment= function(){
+  state.showDataDeparerment = true;
 };
 
 /**
  * Hàm ẩn danh sách đơn vị
  * CreatedBy: Bien (20/1/2023)
  */
-const ClearDataDeparerment= function(){
-  state.ShowDataDeparerment = false;
+const clearDataDeparerment= function(){
+  state.showDataDeparerment = false;
 };
 /**
  * Hàm show dialog khi sai validate dữ liệu
  * CreatedBy: Bien (20/1/2023)
  */
-const ShowDialogValidate = function(){
+const showDialogValidate = function(){
   state.showDialogValidate = true;
 }
 /**
  * Hàm ẩn dialog khi sai validate dữ liệu
  * CreatedBy: Bien (20/1/2023)
  */
-const ClearDialogValidate = function(){
+const clearDialogValidate = function(){
   state.showDialogValidate = false;
 }
 /**
@@ -275,11 +275,11 @@ export default {
   showNavToggle,
   ShowBtnDialog,
   ClearBtnDialog,
-  ClearDialogValidate,
-  ShowDialogValidate,
-  ShowDataDeparerment,
-  ToggleDataDeparerment,
-  ClearDataDeparerment,
+  clearDialogValidate,
+  showDialogValidate,
+  showDataDeparerment,
+  toggleDataDeparerment,
+  clearDataDeparerment,
   ShowCloseDialog,
   ClearCloseDialog,
   showNotifyError,

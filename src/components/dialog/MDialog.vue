@@ -29,7 +29,7 @@
           @click="funcEditEmployee"
         ></MButtonVue>
       </div>
-      <div class="dialog__btn" v-if="diy.state.showCloseDialog">
+      <div class="dialog__btn" v-else>
         <MButtonVue
           label="Đóng"
           class="btn-dialog"
@@ -62,7 +62,6 @@ export default {
       this.diy.clearEPLDetail();
       this.diy.clearDialogDeleteEmployees();
       this.diy.clearDialog();
-      this.diy.ShowCloseDialog();
     },
 
     /**
@@ -87,13 +86,8 @@ export default {
      */
     funcEditEmployee() {
       this.$emit("EditEPL", this.funcEPL);
-      this.diy.clearDialog();
-      this.diy.clearDialogDeleteEmployees();
       this.diy.clearFunctionAll();
-      // Hiển thị nút đóng
-      this.diy.ShowCloseDialog();
       this.$parent.isFunctionAll = false;
-      this.$parent.selectedList = [];
     },
   },
 

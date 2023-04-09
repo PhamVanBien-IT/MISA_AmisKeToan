@@ -51,7 +51,7 @@ const MISACommon = {
 
         return `${year}-${month}-${date}`;
       } else {
-        return "";
+        return null;
       }
     } catch (error) {
       console.log("Lỗi định dạng thời gian" + error);

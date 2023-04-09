@@ -66,9 +66,10 @@ export default {
      * CreatedBy: Bien (04/04/2023)
      */
     hanldeBlurCombobox(){
-        if(!this.modelValue){
+        if(!this.modelValue || this.textSelected == '')
+        {
           this.$parent.validateList[`${this.nameInput}`].isStatus = true;
-        this.$parent.validateList[`${this.nameInput}`].labelValidate = this.$MISAResource.ERRORVALIDATE.REQUIRED(`${this.labelValidate}`);
+          this.$parent.validateList[`${this.nameInput}`].labelValidate = this.$MISAResource.ERRORVALIDATE.REQUIRED(`${this.labelValidate}`);
         }else{
           this.$parent.validateList[`${this.nameInput}`].isStatus = false;
         }

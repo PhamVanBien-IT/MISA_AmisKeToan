@@ -6,7 +6,6 @@
         <div class="notify-des"><span style="color: #5be041;font-weight: 600;">Thành công!</span> {{label}}</div>
       </div>
       <div class="notify-left">
-        <div class="notify-cancel">Hoàn tác</div>
         <div class="notify-close"></div>
       </div>
     </div>

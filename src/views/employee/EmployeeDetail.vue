@@ -453,7 +453,6 @@ export default {
      */
     btnSaveAndAddEmployee() {
       try {
-
         this.validateEmployee();
 
         this.isSaveEmployee = false;
@@ -635,7 +634,6 @@ export default {
 
       if (regexFormat.test(valueInput)) {
         this.validateList[nameInput].isStatus = false;
-        this.isValidate = true;
       } else {
         if (valueInput != null && valueInput != "") {
           this.validateList[nameInput].isStatus = true;
@@ -666,7 +664,6 @@ export default {
 
       if (inputDate < dateNow && valueInput) {
         this.validateList[nameInput].isStatus = false;
-        this.isValidate = true;
       } else {
         if (valueInput != null && valueInput != "") {
           this.validateList[nameInput].isStatus = true;
@@ -687,20 +684,20 @@ export default {
      * CreatedBy: Bien (24/02/2023)
      */
     validateEmployee() {
+      this.isValidate = true;
       if (this.employee.fullName) {
         this.validateList[`FullName`].isStatus = false;
-        this.isValidate = true;
       } else {
         this.validateList[`FullName`].isStatus = true;
         this.validateList[`FullName`].labelValidate =
           this.$MISAResource.ERRORVALIDATE.REQUIRED("Tên");
         this.showErrorValidate(this.validateList[`FullName`].labelValidate);
         this.inputValidate = "FullName";
+        this.isValidate = false;
       }
 
       if (this.employee.departmentId) {
         this.validateList[`Department`].isStatus = false;
-        this.isValidate = true;
       } else {
         this.validateList[`Department`].isStatus = true;
         this.validateList[`Department`].labelValidate =
@@ -720,7 +717,6 @@ export default {
       if (this.employee.employeeCode) {
         if (regexCode.test(this.employee.employeeCode)) {
           this.validateList[`EmployeeCode`].isStatus = false;
-          this.isValidate = true;
         } else {
           this.validateList[`EmployeeCode`].isStatus = true;
           this.validateList[`EmployeeCode`].labelValidate =
@@ -734,7 +730,6 @@ export default {
         this.validateList[`EmployeeCode`].labelValidate =
           this.$MISAResource.ERRORVALIDATE.REQUIRED("Mã");
         this.showErrorValidate(this.validateList[`EmployeeCode`].labelValidate);
-        this.isValidate = false;
         this.inputValidate = "EmployeeCode";
         this.isValidate = false;
       }

@@ -63,18 +63,26 @@
               </svg>
             </div>
           </div>
-          <div class="refresh icon" @click="btnRefreshOnClick"></div>
-          <div class="excel icon" @click="btnExportEmployees"></div>
+          <div
+            class="refresh icon"
+            title="Refresh"
+            @click="btnRefreshOnClick"
+          ></div>
+          <div
+            class="excel icon"
+            title="Xuất khẩu"
+            @click="btnExportEmployees"
+          ></div>
         </div>
       </div>
       <!-- PAGE-MAIN-TABLE -->
       <div class="page_body">
         <div class="page__main__table">
-          <table id="tbEmployeseList">
+          <table class="custom-table" id="tbEmployeseList">
             <thead>
               <tr>
-                <td class="tb-head td-center td-cb" style="width: 60px">
-                  <label> 
+                <td class="tb-head td-center td-cb" style="width: 40px">
+                  <label>
                     <input
                       type="checkbox"
                       id="chkProdTomove"
@@ -84,26 +92,26 @@
                     <span class="check-box-effect"></span>
                   </label>
                 </td>
-                <td class="tb-head td-left td-code" style="width: 250px">
+                <td class="tb-head td-left td-code" style="width: 100px">
                   MÃ NHÂN VIÊN
                 </td>
-                <td class="tb-head td-left td-name" style="width: 450px">
+                <td class="tb-head td-left td-name" style="width: 250px">
                   TÊN NHÂN VIÊN
                 </td>
-                <td class="tb-head td-left" style="width: 180px">GIỚI TÍNH</td>
-                <td class="tb-head td-center" style="width: 200px">
+                <td class="tb-head td-left" style="width: 100px">GIỚI TÍNH</td>
+                <td class="tb-head td-center" style="width: 150px">
                   NGÀY SINH
                 </td>
                 <td
                   class="tb-head td-left"
-                  style="width: 250px"
+                  style="width: 150px"
                   title="Số chứng minh nhân dân"
                 >
                   SỐ CMND
                 </td>
-                <td class="tb-head td-left" style="width: 250px">CHỨC DANH</td>
-                <td class="tb-head td-left" style="width: 350px">TÊN ĐƠN VỊ</td>
-                <td class="tb-head td-left" style="width: 230px">
+                <td class="tb-head td-left" style="width: 150px">CHỨC DANH</td>
+                <td class="tb-head td-left" style="width: 250px">TÊN ĐƠN VỊ</td>
+                <td class="tb-head td-left" style="width: 150px">
                   SỐ TÀI KHOẢN
                 </td>
                 <td class="tb-head td-left" style="width: 200px">
@@ -112,7 +120,7 @@
                 <td
                   class="tb-head td-left"
                   title="Chi nhánh tài khoản ngân hàng"
-                  style="width: 300px"
+                  style="width: 200px"
                 >
                   CHI NHÁNH TK NGÂN HÀNG
                 </td>
@@ -356,7 +364,6 @@ export default {
      */
     async deleteEmployees() {
       try {
-
         // Hàm thực hiện xóa khi xóa
         const response = await employeeApi.deleteEmployees(this.selectedList);
 
@@ -364,10 +371,12 @@ export default {
         if (response.data.isSuccess) {
           this.labelInsertValid = this.$MISAResource.NOTIFY.DELETE("Nhân viên");
           this.diy.showNotify();
+          this.diy.clearDialog();
+          this.diy.clearDialogDeleteEmployees();
+          this.selectedList = [];
         }
 
         this.clickCallback(this.indexPage);
-
       } catch (error) {
         console.log(error);
       }
@@ -497,7 +506,7 @@ export default {
         this.indexPage = pageNumber;
         this.autoCheckAllEmployee();
 
-        if(response){
+        if (response) {
           this.diy.clearLoading();
         }
       } catch (error) {
@@ -581,7 +590,6 @@ export default {
      */
     async deleteEmployee() {
       try {
-
         // Hàm nhận dữ liệu sau khi xóa
         const response = await employeeApi.deleteEmp(this.employeeIdDelete);
 
@@ -590,10 +598,12 @@ export default {
         if (response.isSuccess) {
           this.labelInsertValid = this.$MISAResource.NOTIFY.DELETE("Nhân viên");
           this.diy.showNotify();
+          this.diy.clearDialog();
+          this.diy.clearDialogDeleteEmployees();
+          this.selectedList = [];
         }
 
         this.clickCallback(this.indexPage);
-
       } catch (error) {
         console.log(error);
       }
@@ -630,7 +640,6 @@ export default {
 
       // Gọi hàm ẩn danh sách chức năng trong bảng nhân viên
       this.clearFuncList();
-
     },
 
     /**

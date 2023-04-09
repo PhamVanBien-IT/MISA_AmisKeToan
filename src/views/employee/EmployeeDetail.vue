@@ -3,8 +3,8 @@
   <div class="overlay">
     <div
       class="form-container"
-      v-on:keydown.esc="btnCloseOnClickIcon"
       v-on:keyup.ctrl.shift.s.prevent="btnSaveAndAddEmployee"
+      v-keydown:Escape="btnCloseOnClickIcon"
     >
       <div class="form-header">
         <div class="icon help"></div>
@@ -498,6 +498,7 @@ export default {
           this.$parent.clickCallback(1);
           this.employee = {};
           this.validateList[`isActive`] = false;
+          this.diy.clearDialog();
           // Thực hiện khi click nút cất
           if (this.isSaveEmployee) {
             this.diy.clearEPLDetail();

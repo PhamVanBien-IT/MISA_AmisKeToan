@@ -224,6 +224,7 @@ export default {
           // eslint-disable-next-line no-case-declarations
           const item = this.entitySearch[this.indexItemSelect];
           this.itemOnSelect(item);
+        this.$parent.validateList[`${this.nameInput}`].isStatus = false;
           break;
         case this.$MISAEnum.KEY_CODE.ROW_UP:
           //  Kiểm tra hiển thị

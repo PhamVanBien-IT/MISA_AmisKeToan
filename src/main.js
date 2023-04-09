@@ -13,8 +13,13 @@ import MInputMoney from "./components/input/MInputMoney.vue";
 import MCheckbox from "./components/input/MCheckbox.vue";
 import MDatepicker from "./components/datepicker/MDatepicker.vue";
 import vueClickOutsideElement from 'vue-click-outside-element';
+import keydown from '@/directive/keydown';
 
 const app = createApp(App);
+
+// Đăng ký các directive
+app.directive("keydown",keydown)
+
 app.component("MButtonVue",MButton);
 app.component("MComboboxVue",MCombobox);
 app.component("MDropdownVue",MDropdown);
